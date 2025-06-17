@@ -1,0 +1,30 @@
+[workspace]
+members = ["./crates/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+version = "0.0.26"
+
+[workspace.dependencies]
+chrono = { version = "0.4.40", features = ["serde"] }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.20" }
+float-cmp = "0.10.0"
+lru = "0.14.0"
+miette = { version = "7.6.0", features = ["fancy"] }
+num_enum = "0.7.3"
+serde = { version = "1.0.219", features = ["derive"] }
+strum = { version = "0.27", features = ["derive"] }
+test_utils = { path = "./crates/test_utils/" }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = "fat"
+opt-level = 3
+strip = true
+
+[profile.develop]
+inherits = "dev"
