@@ -1,6 +1,6 @@
 use crate::utils::readonly_struct;
 use crate::{FaaMode, NavigationSystem};
-
+use crate::utils::*;
 readonly_struct!(
     Vtg ,
     "",
@@ -13,7 +13,7 @@ readonly_struct!(
     {speed_over_ground_kph: Option<f64>},
     {mode: Option<FaaMode>}
 );
-impl crate::parser::NmeaParser {
+
     pub fn new_vtg(sentence: &str) -> miette::Result<Vtg> {
         let parts: Vec<&str> = Self::get_sentense_parts(sentence);
         Ok(Vtg::new(
@@ -26,20 +26,20 @@ impl crate::parser::NmeaParser {
             Self::parse_primitive(&parts, 9)?,
         ))
     }
-}
+
 #[cfg(test)]
 mod test {
     use test_utils::init_log;
 
-    use crate::parser::NmeaParser;
+  
     #[test]
     fn test_new_vtg() -> miette::Result<()> {
         init_log();
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
-        for (i, v) in NmeaParser::get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let vtg = NmeaParser::new_vtg(s)?;
+        let vtg = new_vtg(s)?;
         println!("{:?}", vtg);
         assert!(vtg.is_valid);
         Ok(())

@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::utils::readonly_struct;
+use crate::utils::{readonly_struct, *};
 use crate::{NavigationSystem, SystemId};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -50,38 +50,40 @@ readonly_struct!(
     {vdop: Option<f64>},
     {system_id:Option<SystemId>}
 );
-impl crate::parser::NmeaParser {
-    pub fn new_gsa(sentence: &str) -> miette::Result<Gsa> {
-        let parts: Vec<&str> = Self::get_sentense_parts(sentence);
-        Ok(Gsa::new(
-            Self::get_navigation_system(&sentence)?,
-            Self::is_valid(sentence),
-            Self::parse_primitive(&parts, 1)?,
-            Self::parse_primitive(&parts, 2)?,
-            (3..15)
-                .map(|i| Self::parse_primitive(&parts, i).unwrap())
+impl Gsa {
+    pub fn new(sentence: &str) -> miette::Result<Gsa> {
+        let parts: Vec<&str> = get_sentense_parts(sentence);
+        Ok(Gsa {
+            navigation_system: get_navigation_system(&sentence)?,
+            is_valid: is_valid(sentence),
+            selection_mode: parse_primitive(&parts, 1)?,
+            mode: parse_primitive(&parts, 2)?,
+            satellite_ids: (3..15)
+                .map(|i| parse_primitive(&parts, i).unwrap())
                 .filter_map(|f| f)
                 .collect(),
-            Self::parse_primitive(&parts, 15)?,
-            Self::parse_primitive(&parts, 16)?,
-            Self::parse_primitive(&parts, 17)?,
-            Self::parse_primitive(&parts, 18)?,
-        ))
+            pdop: parse_primitive(&parts, 15)?,
+            hdop: parse_primitive(&parts, 16)?,
+            vdop: parse_primitive(&parts, 17)?,
+            system_id: parse_primitive(&parts, 18)?,
+        })
     }
 }
+
 #[cfg(test)]
 mod test {
     use test_utils::init_log;
 
-    use crate::parser::NmeaParser;
+    use super::*;
+
     #[test]
     fn test_new_gsa() -> miette::Result<()> {
         init_log();
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
-        for (i, v) in NmeaParser::get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gsa = NmeaParser::new_gsa(s)?;
+        let gsa = Gsa::new(s)?;
         println!("{:?}", gsa);
         assert!(gsa.is_valid);
         Ok(())
