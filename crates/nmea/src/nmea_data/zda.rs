@@ -1,5 +1,6 @@
+use crate::INmeaData;
+use crate::nmea_data::NavigationSystem;
 use crate::utils::{readonly_struct, *};
-use crate::{INmeaData, NavigationSystem};
 readonly_struct!(
     Zda ,
     "",

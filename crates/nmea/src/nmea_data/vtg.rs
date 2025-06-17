@@ -1,5 +1,6 @@
+use crate::nmea_data::NavigationSystem;
 use crate::utils::{readonly_struct, *};
-use crate::{FaaMode, INmeaData, NavigationSystem};
+use crate::{FaaMode, INmeaData};
 readonly_struct!(
     Vtg ,
     "",

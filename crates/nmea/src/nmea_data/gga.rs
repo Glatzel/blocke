@@ -2,7 +2,8 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{INmeaData, NavigationSystem};
+use crate::nmea_data::NavigationSystem;
+use crate::{INmeaData};
 use crate::utils::{readonly_struct, *};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

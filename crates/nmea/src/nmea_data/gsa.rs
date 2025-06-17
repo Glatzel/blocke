@@ -2,8 +2,9 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
+use crate::nmea_data::NavigationSystem;
 use crate::utils::{readonly_struct, *};
-use crate::{INmeaData, NavigationSystem, SystemId};
+use crate::{INmeaData, SystemId};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
     Manual,

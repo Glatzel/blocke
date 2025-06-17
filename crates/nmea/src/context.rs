@@ -7,16 +7,26 @@ use std::sync::{Arc, Mutex};
 use lru::LruCache;
 use miette::IntoDiagnostic;
 
-use crate::nmea_data::{Dhv, GenericNmeaData, Gga, Gll, Gsa, NmeaDataType, Vtg, Zda};
-use crate::{INmeaData, NavigationSystem};
+use crate::INmeaData;
+use crate::nmea_data::{
+    Dhv, GenericNmeaData, Gga, Gll, Gsa, NavigationSystem, NmeaDataType, Vtg, Zda,
+};
 
 pub struct NmeaContext {
-    cache: Arc<Mutex<LruCache<NmeaDataType, crate::nmea_data::GenericNmeaData>>>,
+    cache:
+        Arc<Mutex<LruCache<(NavigationSystem, NmeaDataType), crate::nmea_data::GenericNmeaData>>>,
     output: Option<Mutex<File>>,
+    skip_navigation_system: Vec<NavigationSystem>,
+    skip_nmea_data_type: Vec<NmeaDataType>,
 }
 impl NmeaContext {
     /// Create a new NMEA context with given capacity.
-    pub fn new(capacity: usize, output_path: Option<&Path>) -> miette::Result<Self> {
+    pub fn new(
+        capacity: usize,
+        output_path: Option<&Path>,
+        skip_navigation_system: Option<Vec<NavigationSystem>>,
+        skip_nmea_data_type: Option<Vec<NmeaDataType>>,
+    ) -> miette::Result<Self> {
         let file = match output_path {
             Some(path) => Some(Mutex::new(File::create(path).into_diagnostic()?)),
             None => None,
@@ -25,13 +35,25 @@ impl NmeaContext {
         Ok(Self {
             cache: Arc::new(Mutex::new(cache)),
             output: file,
+            skip_navigation_system: skip_navigation_system.unwrap_or_default(),
+            skip_nmea_data_type: skip_nmea_data_type.unwrap_or_default(),
         })
     }
     pub fn push(&self, sentense: &str) -> miette::Result<&Self> {
-        let key = NmeaDataType::from_str(sentense)?;
-        let navigation_system = NavigationSystem::from_str(&sentense[1..3]).into_diagnostic()?;
+        let data_type = NmeaDataType::from_str(sentense)?;
+        let navigation_system = NavigationSystem::from_str(sentense)?;
+        if self.skip_navigation_system.contains(&navigation_system)
+            && self.skip_nmea_data_type.contains(&data_type)
+        {
+            clerk::info!(
+                "Skip,data_type: {}, navigation_system: {}",
+                data_type,
+                navigation_system
+            );
+            return Ok(self);
+        }
 
-        let data = match key {
+        let data = match data_type {
             NmeaDataType::DHV => {
                 GenericNmeaData::DHV(Dhv::parse_sentense(sentense, navigation_system)?)
             }
@@ -50,11 +72,11 @@ impl NmeaContext {
             NmeaDataType::ZDA => {
                 GenericNmeaData::ZDA(Zda::parse_sentense(sentense, navigation_system)?)
             }
-            NmeaDataType::Other => GenericNmeaData::Other(sentense.to_string()),
+            NmeaDataType::Other(s) => GenericNmeaData::Other(s.to_string()),
         };
 
         let mut cache = self.cache.lock().unwrap();
-        cache.put(key, data);
+        cache.put((navigation_system, data_type), data);
 
         if let Some(file_mutex) = &self.output {
             if let Ok(mut file) = file_mutex.lock() {
