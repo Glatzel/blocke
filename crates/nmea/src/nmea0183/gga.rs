@@ -1,10 +1,10 @@
+use std::str::FromStr;
+
 use miette::IntoDiagnostic;
-use num_enum::TryFromPrimitive;
 use serde::{Deserialize, Serialize};
 
-use crate::{primitives::NavigationSystem, traits::INmeaData};
-#[derive(Debug, Clone, Copy, TryFromPrimitive, strum::Display, Serialize, Deserialize)]
-#[repr(u8)]
+use crate::primitives::NavigationSystem;
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GgaQualityIndicator {
     Invalid = 0,
     GpsFix = 1,
@@ -16,38 +16,67 @@ pub enum GgaQualityIndicator {
     ManualInputMode = 7,
     SimulationMode = 8,
 }
+impl FromStr for GgaQualityIndicator {
+    type Err = miette::Report;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "0" => Ok(Self::Invalid),
+            "1" => Ok(Self::GpsFix),
+            "2" => Ok(Self::DifferentialGpsFix),
+            "3" => Ok(Self::PpsFix),
+            "4" => Ok(Self::RealTimeKinematic),
+            "5" => Ok(Self::FloatRTK),
+            "6" => Ok(Self::DeadReckoning),
+            "7" => Ok(Self::ManualInputMode),
+            "8" => Ok(Self::SimulationMode),
+            other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+        }
+    }
+}
 #[derive(Serialize, Deserialize)]
 pub struct Gga {
     /// Navigation system
-    pub source: NavigationSystem,
-    pub utc_time: chrono::DateTime<chrono::Utc>,
-    pub lat: f64,
-    pub lon: f64,
-    pub quality: GgaQualityIndicator,
-    pub hdop: u8,
-    pub altitude: f64,
-    pub geoid_separation: f64,
-    pub age_of_differential_gps_data: f64,
-    pub differential_reference_station_id: u16,
+    pub navigation_system: NavigationSystem,
+    pub is_valid: bool,
+
+    pub utc_time: Option<chrono::DateTime<chrono::Utc>>,
+    pub lat: Option<f64>,
+    pub lon: Option<f64>,
+    pub quality: Option<GgaQualityIndicator>,
+    pub hdop: Option<u8>,
+    pub altitude: Option<f64>,
+    pub geoid_separation: Option<f64>,
+    pub age_of_differential_gps_data: Option<f64>,
+    pub differential_reference_station_id: Option<u16>,
 }
 
-// impl INmeaData for Gga {
-//     fn parse_sentence(sentence: &str) -> miette::Result<Self> {
-//         let parts: Vec<&str> = sentence.split(',').collect();
-//         if parts.len() < 10 {
-//             miette::bail!("Not enough fields for GGA");
-//         }
-//         Ok(Gga {
-//             source: NavigationSystem::from_str(&parts[0][0..2]).into_diagnostic()?,
-//             utc_time: chrono::Utc::now(),
-//             lat: parts[2].parse::<f64>().unwrap_or(0.0),
-//             lon: parts[4].parse::<f64>().unwrap_or(0.0),
-//             quality: GgaQualityIndicator::Invalid,
-//             hdop: parts[8].parse::<u8>().unwrap_or(0),
-//             altitude: parts[9].parse::<f64>().unwrap_or(0.0),
-//             geoid_separation: 0.0,
-//             age_of_differential_gps_data: 0.0,
-//             differential_reference_station_id: 0,
-//         })
-//     }
-// }
+impl crate::parser::NmeaParser {
+    pub fn new_gga(sentence: &str) -> miette::Result<Gga> {
+        let parts: Vec<&str> = sentence.split(',').collect();
+        println!("{}", &parts[0][1..2]);
+        Ok(Gga {
+            navigation_system: Self::get_navigation_system(&sentence)?,
+            is_valid: Self::is_valid(sentence),
+
+            utc_time: Self::parse_utc(&parts, 2)?,
+            lat: Self::parse_latitude(&parts, 3, 4)?,
+            lon: Self::parse_latitude(&parts, 5, 6)?,
+            quality: Self::parse_primitive(&parts, 7)?,
+            hdop: Self::parse_primitive(&parts, 8)?,
+            altitude: Self::parse_primitive(&parts, 9)?,
+            geoid_separation: Self::parse_primitive(&parts, 10)?,
+            age_of_differential_gps_data: Self::parse_primitive(&parts, 12)?,
+            differential_reference_station_id: Self::parse_primitive(&parts, 13)?,
+        })
+    }
+}
+#[cfg(test)]
+mod test {
+    use crate::parser::NmeaParser;
+    #[test]
+    fn test_new_gga() -> miette::Result<()> {
+        let s = "$GPGGA,235316.000,2959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
+        let _ = NmeaParser::new_gga(s)?;
+        Ok(())
+    }
+}

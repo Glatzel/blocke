@@ -13,6 +13,7 @@ miette = { version = "7.6.0", features = ["fancy"] }
 num_enum = "0.7.3"
 serde = { version = "1.0.219", features = ["derive"] }
 strum = { version = "0.27", features = ["derive"] }
+float-cmp = "0.10.0"
 
 [profile.release]
 codegen-units = 1

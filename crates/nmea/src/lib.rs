@@ -1,6 +1,5 @@
 mod nmea0183;
+mod parser;
 mod primitives;
-mod traits;
-mod utils;
 
-pub use traits::INmeaParser;
+pub use parser::NmeaParser;
