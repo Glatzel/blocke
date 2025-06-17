@@ -22,7 +22,7 @@ impl FromStr for GllDataValid {
 }
 readonly_struct!(
     Gll ,
-    "",
+    "Gll",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 

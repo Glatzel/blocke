@@ -1,1 +1,1 @@
-# embeded
+# embedded
