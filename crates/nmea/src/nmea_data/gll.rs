@@ -33,8 +33,8 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
-        let parts: Vec<&str> = get_sentense_parts(sentence);
+    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
+        let parts: Vec<&str> = get_sentence_parts(sentence);
         Ok(Gll {
             navigation_system,
             is_valid: is_valid(sentence),
@@ -56,10 +56,10 @@ mod test {
     fn test_new_ggl() -> miette::Result<()> {
         init_log();
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
-        for (i, v) in get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentence_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gll = Gll::parse_sentense(s, NavigationSystem::GN)?;
+        let gll = Gll::parse_sentence(s, NavigationSystem::GN)?;
         println!("{:?}", gll);
         assert!(gll.is_valid);
         Ok(())
