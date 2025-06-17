@@ -1,9 +1,10 @@
-use std::{fmt::Debug, str::FromStr};
+use std::fmt::Debug;
+use std::str::FromStr;
 
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
 use miette::{Context, IntoDiagnostic};
 
-use crate::primitives::NavigationSystem;
+use crate::enums::NavigationSystem;
 pub struct NmeaParser {}
 impl NmeaParser {
     pub(crate) fn get_navigation_system(sentense: &str) -> miette::Result<NavigationSystem> {
@@ -11,6 +12,17 @@ impl NmeaParser {
             miette::bail!("Invalid sentense: {}", sentense);
         }
         NavigationSystem::from_str(&sentense[1..3]).into_diagnostic()
+    }
+
+    pub(crate) fn get_sentense_parts<'a>(sentense: &'a str) -> Vec<&'a str> {
+        let parts: Vec<&str> = sentense
+            .split("*")
+            .collect::<Vec<&str>>()
+            .first()
+            .unwrap()
+            .split(',')
+            .collect();
+        parts
     }
     pub(crate) fn parse_utc(
         sentense: &[&str],
@@ -126,10 +138,6 @@ impl NmeaParser {
             clerk::warn!("Empty string, index: {}", index);
             return Ok(None);
         }
-        if s.contains("*") {
-            clerk::warn!("string at index {} is checksum.", index);
-            return Ok(None);
-        }
         Ok(Some(s.parse::<T>().map_err(|e| {
             miette::miette!(
                 "{:?}: {} : {}, index: {}",
@@ -184,9 +192,10 @@ impl NmeaParser {
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use float_cmp::assert_approx_eq;
     use test_utils::init_log;
+
+    use super::*;
     #[test]
     fn test_parse_hhmmss_fractional() -> miette::Result<()> {
         init_log();

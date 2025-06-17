@@ -1,5 +1,7 @@
+mod enums;
 mod nmea0183;
 mod parser;
-mod primitives;
+mod utils;
 
+pub use enums::*;
 pub use parser::NmeaParser;
