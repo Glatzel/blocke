@@ -1,5 +1,6 @@
-use crate::NavigationSystem;
+use crate::nmea_data::Identifier;
 use crate::utils::*;
+use crate::{INmeaData, NavigationSystem};
 readonly_struct!(
     Dhv ,
     "",
@@ -14,10 +15,10 @@ readonly_struct!(
     {gdspd: Option<f64>}
 );
 impl INmeaData for Dhv {
-    fn parse_sentense(sentence: &str) -> miette::Result<Dhv> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Dhv {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             utc_time: parse_utc(&parts, 1)?,
             speed3d: parse_primitive(&parts, 2)?,
@@ -41,7 +42,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let dhv = Dhv::parse_sentense(s)?;
+        let dhv = Dhv::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", dhv);
         assert!(dhv.is_valid);
         Ok(())

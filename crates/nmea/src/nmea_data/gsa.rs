@@ -3,7 +3,7 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 
 use crate::utils::{readonly_struct, *};
-use crate::{NavigationSystem, SystemId};
+use crate::{INmeaData, NavigationSystem, SystemId};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
     Manual,
@@ -51,10 +51,10 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn parse_sentense(sentence: &str) -> miette::Result<Gsa> {
+    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gsa> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gsa {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             selection_mode: parse_primitive(&parts, 1)?,
             mode: parse_primitive(&parts, 2)?,
@@ -83,7 +83,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gsa = Gsa::parse_sentense(s)?;
+        let gsa = Gsa::parse_sentense(s,NavigationSystem::GN)?;
         println!("{:?}", gsa);
         assert!(gsa.is_valid);
         Ok(())

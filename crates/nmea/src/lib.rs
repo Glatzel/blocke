@@ -1,7 +1,9 @@
 mod context;
 pub mod enums;
 pub mod nmea_data;
+mod traits;
 mod utils;
 
 pub use context::*;
 pub use enums::*;
+pub use traits::*;

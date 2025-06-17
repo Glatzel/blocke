@@ -11,3 +11,22 @@ pub use gll::*;
 pub use gsa::*;
 pub use vtg::*;
 pub use zda::*;
+
+use crate::utils::readonly_struct;
+readonly_struct!(
+    Identifier,
+    "",
+    {navigation_system: crate::NavigationSystem},
+    {sentense_type: crate::NmeaType}
+);
+impl Identifier {
+    pub(crate) fn new(
+        navigation_system: crate::NavigationSystem,
+        sentense_type: crate::NmeaType,
+    ) -> Self {
+        Self {
+            navigation_system,
+            sentense_type,
+        }
+    }
+}

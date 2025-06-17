@@ -1,5 +1,5 @@
 use crate::utils::{readonly_struct, *};
-use crate::{FaaMode, NavigationSystem};
+use crate::{FaaMode, INmeaData, NavigationSystem};
 readonly_struct!(
     Vtg ,
     "",
@@ -13,10 +13,10 @@ readonly_struct!(
     {mode: Option<FaaMode>}
 );
 impl INmeaData for Vtg {
-    fn parse_sentense(sentence: &str) -> miette::Result<Vtg> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Vtg {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             course_over_ground_true: parse_primitive(&parts, 1)?,
             course_over_ground_magnetic: parse_primitive(&parts, 3)?,
@@ -39,7 +39,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let vtg = Vtg::parse_sentense(s)?;
+        let vtg = Vtg::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", vtg);
         assert!(vtg.is_valid);
         Ok(())

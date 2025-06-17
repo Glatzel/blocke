@@ -1,5 +1,5 @@
-use crate::NavigationSystem;
 use crate::utils::{readonly_struct, *};
+use crate::{INmeaData, NavigationSystem};
 readonly_struct!(
     Zda ,
     "",
@@ -14,10 +14,10 @@ readonly_struct!(
     {local_zone_minutes_description: Option<u8>}
 );
 impl INmeaData for Zda {
-    fn parse_sentense(sentence: &str) -> miette::Result<Zda> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Zda> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Zda {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             utc_time: parse_utc(&parts, 1)?,
             day: parse_primitive(&parts, 2)?,
@@ -42,7 +42,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let zda = Zda::parse_sentense(s)?;
+        let zda = Zda::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", zda);
         assert!(zda.is_valid);
         Ok(())

@@ -3,7 +3,7 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 
 use crate::utils::{readonly_struct, *};
-use crate::{FaaMode, NavigationSystem};
+use crate::{FaaMode, INmeaData, NavigationSystem};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GllDataValid {
     Valid,
@@ -32,10 +32,10 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn parse_sentense(sentence: &str) -> miette::Result<Gll> {
+    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gll> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gll {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             lat: parse_latitude(&parts, 1, 2)?,
             lon: parse_longitude(&parts, 3, 4)?,
@@ -58,7 +58,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gll = Gll::parse_sentense(s)?;
+        let gll = Gll::parse_sentense(s,NavigationSystem::GN)?;
         println!("{:?}", gll);
         assert!(gll.is_valid);
         Ok(())

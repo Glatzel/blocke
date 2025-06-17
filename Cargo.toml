@@ -17,6 +17,7 @@ strum = { version = "0.27", features = ["derive"] }
 float-cmp = "0.10.0"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+lru = "0.14.0"
 
 [profile.release]
 codegen-units = 1

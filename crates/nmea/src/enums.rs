@@ -2,32 +2,34 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, EnumString};
-#[derive(PartialEq, Debug)]
-pub enum Nmea0183 {
+#[derive(serde::Serialize, serde::Deserialize, PartialEq, Debug, Hash, Eq)]
+pub enum NmeaType {
+    DHV,
     GGA,
     GLL,
+    GSA,
+    GSV,
+    VTG,
+    ZDA,
 
     Other(String),
 }
-impl TryFrom<&str> for Nmea0183 {
+impl TryFrom<&str> for NmeaType {
     type Error = miette::Report;
 
-    fn try_from(sentense: &str) -> miette::Result<Self> {
-        let parts: Vec<&str> = sentense.split(",").collect();
-
-        match parts
-            .first()
-            .expect("Empty string")
-            .chars()
-            .skip(3)
-            .collect::<String>()
-            .as_str()
-        {
-            "GGA" => Ok(Nmea0183::GGA),
+    fn try_from(s: &str) -> miette::Result<Self> {
+        match s {
+            "DHV" => Ok(Self::DHV),
+            "GGA" => Ok(Self::GGA),
+            "GLL" => Ok(Self::GLL),
+            "GSA" => Ok(Self::GSA),
+            "GSV" => Ok(Self::GSV),
+            "VTG" => Ok(Self::VTG),
+            "ZDA" => Ok(Self::ZDA),
 
             "" => miette::bail!("Empty string."),
 
-            other => Ok(Nmea0183::Other(other.to_string())),
+            other => Ok(NmeaType::Other(other.to_string())),
         }
     }
 }
@@ -102,17 +104,17 @@ mod test {
     #[test]
     fn test_nmea0813() -> miette::Result<()> {
         //valid
-        assert_eq!(Nmea0183::try_from("$BDGGA")?, Nmea0183::GGA);
+        assert_eq!(NmeaType::try_from("$BDGGA")?, NmeaType::GGA);
 
         //other
         assert_eq!(
-            Nmea0183::try_from("$BDunknown")?,
-            Nmea0183::Other("unknown".to_string())
+            NmeaType::try_from("$BDunknown")?,
+            NmeaType::Other("unknown".to_string())
         );
 
         //invalid
-        assert!(Nmea0183::try_from("").is_err());
-        assert!(Nmea0183::try_from("$").is_err());
+        assert!(NmeaType::try_from("").is_err());
+        assert!(NmeaType::try_from("$").is_err());
 
         Ok(())
     }

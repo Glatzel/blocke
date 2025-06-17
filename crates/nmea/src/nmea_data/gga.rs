@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::NavigationSystem;
+use crate::{INmeaData, NavigationSystem};
 use crate::utils::{readonly_struct, *};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -53,10 +53,10 @@ readonly_struct!(
     {differential_reference_station_id: Option<u16>}
 );
 impl INmeaData for Gga {
-    fn parse_sentense(sentence: &str) -> miette::Result<Gga> {
+    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gga> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gga {
-            navigation_system: get_navigation_system(&sentence)?,
+            navigation_system,
             is_valid: is_valid(sentence),
             utc_time: parse_utc(&parts, 1)?,
             lat: parse_latitude(&parts, 2, 3)?,
@@ -85,7 +85,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gga = Gga::parse_sentense(s)?;
+        let gga = Gga::parse_sentense(s,NavigationSystem::GN)?;
         println!("{:?}", gga);
         assert!(gga.is_valid);
         Ok(())

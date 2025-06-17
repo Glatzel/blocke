@@ -4,7 +4,9 @@ use std::str::FromStr;
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
 use miette::{Context, IntoDiagnostic};
 
+use crate::NmeaType;
 use crate::enums::NavigationSystem;
+use crate::nmea_data::Identifier;
 macro_rules! readonly_struct {
     ($name:ident, $($struct_doc:expr)+, $({$field:ident: $type:ty $(, $field_doc:expr)?}),*) => {
         $(#[doc=$struct_doc])+
@@ -26,16 +28,15 @@ macro_rules! readonly_struct {
 }
 
 pub(crate) use readonly_struct;
-pub(crate) trait INmeaData {
-    fn parse_sentense(sentense: &str) -> miette::Result<Self>
-    where
-        Self: Sized;
-}
-pub(crate) fn get_navigation_system(sentense: &str) -> miette::Result<NavigationSystem> {
+
+pub(crate) fn get_identifier(sentense: &str) -> miette::Result<Identifier> {
     if sentense.len() < 6 {
         miette::bail!("Invalid sentense: {}", sentense);
     }
-    NavigationSystem::from_str(&sentense[1..3]).into_diagnostic()
+    Ok(Identifier::new(
+        NavigationSystem::from_str(&sentense[1..3]).into_diagnostic()?,
+        NmeaType::try_from(sentense)?,
+    ))
 }
 
 pub(crate) fn get_sentense_parts<'a>(sentense: &'a str) -> Vec<&'a str> {
