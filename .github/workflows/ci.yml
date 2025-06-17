@@ -53,11 +53,11 @@ jobs:
         uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: cargo-test
-        run: ${{env.RUST_ROOT}}/scripts/cargo-test.ps1
+        run: ./scripts/cargo-test.ps1
         shell: pwsh
 
       - name: cargo-miri
-        run: ${{env.RUST_ROOT}}/scripts/cargo-miri.ps1
+        run: ./scripts/cargo-miri.ps1
         shell: pwsh
 
       - name: Upload results to Codecov
