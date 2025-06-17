@@ -1,6 +1,5 @@
 use std::str::FromStr;
 
-use miette::IntoDiagnostic;
 use serde::{Deserialize, Serialize};
 
 use crate::primitives::NavigationSystem;

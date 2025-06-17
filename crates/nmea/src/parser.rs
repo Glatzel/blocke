@@ -10,7 +10,7 @@ impl NmeaParser {
         if sentense.len() < 6 {
             miette::bail!("Invalid sentense: {}", sentense);
         }
-        NavigationSystem::from_str(&sentense[1,3]).into_diagnostic()
+        NavigationSystem::from_str(&sentense[1..3]).into_diagnostic()
     }
     pub(crate) fn parse_utc(
         sentense: &[&str],
