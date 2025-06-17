@@ -1,8 +1,6 @@
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumString};
-
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
 pub enum FaaMode {

@@ -42,6 +42,8 @@ impl NmeaContext {
     pub fn push(&self, sentense: &str) -> miette::Result<&Self> {
         let data_type = NmeaDataType::from_str(sentense)?;
         let navigation_system = NavigationSystem::from_str(sentense)?;
+
+        //skip
         if self.skip_navigation_system.contains(&navigation_system)
             && self.skip_nmea_data_type.contains(&data_type)
         {
@@ -53,7 +55,7 @@ impl NmeaContext {
             return Ok(self);
         }
 
-        let data = match data_type {
+        let data = match &data_type {
             NmeaDataType::DHV => {
                 GenericNmeaData::DHV(Dhv::parse_sentense(sentense, navigation_system)?)
             }
@@ -86,15 +88,15 @@ impl NmeaContext {
         Ok(self)
     }
     /// Get a cached NMEA data value by type.
-    pub fn get(&self, key: NmeaDataType) -> Option<GenericNmeaData> {
+    pub fn get(&self, key: (NavigationSystem, NmeaDataType)) -> Option<GenericNmeaData> {
         let mut cache = self.cache.lock().unwrap();
         cache.get(&key).cloned()
     }
 
     /// Check if a sentence type exists in the cache.
-    pub fn contains(&self, nmea_type: NmeaDataType) -> bool {
+    pub fn contains(&self, key: (NavigationSystem, NmeaDataType)) -> bool {
         let cache = self.cache.lock().unwrap();
-        cache.contains(&nmea_type)
+        cache.contains(&key)
     }
 
     /// Get number of items currently cached.

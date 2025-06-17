@@ -69,7 +69,7 @@ impl Display for NmeaDataType {
         write!(f, "{}", s)
     }
 }
-
+#[derive(Clone)]
 pub enum GenericNmeaData {
     DHV(crate::nmea_data::Dhv),
     GGA(crate::nmea_data::Gga),
