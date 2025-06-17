@@ -133,12 +133,12 @@ pub(crate) fn parse_longitude(
         other => miette::bail!("Unknown hemisphere: {}", other),
     }
 }
-pub(crate) fn parse_primitive<T>(sentense: &[&str], index: usize) -> miette::Result<Option<T>>
+pub(crate) fn parse_primitive<T>(sentence: &[&str], index: usize) -> miette::Result<Option<T>>
 where
     T: FromStr,
     T::Err: Debug,
 {
-    let Some(s) = sentense.get(index) else {
+    let Some(s) = sentence.get(index) else {
         clerk::warn!("Empty string, index: {}", index);
         return Ok(None);
     };
@@ -172,7 +172,7 @@ pub(crate) fn is_valid(sentence: &str) -> bool {
     clerk::debug!("data: `{}`,checksum_str: `{}`", data, checksum_str);
 
     if checksum_str.len() != 2 {
-        clerk::warn!("require checksum_str lenth 2, get {}", checksum_str.len());
+        clerk::warn!("require checksum_str length 2, get {}", checksum_str.len());
         return false;
     }
 
