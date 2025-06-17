@@ -2,39 +2,8 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, EnumString};
-#[derive(serde::Serialize, serde::Deserialize, PartialEq, Debug, Hash, Eq)]
-pub enum NmeaType {
-    DHV,
-    GGA,
-    GLL,
-    GSA,
-    GSV,
-    VTG,
-    ZDA,
 
-    Other(String),
-}
-impl TryFrom<&str> for NmeaType {
-    type Error = miette::Report;
-
-    fn try_from(s: &str) -> miette::Result<Self> {
-        match s {
-            "DHV" => Ok(Self::DHV),
-            "GGA" => Ok(Self::GGA),
-            "GLL" => Ok(Self::GLL),
-            "GSA" => Ok(Self::GSA),
-            "GSV" => Ok(Self::GSV),
-            "VTG" => Ok(Self::VTG),
-            "ZDA" => Ok(Self::ZDA),
-
-            "" => miette::bail!("Empty string."),
-
-            other => Ok(NmeaType::Other(other.to_string())),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, EnumString, AsRefStr)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, EnumString, AsRefStr, Copy)]
 pub enum NavigationSystem {
     ///BeiDou (China)
     #[strum(serialize = "BeiDou (China)", serialize = "BD")]
@@ -53,7 +22,7 @@ pub enum NavigationSystem {
     GP,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
 pub enum FaaMode {
     Autonomous,
     Differential,
@@ -76,7 +45,7 @@ impl FromStr for FaaMode {
         }
     }
 }
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
 pub enum SystemId {
     GPS = 1,
     GLONASS = 2,
@@ -95,27 +64,5 @@ impl FromStr for SystemId {
             "5" => Ok(Self::NavIC),
             other => miette::bail!("Unknown GgaQualityIndicator {}", other),
         }
-    }
-}
-#[cfg(test)]
-mod test {
-
-    use super::*;
-    #[test]
-    fn test_nmea0813() -> miette::Result<()> {
-        //valid
-        assert_eq!(NmeaType::try_from("$BDGGA")?, NmeaType::GGA);
-
-        //other
-        assert_eq!(
-            NmeaType::try_from("$BDunknown")?,
-            NmeaType::Other("unknown".to_string())
-        );
-
-        //invalid
-        assert!(NmeaType::try_from("").is_err());
-        assert!(NmeaType::try_from("$").is_err());
-
-        Ok(())
     }
 }

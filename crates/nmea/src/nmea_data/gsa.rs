@@ -51,7 +51,7 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gsa> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gsa {
             navigation_system,
@@ -83,7 +83,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gsa = Gsa::parse_sentense(s,NavigationSystem::GN)?;
+        let gsa = Gsa::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", gsa);
         assert!(gsa.is_valid);
         Ok(())

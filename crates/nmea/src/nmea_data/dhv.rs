@@ -1,4 +1,3 @@
-use crate::nmea_data::Identifier;
 use crate::utils::*;
 use crate::{INmeaData, NavigationSystem};
 readonly_struct!(
