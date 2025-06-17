@@ -52,23 +52,24 @@ readonly_struct!(
     {age_of_differential_gps_data: Option<f64>},
     {differential_reference_station_id: Option<u16>}
 );
-
-pub fn new_gga(sentence: &str) -> miette::Result<Gga> {
-    let parts: Vec<&str> = get_sentense_parts(sentence);
-    Ok(Gga::new(
-        get_navigation_system(&sentence)?,
-        is_valid(sentence),
-        parse_utc(&parts, 1)?,
-        parse_latitude(&parts, 2, 3)?,
-        parse_longitude(&parts, 4, 5)?,
-        parse_primitive(&parts, 6)?,
-        parse_primitive(&parts, 7)?,
-        parse_primitive(&parts, 8)?,
-        parse_primitive(&parts, 9)?,
-        parse_primitive(&parts, 11)?,
-        parse_primitive(&parts, 13)?,
-        parse_primitive(&parts, 14)?,
-    ))
+impl INmeaData for Gga {
+    fn parse_sentense(sentence: &str) -> miette::Result<Gga> {
+        let parts: Vec<&str> = get_sentense_parts(sentence);
+        Ok(Gga {
+            navigation_system: get_navigation_system(&sentence)?,
+            is_valid: is_valid(sentence),
+            utc_time: parse_utc(&parts, 1)?,
+            lat: parse_latitude(&parts, 2, 3)?,
+            lon: parse_longitude(&parts, 4, 5)?,
+            quality: parse_primitive(&parts, 6)?,
+            satellite_count: parse_primitive(&parts, 7)?,
+            hdop: parse_primitive(&parts, 8)?,
+            altitude: parse_primitive(&parts, 9)?,
+            geoid_separation: parse_primitive(&parts, 11)?,
+            age_of_differential_gps_data: parse_primitive(&parts, 13)?,
+            differential_reference_station_id: parse_primitive(&parts, 14)?,
+        })
+    }
 }
 
 #[cfg(test)]
@@ -84,7 +85,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gga = new_gga(s)?;
+        let gga = Gga::parse_sentense(s)?;
         println!("{:?}", gga);
         assert!(gga.is_valid);
         Ok(())

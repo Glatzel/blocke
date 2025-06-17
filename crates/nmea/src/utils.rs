@@ -1,3 +1,10 @@
+use std::fmt::Debug;
+use std::str::FromStr;
+
+use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
+use miette::{Context, IntoDiagnostic};
+
+use crate::enums::NavigationSystem;
 macro_rules! readonly_struct {
     ($name:ident, $($struct_doc:expr)+, $({$field:ident: $type:ty $(, $field_doc:expr)?}),*) => {
         $(#[doc=$struct_doc])+
@@ -18,15 +25,12 @@ macro_rules! readonly_struct {
     }
 }
 
-use std::fmt::Debug;
-use std::str::FromStr;
-
-use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
-use miette::{Context, IntoDiagnostic};
 pub(crate) use readonly_struct;
-
-use crate::enums::NavigationSystem;
-
+pub(crate) trait INmeaData {
+    fn parse_sentense(sentense: &str) -> miette::Result<Self>
+    where
+        Self: Sized;
+}
 pub(crate) fn get_navigation_system(sentense: &str) -> miette::Result<NavigationSystem> {
     if sentense.len() < 6 {
         miette::bail!("Invalid sentense: {}", sentense);

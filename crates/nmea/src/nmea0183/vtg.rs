@@ -1,6 +1,5 @@
-use crate::utils::readonly_struct;
+use crate::utils::{readonly_struct, *};
 use crate::{FaaMode, NavigationSystem};
-use crate::utils::*;
 readonly_struct!(
     Vtg ,
     "",
@@ -13,25 +12,26 @@ readonly_struct!(
     {speed_over_ground_kph: Option<f64>},
     {mode: Option<FaaMode>}
 );
-
-    pub fn new_vtg(sentence: &str) -> miette::Result<Vtg> {
-        let parts: Vec<&str> = Self::get_sentense_parts(sentence);
-        Ok(Vtg::new(
-            Self::get_navigation_system(&sentence)?,
-            Self::is_valid(sentence),
-            Self::parse_primitive(&parts, 1)?,
-            Self::parse_primitive(&parts, 3)?,
-            Self::parse_primitive(&parts, 5)?,
-            Self::parse_primitive(&parts, 7)?,
-            Self::parse_primitive(&parts, 9)?,
-        ))
+impl INmeaData for Vtg {
+    fn parse_sentense(sentence: &str) -> miette::Result<Vtg> {
+        let parts: Vec<&str> = get_sentense_parts(sentence);
+        Ok(Vtg {
+            navigation_system: get_navigation_system(&sentence)?,
+            is_valid: is_valid(sentence),
+            course_over_ground_true: parse_primitive(&parts, 1)?,
+            course_over_ground_magnetic: parse_primitive(&parts, 3)?,
+            speed_over_ground_knots: parse_primitive(&parts, 5)?,
+            speed_over_ground_kph: parse_primitive(&parts, 7)?,
+            mode: parse_primitive(&parts, 9)?,
+        })
     }
+}
 
 #[cfg(test)]
 mod test {
     use test_utils::init_log;
 
-  
+    use super::*;
     #[test]
     fn test_new_vtg() -> miette::Result<()> {
         init_log();
@@ -39,7 +39,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let vtg = new_vtg(s)?;
+        let vtg = Vtg::parse_sentense(s)?;
         println!("{:?}", vtg);
         assert!(vtg.is_valid);
         Ok(())

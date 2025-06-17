@@ -13,19 +13,20 @@ readonly_struct!(
     {speed_z: Option<f64>},
     {gdspd: Option<f64>}
 );
-
-pub fn new_dhv(sentence: &str) -> miette::Result<Dhv> {
-    let parts: Vec<&str> = get_sentense_parts(sentence);
-    Ok(Dhv{
-        get_navigation_system(&sentence)?,
-        is_valid(sentence),
-        parse_utc(&parts, 1)?,
-        parse_primitive(&parts, 2)?,
-        parse_primitive(&parts, 3)?,
-        parse_primitive(&parts, 4)?,
-        parse_primitive(&parts, 5)?,
-        parse_primitive(&parts, 6)?,
-    })
+impl INmeaData for Dhv {
+    fn parse_sentense(sentence: &str) -> miette::Result<Dhv> {
+        let parts: Vec<&str> = get_sentense_parts(sentence);
+        Ok(Dhv {
+            navigation_system: get_navigation_system(&sentence)?,
+            is_valid: is_valid(sentence),
+            utc_time: parse_utc(&parts, 1)?,
+            speed3d: parse_primitive(&parts, 2)?,
+            speed_x: parse_primitive(&parts, 3)?,
+            speed_y: parse_primitive(&parts, 4)?,
+            speed_z: parse_primitive(&parts, 5)?,
+            gdspd: parse_primitive(&parts, 6)?,
+        })
+    }
 }
 
 #[cfg(test)]
@@ -40,7 +41,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let dhv = new_dhv(s)?;
+        let dhv = Dhv::parse_sentense(s)?;
         println!("{:?}", dhv);
         assert!(dhv.is_valid);
         Ok(())

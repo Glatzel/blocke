@@ -31,18 +31,19 @@ readonly_struct!(
     {data_valid: Option<GllDataValid>},
     {faa_mode: Option<FaaMode>}
 );
-
-pub fn new_gll(sentence: &str) -> miette::Result<Gll> {
-    let parts: Vec<&str> = get_sentense_parts(sentence);
-    Ok(Gll::new(
-        get_navigation_system(&sentence)?,
-        is_valid(sentence),
-        parse_latitude(&parts, 1, 2)?,
-        parse_longitude(&parts, 3, 4)?,
-        parse_utc(&parts, 5)?,
-        parse_primitive(&parts, 6)?,
-        parse_primitive(&parts, 7)?,
-    ))
+impl INmeaData for Gll {
+    fn parse_sentense(sentence: &str) -> miette::Result<Gll> {
+        let parts: Vec<&str> = get_sentense_parts(sentence);
+        Ok(Gll {
+            navigation_system: get_navigation_system(&sentence)?,
+            is_valid: is_valid(sentence),
+            lat: parse_latitude(&parts, 1, 2)?,
+            lon: parse_longitude(&parts, 3, 4)?,
+            utc_time: parse_utc(&parts, 5)?,
+            data_valid: parse_primitive(&parts, 6)?,
+            faa_mode: parse_primitive(&parts, 7)?,
+        })
+    }
 }
 
 #[cfg(test)]
@@ -57,7 +58,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gll = new_gll(s)?;
+        let gll = Gll::parse_sentense(s)?;
         println!("{:?}", gll);
         assert!(gll.is_valid);
         Ok(())
