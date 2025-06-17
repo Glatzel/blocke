@@ -2,9 +2,9 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::nmea_data::NavigationSystem;
+use crate::INmeaData;
+use crate::nmea_data::{FaaMode, NavigationSystem};
 use crate::utils::{readonly_struct, *};
-use crate::{FaaMode, INmeaData};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GllDataValid {
     Valid,

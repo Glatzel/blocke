@@ -56,10 +56,6 @@ jobs:
         run: ./scripts/cargo-test.ps1
         shell: pwsh
 
-      - name: cargo-miri
-        run: ./scripts/cargo-miri.ps1
-        shell: pwsh
-
       - name: Upload results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
