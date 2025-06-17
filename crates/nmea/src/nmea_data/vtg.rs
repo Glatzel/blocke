@@ -3,7 +3,7 @@ use crate::utils::{readonly_struct, *};
 use crate::{FaaMode, INmeaData};
 readonly_struct!(
     Vtg ,
-    "",
+    "Vtg",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 

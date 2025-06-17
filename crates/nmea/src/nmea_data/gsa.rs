@@ -60,8 +60,7 @@ impl INmeaData for Gsa {
             selection_mode: parse_primitive(&parts, 1)?,
             mode: parse_primitive(&parts, 2)?,
             satellite_ids: (3..15)
-                .map(|i| parse_primitive(&parts, i).unwrap())
-                .filter_map(|f| f)
+                .filter_map(|i| parse_primitive(&parts, i).unwrap())
                 .collect(),
             pdop: parse_primitive(&parts, 15)?,
             hdop: parse_primitive(&parts, 16)?,

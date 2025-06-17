@@ -26,7 +26,7 @@ macro_rules! readonly_struct {
 
 pub(crate) use readonly_struct;
 
-pub(crate) fn get_sentense_parts<'a>(sentense: &'a str) -> Vec<&'a str> {
+pub(crate) fn get_sentense_parts(sentense: &str) -> Vec<&str> {
     let parts: Vec<&str> = sentense
         .split("*")
         .collect::<Vec<&str>>()
