@@ -41,9 +41,27 @@ pub(crate) fn parse_latitude(hemi: &str, ddmm: &str) -> miette::Result<f64> {
         other => miette::bail!("Unknown hemi: {}.", other),
     }
 }
+pub(crate) fn parse_longitude(hemi: &str, ddmm: &str) -> miette::Result<f64> {
+    if ddmm.len() < 5 {
+        miette::bail!("Invalid longitude Format: {}.", ddmm);
+    }
+
+    let (deg_str, min_str) = ddmm.split_at(3);
+    let deg = deg_str.parse::<f64>().into_diagnostic()?;
+    let min = min_str.parse::<f64>().into_diagnostic()?; // mm.mmmm
+
+    let lon = deg + min / 60.0;
+
+    match hemi.to_uppercase().as_str() {
+        "E" => Ok(lon),
+        "W" => Ok(-lon),
+        other => miette::bail!("Unknown hemi: {}.", other),
+    }
+}
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn test_parse_hhmmss_fractional() -> miette::Result<()> {
         let inputs = ["235959", "235959.1", "235959.12", "235959.123456789"];
@@ -52,6 +70,24 @@ mod test {
             let utc = parse_hhmmss_fractional(input)?;
             println!("{} -> {:?}", input, utc);
         }
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_latitude_valid() -> miette::Result<()> {
+        // N hemisphere
+        let lat = parse_latitude("N", "4916.45")?;
+        // 49 deg + 16.45/60 min
+        assert!((lat - (49.0 + 16.45 / 60.0)).abs() < 1e-6);
+
+        // S hemisphere
+        let lat = parse_latitude("S", "4916.45")?;
+        assert!((lat - (-(49.0 + 16.45 / 60.0))).abs() < 1e-6);
+
+        //invalid
+        assert!(parse_latitude("N", "49").is_err());
+        //invalid
+        assert!(parse_latitude("a", "4916.45").is_err());
         Ok(())
     }
 }
