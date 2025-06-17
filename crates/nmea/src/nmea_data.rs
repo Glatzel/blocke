@@ -29,11 +29,11 @@ pub enum NmeaDataType {
 impl FromStr for NmeaDataType {
     type Err = miette::Report;
 
-    fn from_str(sentense: &str) -> Result<Self, Self::Err> {
-        if sentense.len() < 6 {
-            miette::bail!("Invalid sentense: {}", sentense);
+    fn from_str(sentence: &str) -> Result<Self, Self::Err> {
+        if sentence.len() < 6 {
+            miette::bail!("Invalid sentence: {}", sentence);
         }
-        let out = match &sentense[3..6] {
+        let out = match &sentence[3..6] {
             "DHV" => Self::DHV,
             "GGA" => Self::GGA,
             "GLL" => Self::GLL,
@@ -43,7 +43,7 @@ impl FromStr for NmeaDataType {
             "ZDA" => Self::ZDA,
 
             _ => Self::Other(
-                sentense
+                sentence
                     .split(",")
                     .collect::<Vec<&str>>()
                     .first()
@@ -95,13 +95,13 @@ pub enum NavigationSystem {
 impl FromStr for NavigationSystem {
     type Err = miette::Report;
 
-    fn from_str(sentense: &str) -> miette::Result<Self> {
-        let out = match &sentense[1..3] {
+    fn from_str(sentence: &str) -> miette::Result<Self> {
+        let out = match &sentence[1..3] {
             "BD" => Self::BD,
             "GL" => Self::GL,
             "GN" => Self::GN,
             "GP" => Self::GP,
-            _ => miette::bail!("Unknown NavigationSystem: {}", &sentense[1..3]),
+            _ => miette::bail!("Unknown NavigationSystem: {}", &sentence[1..3]),
         };
         Ok(out)
     }

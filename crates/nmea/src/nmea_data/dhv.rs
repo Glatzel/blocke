@@ -15,8 +15,8 @@ readonly_struct!(
     {gdspd: Option<f64>}
 );
 impl INmeaData for Dhv {
-    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
-        let parts: Vec<&str> = get_sentense_parts(sentence);
+    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
+        let parts: Vec<&str> = get_sentence_parts(sentence);
         Ok(Dhv {
             navigation_system,
             is_valid: is_valid(sentence),
@@ -39,10 +39,10 @@ mod test {
     fn test_new_dhv() -> miette::Result<()> {
         init_log();
         let s = "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65";
-        for (i, v) in get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentence_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let dhv = Dhv::parse_sentense(s, NavigationSystem::GN)?;
+        let dhv = Dhv::parse_sentence(s, NavigationSystem::GN)?;
         println!("{:?}", dhv);
         assert!(dhv.is_valid);
         Ok(())

@@ -14,8 +14,8 @@ readonly_struct!(
     {mode: Option<FaaMode>}
 );
 impl INmeaData for Vtg {
-    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
-        let parts: Vec<&str> = get_sentense_parts(sentence);
+    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
+        let parts: Vec<&str> = get_sentence_parts(sentence);
         Ok(Vtg {
             navigation_system,
             is_valid: is_valid(sentence),
@@ -37,10 +37,10 @@ mod test {
     fn test_new_vtg() -> miette::Result<()> {
         init_log();
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
-        for (i, v) in get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentence_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let vtg = Vtg::parse_sentense(s, NavigationSystem::GN)?;
+        let vtg = Vtg::parse_sentence(s, NavigationSystem::GN)?;
         println!("{:?}", vtg);
         assert!(vtg.is_valid);
         Ok(())

@@ -15,8 +15,8 @@ readonly_struct!(
     {local_zone_minutes_description: Option<u8>}
 );
 impl INmeaData for Zda {
-    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Zda> {
-        let parts: Vec<&str> = get_sentense_parts(sentence);
+    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Zda> {
+        let parts: Vec<&str> = get_sentence_parts(sentence);
         Ok(Zda {
             navigation_system,
             is_valid: is_valid(sentence),
@@ -40,10 +40,10 @@ mod test {
     fn test_new_zda() -> miette::Result<()> {
         init_log();
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
-        for (i, v) in get_sentense_parts(s).iter().enumerate() {
+        for (i, v) in get_sentence_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let zda = Zda::parse_sentense(s, NavigationSystem::GN)?;
+        let zda = Zda::parse_sentence(s, NavigationSystem::GN)?;
         println!("{:?}", zda);
         assert!(zda.is_valid);
         Ok(())

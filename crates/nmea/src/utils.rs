@@ -26,8 +26,8 @@ macro_rules! readonly_struct {
 
 pub(crate) use readonly_struct;
 
-pub(crate) fn get_sentense_parts(sentense: &str) -> Vec<&str> {
-    let parts: Vec<&str> = sentense
+pub(crate) fn get_sentence_parts(sentence: &str) -> Vec<&str> {
+    let parts: Vec<&str> = sentence
         .split("*")
         .collect::<Vec<&str>>()
         .first()
@@ -36,8 +36,8 @@ pub(crate) fn get_sentense_parts(sentense: &str) -> Vec<&str> {
         .collect();
     parts
 }
-pub(crate) fn parse_utc(sentense: &[&str], index: usize) -> miette::Result<Option<DateTime<Utc>>> {
-    if let Some(hhmmss) = sentense.get(index) {
+pub(crate) fn parse_utc(sentence: &[&str], index: usize) -> miette::Result<Option<DateTime<Utc>>> {
+    if let Some(hhmmss) = sentence.get(index) {
         let (main, frac_sec_str) = hhmmss.split_once('.').unwrap_or((hhmmss, "0"));
         clerk::debug!("utc hhmmss: {}", hhmmss);
 
@@ -64,11 +64,11 @@ pub(crate) fn parse_utc(sentense: &[&str], index: usize) -> miette::Result<Optio
 }
 
 pub(crate) fn parse_latitude(
-    sentense: &[&str],
+    sentence: &[&str],
     lat_index: usize,
     hemi_index: usize,
 ) -> miette::Result<Option<f64>> {
-    let (Some(ddmm), Some(hemi)) = (sentense.get(lat_index), sentense.get(hemi_index)) else {
+    let (Some(ddmm), Some(hemi)) = (sentence.get(lat_index), sentence.get(hemi_index)) else {
         clerk::warn!(
             "At least one of longitude digits or hemi-sphere is none.lon_index: {}, hemi_index: {}",
             lat_index,
@@ -99,11 +99,11 @@ pub(crate) fn parse_latitude(
     }
 }
 pub(crate) fn parse_longitude(
-    sentense: &[&str],
+    sentence: &[&str],
     lon_index: usize,
     hemi_index: usize,
 ) -> miette::Result<Option<f64>> {
-    let (Some(dddmm), Some(hemi)) = (sentense.get(lon_index), sentense.get(hemi_index)) else {
+    let (Some(dddmm), Some(hemi)) = (sentence.get(lon_index), sentence.get(hemi_index)) else {
         clerk::warn!(
             "At least one of longitude digits or hemi-sphere is none.lon_index: {}, hemi_index: {}",
             lon_index,

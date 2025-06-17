@@ -39,9 +39,9 @@ impl NmeaContext {
             skip_nmea_data_type: skip_nmea_data_type.unwrap_or_default(),
         })
     }
-    pub fn push(&self, sentense: &str) -> miette::Result<&Self> {
-        let data_type = NmeaDataType::from_str(sentense)?;
-        let navigation_system = NavigationSystem::from_str(sentense)?;
+    pub fn push(&self, sentence: &str) -> miette::Result<&Self> {
+        let data_type = NmeaDataType::from_str(sentence)?;
+        let navigation_system = NavigationSystem::from_str(sentence)?;
 
         //skip
         if self.skip_navigation_system.contains(&navigation_system)
@@ -57,22 +57,22 @@ impl NmeaContext {
 
         let data = match &data_type {
             NmeaDataType::DHV => {
-                GenericNmeaData::DHV(Dhv::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::DHV(Dhv::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::GGA => {
-                GenericNmeaData::GGA(Gga::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::GGA(Gga::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::GLL => {
-                GenericNmeaData::GLL(Gll::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::GLL(Gll::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::GSA => {
-                GenericNmeaData::GSA(Gsa::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::GSA(Gsa::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::VTG => {
-                GenericNmeaData::VTG(Vtg::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::VTG(Vtg::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::ZDA => {
-                GenericNmeaData::ZDA(Zda::parse_sentense(sentense, navigation_system)?)
+                GenericNmeaData::ZDA(Zda::parse_sentence(sentence, navigation_system)?)
             }
             NmeaDataType::Other(s) => GenericNmeaData::Other(s.to_string()),
         };
@@ -82,7 +82,7 @@ impl NmeaContext {
 
         if let Some(file_mutex) = &self.output {
             if let Ok(mut file) = file_mutex.lock() {
-                let _ = writeln!(file, "{}", sentense);
+                let _ = writeln!(file, "{}", sentence);
             }
         }
         Ok(self)
