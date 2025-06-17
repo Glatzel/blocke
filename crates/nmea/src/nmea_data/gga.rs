@@ -2,8 +2,8 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
+use crate::INmeaData;
 use crate::nmea_data::NavigationSystem;
-use crate::{INmeaData};
 use crate::utils::{readonly_struct, *};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -38,7 +38,7 @@ impl FromStr for GgaQualityIndicator {
 
 readonly_struct!(
     Gga ,
-    "",
+    "Gga",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 
@@ -54,7 +54,7 @@ readonly_struct!(
     {differential_reference_station_id: Option<u16>}
 );
 impl INmeaData for Gga {
-    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gga> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gga> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gga {
             navigation_system,
@@ -86,7 +86,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gga = Gga::parse_sentense(s,NavigationSystem::GN)?;
+        let gga = Gga::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", gga);
         assert!(gga.is_valid);
         Ok(())

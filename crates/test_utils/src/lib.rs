@@ -10,6 +10,4 @@ static INIT_LOGGING: LazyLock<bool> = LazyLock::new(|| {
         .init();
     true
 });
-pub fn init_log() {
-    let _ = &*INIT_LOGGING;
-}
+pub fn init_log() { let _ = &*INIT_LOGGING; }

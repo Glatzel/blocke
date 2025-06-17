@@ -3,7 +3,7 @@ use crate::nmea_data::NavigationSystem;
 use crate::utils::{readonly_struct, *};
 readonly_struct!(
     Zda ,
-    "",
+    "Zda",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 

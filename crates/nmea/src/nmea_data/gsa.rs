@@ -39,7 +39,7 @@ impl FromStr for GsaMode {
 }
 readonly_struct!(
     Gsa ,
-    "",
+    "Gsa",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 

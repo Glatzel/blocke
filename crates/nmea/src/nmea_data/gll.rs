@@ -33,7 +33,7 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn parse_sentense(sentence: &str,navigation_system: NavigationSystem) -> miette::Result<Gll> {
+    fn parse_sentense(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
         let parts: Vec<&str> = get_sentense_parts(sentence);
         Ok(Gll {
             navigation_system,
@@ -59,7 +59,7 @@ mod test {
         for (i, v) in get_sentense_parts(s).iter().enumerate() {
             println!("{i}:{v}");
         }
-        let gll = Gll::parse_sentense(s,NavigationSystem::GN)?;
+        let gll = Gll::parse_sentense(s, NavigationSystem::GN)?;
         println!("{:?}", gll);
         assert!(gll.is_valid);
         Ok(())

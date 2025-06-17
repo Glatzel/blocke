@@ -1,9 +1,9 @@
+use crate::INmeaData;
 use crate::nmea_data::NavigationSystem;
 use crate::utils::*;
-use crate::{INmeaData};
 readonly_struct!(
     Dhv ,
-    "",
+    "Dhv",
     {navigation_system: NavigationSystem},
     {is_valid: bool},
 
