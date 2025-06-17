@@ -13,6 +13,7 @@ strum = { workspace = true }
 
 [dev-dependencies]
 float-cmp ={ workspace = true }
+test_utils={ workspace = true }
 
 [features]
 log = ["clerk/log"]

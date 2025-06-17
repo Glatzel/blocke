@@ -1,7 +1,7 @@
 use std::{fmt::Debug, str::FromStr};
 
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
-use miette::IntoDiagnostic;
+use miette::{Context, IntoDiagnostic};
 
 use crate::primitives::NavigationSystem;
 pub struct NmeaParser {}
@@ -18,10 +18,12 @@ impl NmeaParser {
     ) -> miette::Result<Option<DateTime<Utc>>> {
         if let Some(hhmmss) = sentense.get(index) {
             let (main, frac_sec_str) = hhmmss.split_once('.').unwrap_or((hhmmss, "0"));
+            clerk::debug!("utc hhmmss: {}", hhmmss);
 
             let hour = main[0..2].parse::<u32>().into_diagnostic()?;
             let min = main[2..4].parse::<u32>().into_diagnostic()?;
             let sec = main[4..6].parse::<u32>().into_diagnostic()?;
+
             // Convert fraction to nanoseconds
             let frac_str = format!("0.{}", frac_sec_str);
             let frac_sec = frac_str.parse::<f64>().into_diagnostic()?;
@@ -29,6 +31,7 @@ impl NmeaParser {
 
             let time =
                 NaiveTime::from_hms_nano_opt(hour, min, sec, nanos).expect("from_hms_nano_opt");
+            clerk::debug!("time: {}", time);
             let today = Utc::now().date_naive();
             let dt = NaiveDate::from_ymd_opt(today.year(), today.month(), today.day())
                 .expect("Error from_ymd_opt")
@@ -46,6 +49,11 @@ impl NmeaParser {
         hemi_index: usize,
     ) -> miette::Result<Option<f64>> {
         let (Some(ddmm), Some(hemi)) = (sentense.get(lat_index), sentense.get(hemi_index)) else {
+            clerk::warn!(
+                "At least one of longitude digits or hemi-sphere is none.lon_index: {}, hemi_index: {}",
+                lat_index,
+                hemi_index
+            );
             return Ok(None);
         };
         if ddmm.len() < 4 {
@@ -53,8 +61,14 @@ impl NmeaParser {
         }
 
         let (deg_str, min_str) = ddmm.split_at(2);
-        let deg = deg_str.parse::<f64>().into_diagnostic()?;
-        let min = min_str.parse::<f64>().into_diagnostic()?; // mm.mmmm
+        let deg = deg_str
+            .parse::<f64>()
+            .into_diagnostic()
+            .wrap_err(format!("deg: {}", deg_str))?;
+        let min = min_str
+            .parse::<f64>()
+            .into_diagnostic()
+            .wrap_err(format!("min: {}", min_str))?; // mm.mmmm
 
         let lat = deg + min / 60.0;
 
@@ -70,6 +84,11 @@ impl NmeaParser {
         hemi_index: usize,
     ) -> miette::Result<Option<f64>> {
         let (Some(dddmm), Some(hemi)) = (sentense.get(lon_index), sentense.get(hemi_index)) else {
+            clerk::warn!(
+                "At least one of longitude digits or hemi-sphere is none.lon_index: {}, hemi_index: {}",
+                lon_index,
+                hemi_index
+            );
             return Ok(None);
         };
 
@@ -78,8 +97,14 @@ impl NmeaParser {
         }
 
         let (deg_str, min_str) = dddmm.split_at(3);
-        let deg = deg_str.parse::<f64>().into_diagnostic()?;
-        let min = min_str.parse::<f64>().into_diagnostic()?;
+        let deg = deg_str
+            .parse::<f64>()
+            .into_diagnostic()
+            .wrap_err(format!("deg: {}", deg_str))?;
+        let min = min_str
+            .parse::<f64>()
+            .into_diagnostic()
+            .wrap_err(format!("min: {}", min_str))?; // mm.mmmm?;
         let lon = deg + min / 60.0;
 
         match hemi.to_uppercase().as_str() {
@@ -94,17 +119,30 @@ impl NmeaParser {
         T::Err: Debug,
     {
         let Some(s) = sentense.get(index) else {
+            clerk::warn!("Empty string, index: {}", index);
             return Ok(None);
         };
         if s.is_empty() {
+            clerk::warn!("Empty string, index: {}", index);
             return Ok(None);
         }
-        Ok(Some(
-            s.parse::<T>().map_err(|e| miette::miette!("{:?}", e))?,
-        ))
+        if s.contains("*") {
+            clerk::warn!("string at index {} is checksum.", index);
+            return Ok(None);
+        }
+        Ok(Some(s.parse::<T>().map_err(|e| {
+            miette::miette!(
+                "{:?}: {} : {}, index: {}",
+                e,
+                std::any::type_name::<T>(),
+                s,
+                index
+            )
+        })?))
     }
     pub(crate) fn is_valid(sentence: &str) -> bool {
         if !sentence.starts_with('$') {
+            clerk::warn!("sentence doesn't start with `$`");
             return false;
         }
 
@@ -114,8 +152,11 @@ impl NmeaParser {
         };
 
         let (data, checksum_str) = sentence[1..].split_at(star_pos - 1); // skip $
+        let checksum_str = &checksum_str[1..];
+        clerk::debug!("data: `{}`,checksum_str: `{}`", data, checksum_str);
 
         if checksum_str.len() != 2 {
+            clerk::warn!("require checksum_str lenth 2, get {}", checksum_str.len());
             return false;
         }
 
@@ -145,11 +186,11 @@ impl NmeaParser {
 mod test {
     use super::*;
     use float_cmp::assert_approx_eq;
-
+    use test_utils::init_log;
     #[test]
     fn test_parse_hhmmss_fractional() -> miette::Result<()> {
+        init_log();
         let inputs = ["235959", "235959.1", "235959.12", "235959.123456789"];
-
         for i in 0..inputs.len() {
             let utc = NmeaParser::parse_utc(inputs.as_slice(), i)?;
             println!("{} -> {:?}", inputs[i], utc);
@@ -159,6 +200,7 @@ mod test {
 
     #[test]
     fn test_parse_latitude() -> miette::Result<()> {
+        init_log();
         // N hemisphere
         let lat = NmeaParser::parse_latitude(&["4916.45", "N"], 0, 1)?;
         // 49 deg + 16.45/60 min
@@ -171,6 +213,7 @@ mod test {
     }
     #[test]
     fn test_parse_longitude() -> miette::Result<()> {
+        init_log();
         // E hemisphere
         let lat = NmeaParser::parse_longitude(&["12345.67", "E"], 0, 1)?;
         // 49 deg + 16.45/60 min

@@ -32,7 +32,7 @@ impl FromStr for GgaQualityIndicator {
         }
     }
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Gga {
     /// Navigation system
     pub navigation_system: NavigationSystem,
@@ -42,7 +42,8 @@ pub struct Gga {
     pub lat: Option<f64>,
     pub lon: Option<f64>,
     pub quality: Option<GgaQualityIndicator>,
-    pub hdop: Option<u8>,
+    pub satellite_count: Option<u8>,
+    pub hdop: Option<f64>,
     pub altitude: Option<f64>,
     pub geoid_separation: Option<f64>,
     pub age_of_differential_gps_data: Option<f64>,
@@ -52,30 +53,38 @@ pub struct Gga {
 impl crate::parser::NmeaParser {
     pub fn new_gga(sentence: &str) -> miette::Result<Gga> {
         let parts: Vec<&str> = sentence.split(',').collect();
-        println!("{}", &parts[0][1..2]);
         Ok(Gga {
             navigation_system: Self::get_navigation_system(&sentence)?,
             is_valid: Self::is_valid(sentence),
 
-            utc_time: Self::parse_utc(&parts, 2)?,
-            lat: Self::parse_latitude(&parts, 3, 4)?,
-            lon: Self::parse_latitude(&parts, 5, 6)?,
-            quality: Self::parse_primitive(&parts, 7)?,
+            utc_time: Self::parse_utc(&parts, 1)?,
+            lat: Self::parse_latitude(&parts, 2, 3)?,
+            lon: Self::parse_longitude(&parts, 4, 5)?,
+            quality: Self::parse_primitive(&parts, 6)?,
+            satellite_count: Self::parse_primitive(&parts, 7)?,
             hdop: Self::parse_primitive(&parts, 8)?,
             altitude: Self::parse_primitive(&parts, 9)?,
-            geoid_separation: Self::parse_primitive(&parts, 10)?,
-            age_of_differential_gps_data: Self::parse_primitive(&parts, 12)?,
-            differential_reference_station_id: Self::parse_primitive(&parts, 13)?,
+            geoid_separation: Self::parse_primitive(&parts, 11)?,
+            age_of_differential_gps_data: Self::parse_primitive(&parts, 13)?,
+            differential_reference_station_id: Self::parse_primitive(&parts, 14)?,
         })
     }
 }
 #[cfg(test)]
 mod test {
+    use test_utils::init_log;
+
     use crate::parser::NmeaParser;
     #[test]
     fn test_new_gga() -> miette::Result<()> {
-        let s = "$GPGGA,235316.000,2959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
-        let _ = NmeaParser::new_gga(s)?;
+        init_log();
+        let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        for (i, v) in s.split(",").enumerate() {
+            println!("{i}:{v}");
+        }
+        let gga = NmeaParser::new_gga(s)?;
+        println!("{:?}", gga);
+        assert!(gga.is_valid);
         Ok(())
     }
 }
