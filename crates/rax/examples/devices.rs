@@ -1,7 +1,7 @@
-use rax::io::devices::{self, DeviceFilter};
+use rax::io::{DeviceFilter, list_devices};
 
 fn main() -> miette::Result<()> {
-    let devices = devices::list_devices(DeviceFilter::all)?;
+    let devices = list_devices(DeviceFilter::all)?;
     for d in devices {
         println!("{:#?}", d);
     }
