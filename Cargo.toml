@@ -12,8 +12,11 @@ clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.20" }
 float-cmp = "0.10.0"
 lru = "0.14.0"
 miette = { version = "7.6.0", features = ["fancy"] }
+nmea = { path = "./crates/nmea/" }
+nom = "8.0.0"
 num_enum = "0.7.3"
 serde = { version = "1.0.219", features = ["derive"] }
+serialport = "4.7.2"
 strum = { version = "0.27", features = ["derive"] }
 test_utils = { path = "./crates/test_utils/" }
 tracing = "0.1.41"
