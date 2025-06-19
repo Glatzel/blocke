@@ -18,7 +18,7 @@ readonly_struct!(
     {gdspd: Option<f64>}
 );
 impl Dhv {
-    fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
+    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");

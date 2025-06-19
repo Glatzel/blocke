@@ -4,9 +4,9 @@ use rax::str_parser::rules::{Char, Until};
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::NmeaUtc;
 use crate::macros::readonly_struct;
 use crate::nmea_data::NavigationSystem;
+use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GgaQualityIndicator {
@@ -55,7 +55,9 @@ readonly_struct!(
     {differential_reference_station_id: Option<u16>}
 );
 impl Gga {
-    fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gga> {
+    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gga> {
+        clerk::trace!("Gga::new: sentence='{}'", sentence);
+
         let char_comma = Char(&',');
         let char_m = Char(&'M');
         let until_comma = Until(",");
@@ -63,21 +65,62 @@ impl Gga {
 
         let mut ctx = StrParserContext::new(sentence);
 
+        clerk::debug!("Parsing utc_time...");
         let utc_time = ctx
             .skip_strict(&until_comma)?
             .skip_strict(&char_comma)?
             .take(&NmeaUtc());
-        let lat = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let lon = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("utc_time: {:?}", utc_time);
+
+        clerk::debug!("Parsing lat...");
+        let lat = ctx.skip_strict(&char_comma)?.take(&NmeaCoord());
+        clerk::debug!("lat: {:?}", lat);
+
+        clerk::debug!("Parsing lon...");
+        let lon = ctx.skip_strict(&char_comma)?.take(&NmeaCoord());
+        clerk::debug!("lon: {:?}", lon);
+
+        clerk::debug!("Parsing quality...");
         let quality = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("quality: {:?}", quality);
+
+        clerk::debug!("Parsing satellite_count...");
         let satellite_count = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("satellite_count: {:?}", satellite_count);
+
+        clerk::debug!("Parsing hdop...");
         let hdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("hdop: {:?}", hdop);
+
+        clerk::debug!("Parsing altitude...");
         let altitude = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("altitude: {:?}", altitude);
+
+        clerk::debug!("Skipping char_comma and char_m for altitude units...");
+        ctx.skip_strict(&char_comma)?.skip_strict(&char_m)?;
+
+        clerk::debug!("Parsing geoid_separation...");
         let geoid_separation = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!("geoid_separation: {:?}", geoid_separation);
+
+        clerk::debug!("Skipping char_comma and char_m for geoid units...");
+        ctx.skip_strict(&char_comma)?.skip_strict(&char_m)?;
+
+        clerk::debug!("Parsing age_of_differential_gps_data...");
         let age_of_differential_gps_data =
             ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        clerk::debug!(
+            "age_of_differential_gps_data: {:?}",
+            age_of_differential_gps_data
+        );
+
+        clerk::debug!("Parsing differential_reference_station_id...");
         let differential_reference_station_id =
             ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+        clerk::debug!(
+            "differential_reference_station_id: {:?}",
+            differential_reference_station_id
+        );
 
         Ok(Gga {
             navigation_system,

@@ -14,9 +14,9 @@
 //     {mode: Option<FaaMode>}
 // );
 // impl INmeaData for Vtg {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
-// miette::Result<Vtg> {         let parts: Vec<&str> =
-// get_sentence_parts(sentence);         Ok(Vtg {
+//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
+//         let parts: Vec<&str> = get_sentence_parts(sentence);
+//         Ok(Vtg {
 //             navigation_system,
 //             is_valid: is_valid(sentence),
 //             course_over_ground_true: parse_primitive(&parts, 1)?,
