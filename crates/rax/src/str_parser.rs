@@ -5,33 +5,34 @@ mod parse_opt;
 pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
-pub struct StrParserContext<'a> {
-    full: &'a str,
-    rest: &'a str,
+pub struct StrParserContext {
+    full: String,
+    rest: *const str,
 }
 
-impl<'a> StrParserContext<'a> {
-    pub fn new() -> Self { Self { full: "", rest: "" } }
-    pub fn init(&mut self, input: &'a str) -> &mut Self {
+impl StrParserContext {
+    pub fn new() -> Self {
+        Self {
+            full: String::new(),
+            rest: "",
+        }
+    }
+    pub fn init(&mut self, input: String) -> &mut Self {
         self.full = input;
-        self.rest = input;
+        self.rest = self.full.as_str();
         self
     }
-    pub fn clean(&mut self) -> &mut Self {
-        self.full = "";
-        self.rest = "";
-        self
-    }
-    pub fn full_str(&self) -> &str { self.full }
-    pub fn rest_str(&self) -> &str { self.rest }
+
+    pub fn full_str(&self) -> &str { self.full.as_str() }
+    pub fn rest_str(&self) -> &str { unsafe { &*self.rest } }
 }
 
-impl<'a> StrParserContext<'a> {
+impl<'a> StrParserContext {
     pub fn take<R, O>(&mut self, rule: &R) -> Option<O>
     where
         R: rules::IStrFlowRule<'a, O>,
     {
-        match rule.apply(self.rest) {
+        match rule.apply(unsafe { &*self.rest }) {
             Some(result) => {
                 self.rest = result.1;
                 Some(result.0)
@@ -50,7 +51,7 @@ impl<'a> StrParserContext<'a> {
     }
 }
 
-impl<'a> StrParserContext<'a> {
+impl<'a> StrParserContext {
     pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
     where
         R: rules::IStrFlowRule<'a, String>,
@@ -66,7 +67,7 @@ impl<'a> StrParserContext<'a> {
         Ok(self)
     }
 }
-impl<'a> StrParserContext<'a> {
+impl<'a> StrParserContext {
     pub fn global<R, O>(&'a mut self, rule: R) -> O
     where
         R: IStrGlobalRule<'a, O>,

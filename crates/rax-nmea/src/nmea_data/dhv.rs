@@ -58,7 +58,7 @@ mod test {
         init_log();
         let s = "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65";
         let mut ctx = StrParserContext::new();
-        let dhv = Dhv::new(ctx.init(s), NavigationSystem::GN)?;
+        let dhv = Dhv::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", dhv);
         Ok(())
     }

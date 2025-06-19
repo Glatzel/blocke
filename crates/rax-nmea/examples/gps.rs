@@ -22,38 +22,43 @@ fn main() -> miette::Result<()> {
             // Process the message in a new scope so the borrow ends before the next
             // iteration
             {
-                let ctx = ctx.init(&m);
+                let nv = NavigationSystem::from_str(&m)?;
                 match NmeaDataType::from_str(&m) {
-                    Ok(nv) => match nv {
+                    Ok(t) => match t {
                         NmeaDataType::DHV => {
-                            let nmea = Dhv::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Dhv::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::GGA => {
-                            let nmea = Gga::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Gga::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::GLL => {
-                            let nmea = Gll::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Gll::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::GSA => {
-                            let nmea = Gsa::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Gsa::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::VTG => {
-                            let nmea = Vtg::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Vtg::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::ZDA => {
-                            let nmea = Zda::new(ctx, NavigationSystem::from_str(&m)?)?;
+                            let ctx = ctx.init(m);
+                            let nmea = Zda::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::Other(_) => (),
                     },
                     Err(_) => (),
                 }
-                let ctx = ctx.clean();
             }
         }
     }

@@ -55,7 +55,7 @@ mod test {
         init_log();
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
         let mut ctx = StrParserContext::new();
-        let vtg = Vtg::new(&mut ctx.init(s), NavigationSystem::GN)?;
+        let vtg = Vtg::new(&mut ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", vtg);
 
         Ok(())

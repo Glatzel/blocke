@@ -85,7 +85,7 @@ mod test {
         init_log();
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
         let mut ctx = StrParserContext::new();
-        let gll = Gll::new(ctx.init(s), NavigationSystem::GN)?;
+        let gll = Gll::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", gll);
         Ok(())
     }
