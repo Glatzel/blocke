@@ -16,12 +16,15 @@ impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
 
 #[cfg(test)]
 mod tests {
+    use test_utils::init_log;
+
     use super::*;
 
     #[test]
     fn test_until_str_output() {
         // O = &str is not supported because FromStr is not implemented for &str
         // So we use String as output type
+        init_log();
         let rule = Until(";");
         let input = "hello;world";
 
@@ -31,6 +34,7 @@ mod tests {
 
     #[test]
     fn test_until_parse_fail() {
+        init_log();
         let rule = Until(",");
         let input = "abc rest";
         let result = rule.apply(input);
@@ -38,6 +42,7 @@ mod tests {
     }
     #[test]
     fn test_until_at_start() {
+        init_log();
         let rule = Until("-");
         let input = "-start";
         let result = rule.apply(input);
@@ -46,6 +51,7 @@ mod tests {
 
     #[test]
     fn test_until_empty_input() {
+        init_log();
         let rule = Until(",");
         let input = "";
 

@@ -20,11 +20,14 @@ impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
 
 #[cfg(test)]
 mod tests {
+    use test_utils::init_log;
+
     use super::*;
     use crate::str_parser::filters::FilterCharSet;
 
     #[test]
     fn test_char_match() {
+        init_log();
         let filter = FilterCharSet::ascii();
         let rule = OneOfCharSet(&filter);
         let input = "a123";
@@ -34,6 +37,7 @@ mod tests {
 
     #[test]
     fn test_char_no_match() {
+        init_log();
         let filter = FilterCharSet::digits();
         let rule = OneOfCharSet(&filter);
         let input = "abc";
@@ -43,6 +47,7 @@ mod tests {
 
     #[test]
     fn test_char_empty_input() {
+        init_log();
         let filter = FilterCharSet::ascii();
         let rule = OneOfCharSet(&filter);
         let input = "";
@@ -52,6 +57,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() {
+        init_log();
         let filter = FilterCharSet::from_string("你");
         let rule = OneOfCharSet(&filter);
         let input = "你好";

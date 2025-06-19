@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "test_utils"
+name = "test-utils"
 version.workspace = true
 
 [dependencies]

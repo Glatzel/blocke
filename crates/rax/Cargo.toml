@@ -9,3 +9,6 @@ miette = { workspace = true }
 serialport = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+
+[dev-dependencies]
+test-utils = { workspace = true }

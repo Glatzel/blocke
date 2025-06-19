@@ -18,10 +18,13 @@ impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
 }
 #[cfg(test)]
 mod tests {
+    use test_utils::init_log;
+
     use super::*;
 
     #[test]
     fn test_count_exact_length() {
+        init_log();
         let rule = ByteCount(4);
         let input = "test";
         let result = rule.apply(input);
@@ -30,6 +33,7 @@ mod tests {
 
     #[test]
     fn test_count_less_than_length() {
+        init_log();
         let rule = ByteCount(2);
         let input = "hello";
         let result = rule.apply(input);
@@ -38,6 +42,7 @@ mod tests {
 
     #[test]
     fn test_count_more_than_length() {
+        init_log();
         let rule = ByteCount(10);
         let input = "short";
         let result = rule.apply(input);
@@ -46,6 +51,7 @@ mod tests {
 
     #[test]
     fn test_count_zero() {
+        init_log();
         let rule = ByteCount(0);
         let input = "abc";
         let result = rule.apply(input);

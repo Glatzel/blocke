@@ -20,10 +20,13 @@ impl<'a> IStrFlowRule<'a, char> for Char<'a> {
 
 #[cfg(test)]
 mod tests {
+    use test_utils::init_log;
+
     use super::*;
 
     #[test]
     fn test_char_match() {
+        init_log();
         let rule = Char(&'a');
         let input = "a123";
         let result = rule.apply(input);
@@ -32,6 +35,7 @@ mod tests {
 
     #[test]
     fn test_char_no_match() {
+        init_log();
         let rule = Char(&'d');
         let input = "abc";
         let result = rule.apply(input);
@@ -40,6 +44,7 @@ mod tests {
 
     #[test]
     fn test_char_empty_input() {
+        init_log();
         let rule = Char(&'a');
         let input = "";
         let result = rule.apply(input);
@@ -48,6 +53,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() {
+        init_log();
         let rule = Char(&'你');
         let input = "你好";
         let result = rule.apply(input);

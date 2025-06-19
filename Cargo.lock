@@ -507,6 +507,7 @@ dependencies = [
  "clerk",
  "miette",
  "serialport",
+ "test-utils",
  "tracing",
  "tracing-subscriber",
 ]
@@ -524,7 +525,7 @@ dependencies = [
  "rax",
  "serde",
  "strum",
- "test_utils",
+ "test-utils",
 ]
 
 [[package]]
@@ -727,7 +728,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_utils"
+name = "test-utils"
 version = "0.0.26"
 dependencies = [
  "clerk",
