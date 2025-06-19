@@ -13,7 +13,7 @@ pub struct StrParserContext<'a> {
 }
 
 impl StrParserContext<'static> {
-    pub fn new<'a>(sentence: &'static str) -> MutexGuard<'static, StrParserContext<'static>> {
+    pub fn new(sentence: &'static str) -> MutexGuard<'static, StrParserContext<'static>> {
         let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
         ctx.full = sentence;
         ctx.rest = sentence;
