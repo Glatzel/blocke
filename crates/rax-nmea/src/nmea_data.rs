@@ -55,31 +55,7 @@ impl FromStr for NmeaDataType {
     }
 }
 
-impl Display for NmeaDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            NmeaDataType::DHV => "DHV",
-            NmeaDataType::GGA => "GGA",
-            NmeaDataType::GLL => "GLL",
-            NmeaDataType::GSA => "GSA",
-            NmeaDataType::VTG => "VTG",
-            NmeaDataType::ZDA => "ZDA",
-            NmeaDataType::Other(s) => s,
-        };
-        write!(f, "{}", s)
-    }
-}
-#[derive(Clone)]
-pub enum GenericNmeaData {
-    DHV(crate::nmea_data::Dhv),
-    GGA(crate::nmea_data::Gga),
-    GLL(crate::nmea_data::Gll),
-    GSA(crate::nmea_data::Gsa),
-    VTG(crate::nmea_data::Vtg),
-    ZDA(crate::nmea_data::Zda),
 
-    Other(String),
-}
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
 pub enum NavigationSystem {
     ///BeiDou (China)

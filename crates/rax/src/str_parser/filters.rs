@@ -1,5 +1,5 @@
-mod char;
-pub use self::char::*;
+mod char_set;
+pub use self::char_set::*;
 
 pub trait IFilter< I> {
     fn name(&self) -> &str;

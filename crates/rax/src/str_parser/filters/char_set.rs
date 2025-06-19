@@ -6,16 +6,16 @@ use crate::str_parser::filters::IFilter;
 pub static DIGITS: LazyLock<HashSet<char>> = LazyLock::new(|| ('0'..='9').collect());
 pub static ASCII: LazyLock<HashSet<char>> =
     LazyLock::new(|| ('a'..='z').chain('A'..='Z').collect());
-pub struct FilterChar<'a> {
+pub struct FilterCharSet<'a> {
     char_set: Cow<'a, HashSet<char>>,
 }
-impl<'a> IFilter<&char> for FilterChar<'a> {
+impl<'a> IFilter<&char> for FilterCharSet<'a> {
     fn name(&self) -> &str { "Filter Char" }
 
     fn filter(&self, input: &char) -> bool { self.char_set.contains(input) }
 }
 
-impl<'a> FilterChar<'a> {
+impl<'a> FilterCharSet<'a> {
     pub fn from_str(char_set: &str) -> Self {
         Self {
             char_set: Cow::Owned(char_set.chars().collect()),

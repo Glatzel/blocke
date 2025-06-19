@@ -521,6 +521,7 @@ dependencies = [
  "lru",
  "miette",
  "num_enum",
+ "rax",
  "serde",
  "strum",
  "test_utils",
