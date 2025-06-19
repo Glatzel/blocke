@@ -2,11 +2,11 @@ use super::IStrFlowRule;
 use crate::str_parser::IRule;
 use crate::str_parser::filters::IFilter;
 
-pub struct InCharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
-impl<'a> IRule for InCharSet<'a> {
+pub struct OneOfCharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
+impl<'a> IRule for OneOfCharSet<'a> {
     fn name(&self) -> &str { todo!() }
 }
-impl<'a> IStrFlowRule<'a, char> for InCharSet<'a> {
+impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let (_, c) = input.char_indices().next()?; // safely unwrap with ?
         if self.0.filter(&c) {
@@ -26,7 +26,7 @@ mod tests {
     #[test]
     fn test_char_match() {
         let filter = FilterCharSet::ascii();
-        let rule = InCharSet(&filter);
+        let rule = OneOfCharSet(&filter);
         let input = "a123";
         let result = rule.apply(input);
         assert_eq!(result, Some(('a', "123")));
@@ -35,7 +35,7 @@ mod tests {
     #[test]
     fn test_char_no_match() {
         let filter = FilterCharSet::digits();
-        let rule = InCharSet(&filter);
+        let rule = OneOfCharSet(&filter);
         let input = "abc";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -44,7 +44,7 @@ mod tests {
     #[test]
     fn test_char_empty_input() {
         let filter = FilterCharSet::ascii();
-        let rule = InCharSet(&filter);
+        let rule = OneOfCharSet(&filter);
         let input = "";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -53,7 +53,7 @@ mod tests {
     #[test]
     fn test_char_unicode() {
         let filter = FilterCharSet::from_string("你");
-        let rule = InCharSet(&filter);
+        let rule = OneOfCharSet(&filter);
         let input = "你好";
         let result = rule.apply(input);
         assert_eq!(result, Some(('你', "好")));

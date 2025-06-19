@@ -4,8 +4,8 @@ mod char_count;
 pub use char_count::*;
 mod until;
 pub use until::*;
-mod in_char_set;
-pub use in_char_set::*;
+mod one_of_char_set;
+pub use one_of_char_set::*;
 mod char;
 pub use self::char::*;
 
