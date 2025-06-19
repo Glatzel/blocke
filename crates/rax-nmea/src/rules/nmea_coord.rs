@@ -5,9 +5,7 @@ impl IRule for NmeaCoord {
     fn name(&self) -> &str { todo!() }
 }
 impl<'a> IStrTakeRule<'a, f64> for NmeaCoord {
-
-
-    fn apply(&self, input: &'a str) -> Option<(f64, &'a str)> {
+    fn apply_take_rule(&self, input: &'a str) -> Option<(f64, &'a str)> {
         if let Some(second_comma_idx) = input
             .char_indices()
             .filter(|&(_, c)| c == ',')
@@ -44,7 +42,7 @@ mod tests {
         let rule = NmeaCoord();
         // 12319.123,E,rest
         let input = "12319.123,E,rest";
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         // 12319.123 means 123 degrees, 19.123 minutes
         // deg = 123, min = 19.123, value = 123 + 19.123/60
         let expected = 123.0 + 19.123 / 60.0;
@@ -59,7 +57,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123,W,foo";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         let expected = -(123.0 + 19.123 / 60.0);
         assert!(result.is_some());
         let (val, rest) = result.unwrap();
@@ -72,7 +70,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "4807.038,N,bar";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         let expected = 48.0 + 7.038 / 60.0;
         assert!(result.is_some());
         let (val, rest) = result.unwrap();
@@ -85,7 +83,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "4807.038,S,xyz";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         let expected = -(48.0 + 7.038 / 60.0);
         assert!(result.is_some());
         let (val, rest) = result.unwrap();
@@ -98,7 +96,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123,X,rest";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert!(result.is_none());
     }
 
@@ -107,7 +105,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "notanumber,E,rest";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert!(result.is_none());
     }
 
@@ -116,7 +114,7 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123Erest";
 
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert!(result.is_none());
     }
 }

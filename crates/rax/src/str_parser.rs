@@ -36,7 +36,7 @@ impl<'a> StrParserContext<'a> {
     where
         R: rules::IStrTakeRule<'a, O>,
     {
-        match rule.apply(self.rest) {
+        match rule.apply_take_rule(self.rest) {
             Some(result) => {
                 self.rest = result.1;
                 Some(result.0)
@@ -76,6 +76,6 @@ impl<'a> StrParserContext<'a> {
     where
         R: IStrGlobalRule<'a, O>,
     {
-        rule.apply(self.full)
+        rule.apply_global_rule(self.full)
     }
 }

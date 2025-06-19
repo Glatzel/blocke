@@ -6,7 +6,7 @@ impl<'a> IRule for Char<'a> {
     fn name(&self) -> &str { "char" }
 }
 impl<'a> IStrTakeRule<'a, char> for Char<'a> {
-    fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
+    fn apply_take_rule(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {
             Some((i, c)) => {
@@ -29,7 +29,7 @@ mod tests {
     fn test_char_match() {
         let rule = Char(&'a');
         let input = "a123";
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert_eq!(result, Some(('a', "123")));
     }
 
@@ -37,7 +37,7 @@ mod tests {
     fn test_char_no_match() {
         let rule = Char(&'d');
         let input = "abc";
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert_eq!(result, None);
     }
 
@@ -45,7 +45,7 @@ mod tests {
     fn test_char_empty_input() {
         let rule = Char(&'a');
         let input = "";
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert_eq!(result, None);
     }
 
@@ -53,7 +53,7 @@ mod tests {
     fn test_char_unicode() {
         let rule = Char(&'你');
         let input = "你好";
-        let result = rule.apply(input);
+        let result = rule.apply_take_rule(input);
         assert_eq!(result, Some(('你', "你好")));
     }
 }
