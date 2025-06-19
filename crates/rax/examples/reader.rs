@@ -3,7 +3,6 @@ use std::time::Duration;
 
 use miette::IntoDiagnostic;
 use rax::io::IRaxReader;
-
 fn main() -> miette::Result<()> {
     let path = "COM4";
     let port = serialport::new(path, 9600)

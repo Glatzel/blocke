@@ -1,4 +1,4 @@
-use rax::io::{DeviceFilter, list_devices};
+use rax::devices::{DeviceFilter, list_devices};
 
 fn main() -> miette::Result<()> {
     let devices = list_devices(DeviceFilter::all)?;
