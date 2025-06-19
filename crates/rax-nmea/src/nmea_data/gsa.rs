@@ -1,10 +1,12 @@
 use std::str::FromStr;
 
+use rax::str_parser::rules::{Char, Until};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::INmeaData;
-use crate::nmea_data::{NavigationSystem, SystemId};
-use crate::utils::{readonly_struct, *};
+use crate::macros::readonly_struct;
+use crate::nmea_data::{INmeaData, NavigationSystem, SystemId};
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
     Manual,
@@ -41,7 +43,6 @@ readonly_struct!(
     Gsa ,
     "Gsa",
     {navigation_system: NavigationSystem},
-    {is_valid: bool},
 
     {selection_mode: Option<GsaSelectionMode>},
     {mode : Option<GsaMode>},
@@ -52,20 +53,42 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
-        let parts: Vec<&str> = get_sentence_parts(sentence);
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
+        let char_comma = Char(&',');
+        let until_comma = Until(",");
+        let until_star = Until("*");
+
+        let selection_mode = ctx
+            .skip_strict(&until_comma)?
+            .take(&until_comma)
+            .parse_opt();
+        let mode = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let satellite_ids = ctx
+            .skip_strict(&char_comma)?
+            .take(&until_comma)
+            .map(|sats| {
+                sats.split(',')
+                    .filter_map(|id| id.trim().parse::<u8>().ok())
+                    .collect::<Vec<u8>>()
+            })
+            .unwrap_or_default();
+        let pdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let hdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let vdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let system_id = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+
         Ok(Gsa {
             navigation_system,
-            is_valid: is_valid(sentence),
-            selection_mode: parse_primitive(&parts, 1)?,
-            mode: parse_primitive(&parts, 2)?,
-            satellite_ids: (3..15)
-                .filter_map(|i| parse_primitive(&parts, i).unwrap())
-                .collect(),
-            pdop: parse_primitive(&parts, 15)?,
-            hdop: parse_primitive(&parts, 16)?,
-            vdop: parse_primitive(&parts, 17)?,
-            system_id: parse_primitive(&parts, 18)?,
+            selection_mode,
+            mode,
+            satellite_ids,
+            pdop,
+            hdop,
+            vdop,
+            system_id,
         })
     }
 }
@@ -80,12 +103,9 @@ mod test {
     fn test_new_gsa() -> miette::Result<()> {
         init_log();
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
-        for (i, v) in get_sentence_parts(s).iter().enumerate() {
-            println!("{i}:{v}");
-        }
-        let gsa = Gsa::parse_sentence(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let gsa = Gsa::new(&mut ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", gsa);
-        assert!(gsa.is_valid);
         Ok(())
     }
 }

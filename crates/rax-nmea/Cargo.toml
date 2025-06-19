@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "nmea"
+name = "rax-nmea"
 version.workspace = true
 
 [dependencies]
@@ -9,12 +9,14 @@ clerk = { workspace = true }
 lru = { workspace = true }
 miette = { workspace = true }
 num_enum = { workspace = true }
+rax = { workspace = true }
 serde = { workspace = true }
 strum = { workspace = true }
 
 [dev-dependencies]
 float-cmp = { workspace = true }
-test_utils = { workspace = true }
+test-utils = { workspace = true }
+serialport = { workspace = true }
 
 [features]
 log = ["clerk/log"]

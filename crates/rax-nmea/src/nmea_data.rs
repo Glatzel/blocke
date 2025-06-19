@@ -4,7 +4,6 @@ mod gll;
 mod gsa;
 mod vtg;
 mod zda;
-
 use std::fmt::Display;
 use std::str::FromStr;
 
@@ -12,10 +11,15 @@ pub use dhv::*;
 pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
+use rax::str_parser::StrParserContext;
 use serde::{Deserialize, Serialize};
 pub use vtg::*;
 pub use zda::*;
-
+pub trait INmeaData {
+    fn new(ctx: &mut StrParserContext, navigation_system: NavigationSystem) -> miette::Result<Self>
+    where
+        Self: Sized;
+}
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
 pub enum NmeaDataType {
     DHV,
@@ -55,31 +59,6 @@ impl FromStr for NmeaDataType {
     }
 }
 
-impl Display for NmeaDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            NmeaDataType::DHV => "DHV",
-            NmeaDataType::GGA => "GGA",
-            NmeaDataType::GLL => "GLL",
-            NmeaDataType::GSA => "GSA",
-            NmeaDataType::VTG => "VTG",
-            NmeaDataType::ZDA => "ZDA",
-            NmeaDataType::Other(s) => s,
-        };
-        write!(f, "{}", s)
-    }
-}
-#[derive(Clone)]
-pub enum GenericNmeaData {
-    DHV(crate::nmea_data::Dhv),
-    GGA(crate::nmea_data::Gga),
-    GLL(crate::nmea_data::Gll),
-    GSA(crate::nmea_data::Gsa),
-    VTG(crate::nmea_data::Vtg),
-    ZDA(crate::nmea_data::Zda),
-
-    Other(String),
-}
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
 pub enum NavigationSystem {
     ///BeiDou (China)
