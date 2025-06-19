@@ -53,7 +53,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() {
-        let filter = FilterCharSet::from_str("你");
+        let filter = FilterCharSet::from_string("你");
         let rule = CharSet(&filter);
         let input = "你好";
         let result = rule.apply(input);

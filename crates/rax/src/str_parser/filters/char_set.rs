@@ -16,7 +16,7 @@ impl<'a> IFilter<&char> for FilterCharSet<'a> {
 }
 
 impl<'a> FilterCharSet<'a> {
-    pub fn from_str(char_set: &str) -> Self {
+    pub fn from_string(char_set: &str) -> Self {
         Self {
             char_set: Cow::Owned(char_set.chars().collect()),
         }
