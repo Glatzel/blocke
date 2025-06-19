@@ -35,7 +35,7 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl Gll {
-    fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
+    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
         clerk::trace!("Gga::new: sentence='{}'", sentence);
 
         let char_comma = Char(&',');

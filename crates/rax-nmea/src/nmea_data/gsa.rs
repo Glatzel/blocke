@@ -4,7 +4,6 @@ use rax::str_parser::rules::{Char, Until};
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::NmeaUtc;
 use crate::macros::readonly_struct;
 use crate::nmea_data::{NavigationSystem, SystemId};
 
@@ -54,19 +53,27 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl Gsa {
-    fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
+    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
 
         let mut ctx = StrParserContext::new(sentence);
 
-        let selection_mode = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let selection_mode = ctx
+            .skip_strict(&until_comma)?
+            .take(&until_comma)
+            .parse_opt();
         let mode = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let satellite_ids = ctx
             .skip_strict(&char_comma)?
             .take(&until_comma)
-           ;
+            .map(|sats| {
+                sats.split(',')
+                    .filter_map(|id| id.trim().parse::<u8>().ok())
+                    .collect::<Vec<u8>>()
+            })
+            .unwrap_or_default();
         let pdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let hdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let vdop = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
@@ -95,10 +102,8 @@ mod test {
     fn test_new_gsa() -> miette::Result<()> {
         init_log();
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
-
         let gsa = Gsa::new(s, NavigationSystem::GN)?;
         println!("{:?}", gsa);
-        assert!(gsa.is_valid);
         Ok(())
     }
 }

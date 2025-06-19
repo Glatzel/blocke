@@ -1,48 +1,61 @@
-// use crate::INmeaData;
-// use crate::nmea_data::{FaaMode, NavigationSystem};
-// use crate::rules::{readonly_struct, *};
-// readonly_struct!(
-//     Vtg ,
-//     "Vtg",
-//     {navigation_system: NavigationSystem},
-//     {is_valid: bool},
+use rax::str_parser::rules::{Char, Until};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 
-//     {course_over_ground_true: Option<f64>},
-//     {course_over_ground_magnetic : Option<f64>},
-//     {speed_over_ground_knots: Option<f64>},
-//     {speed_over_ground_kph: Option<f64>},
-//     {mode: Option<FaaMode>}
-// );
-// impl INmeaData for Vtg {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
-//         let parts: Vec<&str> = get_sentence_parts(sentence);
-//         Ok(Vtg {
-//             navigation_system,
-//             is_valid: is_valid(sentence),
-//             course_over_ground_true: parse_primitive(&parts, 1)?,
-//             course_over_ground_magnetic: parse_primitive(&parts, 3)?,
-//             speed_over_ground_knots: parse_primitive(&parts, 5)?,
-//             speed_over_ground_kph: parse_primitive(&parts, 7)?,
-//             mode: parse_primitive(&parts, 9)?,
-//         })
-//     }
-// }
+use crate::macros::readonly_struct;
+use crate::nmea_data::{FaaMode, NavigationSystem};
 
-// #[cfg(test)]
-// mod test {
-//     use test_utils::init_log;
+readonly_struct!(
+    Vtg ,
+    "Vtg",
+    {navigation_system: NavigationSystem},
 
-//     use super::*;
-//     #[test]
-//     fn test_new_vtg() -> miette::Result<()> {
-//         init_log();
-//         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
-//         for (i, v) in get_sentence_parts(s).iter().enumerate() {
-//             println!("{i}:{v}");
-//         }
-//         let vtg = Vtg::parse_sentence(s, NavigationSystem::GN)?;
-//         println!("{:?}", vtg);
-//         assert!(vtg.is_valid);
-//         Ok(())
-//     }
-// }
+    {course_over_ground_true: Option<f64>},
+    {course_over_ground_magnetic : Option<f64>},
+    {speed_over_ground_knots: Option<f64>},
+    {speed_over_ground_kph: Option<f64>},
+    {mode: Option<FaaMode>}
+);
+impl Vtg {
+    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
+        let char_comma = Char(&',');
+        let until_comma = Until(",");
+        let until_star = Until("*");
+
+        let mut ctx = StrParserContext::new(sentence);
+
+        let course_over_ground_true = ctx
+            .skip_strict(&until_comma)?
+            .take(&until_comma)
+            .parse_opt();
+        let course_over_ground_magnetic =
+            ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let speed_over_ground_knots = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let speed_over_ground_kph = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+
+        Ok(Vtg {
+            navigation_system,
+            course_over_ground_true,
+            course_over_ground_magnetic,
+            speed_over_ground_knots,
+            speed_over_ground_kph,
+            mode,
+        })
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use test_utils::init_log;
+
+    use super::*;
+    #[test]
+    fn test_new_vtg() -> miette::Result<()> {
+        init_log();
+        let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
+        let vtg = Vtg::new(s, NavigationSystem::GN)?;
+        println!("{:?}", vtg);
+
+        Ok(())
+    }
+}
