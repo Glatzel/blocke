@@ -16,6 +16,7 @@ strum = { workspace = true }
 [dev-dependencies]
 float-cmp = { workspace = true }
 test-utils = { workspace = true }
+serialport = { workspace = true }
 
 [features]
 log = ["clerk/log"]
