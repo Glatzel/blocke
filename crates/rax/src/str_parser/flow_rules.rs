@@ -10,5 +10,5 @@ mod char;
 pub use self::char::*;
 pub trait IStrFlowRule<'a, O> {
     fn name(&self) -> &str;
-    fn apply(&self, ctx: &super::StrParserContext, input: &'a str) -> Option<(O, &'a str)>;
+    fn apply(&self, input: &'a str) -> Option<(O, &'a str)>;
 }

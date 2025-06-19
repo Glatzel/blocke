@@ -1,10 +1,14 @@
-use crate::{nmea_data::NavigationSystem, macros::readonly_struct};
+use rax::str_parser::StrParserContext;
+use rax::str_parser::flow_rules::{Char, Until};
+
+use crate::NmeaUtc;
+use crate::macros::readonly_struct;
+use crate::nmea_data::NavigationSystem;
 
 readonly_struct!(
     Zda ,
     "Zda",
     {navigation_system: NavigationSystem},
-    {is_valid: bool},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {day : Option<u8>},
@@ -13,18 +17,27 @@ readonly_struct!(
     {local_zone_description: Option<i8>},
     {local_zone_minutes_description: Option<u8>}
 );
-impl INmeaData for Zda {
-    fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
-miette::Result<Zda> {         let parts: Vec<&str> =
-get_sentence_parts(sentence);         Ok(Zda {
+
+impl Zda {
+    fn new(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Zda> {
+        let char_comma = Char(&',');
+        let until_comma = Until(&",");
+        let mut ctx = StrParserContext::new(sentence);
+        let utc_time = ctx.skip(&until_comma).take(&NmeaUtc());
+        let month = ctx.skip(&char_comma).take(&until_comma);
+        let year = ctx.skip(&char_comma).take(&until_comma);
+        let local_zone_description = ctx.skip(&char_comma).take(&until_comma);
+        let day = ctx.skip(&char_comma).take(&until_comma);
+        let local_zone_minutes_description = ctx.skip(&char_comma).take(&until_comma);
+
+        Ok(Zda {
             navigation_system,
-            is_valid: is_valid(sentence),
-            utc_time: parse_utc(&parts, 1)?,
-            day: parse_primitive(&parts, 2)?,
-            month: parse_primitive(&parts, 3)?,
-            year: parse_primitive(&parts, 4)?,
-            local_zone_description: parse_primitive(&parts, 5)?,
-            local_zone_minutes_description: parse_primitive(&parts, 6)?,
+            utc_time,
+            day,
+            month,
+            year,
+            local_zone_description,
+            local_zone_minutes_description,
         })
     }
 }
