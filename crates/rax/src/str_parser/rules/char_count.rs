@@ -16,23 +16,29 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
     /// the first `self.0` characters and the rest of the string.
     /// Otherwise, returns None.
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+        // Log the input and the requested character count at trace level.
         clerk::trace!("CharCount rule: input='{}', count={}", input, self.0);
 
+        // If count is zero, return empty prefix and full input.
         if self.0 == 0 {
             clerk::debug!("CharCount: count is zero, returning empty prefix and full input.");
             return Some(("", input));
         }
 
+        // Count the number of characters in the input.
         let indices = input.char_indices();
         let length = indices.count();
+
+        // If count matches input length, return the whole input as prefix.
         if self.0 == length {
             clerk::debug!("CharCount: count matches input length, returning whole input.");
             return Some((input, ""));
         }
 
-        // Iterate over char boundaries to find the split point
+        // Iterate over char boundaries to find the split point.
         for (count, (idx, _)) in input.char_indices().by_ref().enumerate() {
             if count == self.0 {
+                // Found the split point at the requested character count.
                 clerk::debug!(
                     "CharCount: found split at char {}, byte idx {}: prefix='{}', rest='{}'",
                     count,
@@ -43,6 +49,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
                 return Some((&input[..idx], &input[idx..]));
             }
         }
+        // Not enough characters in the input.
         clerk::warn!(
             "CharCount: not enough chars in input (needed {}, found {})",
             self.0,
