@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::NavigationSystem;
+use crate::nmea_data::{INmeaData, NavigationSystem};
 use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -54,16 +54,17 @@ readonly_struct!(
     {age_of_differential_gps_data: Option<f64>},
     {differential_reference_station_id: Option<u16>}
 );
-impl Gga {
-    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gga> {
-        clerk::trace!("Gga::new: sentence='{}'", sentence);
+impl INmeaData for Gga {
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
+        clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
         let char_m = Char(&'M');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         clerk::debug!("Parsing utc_time...");
         let utc_time = ctx
@@ -148,8 +149,8 @@ mod test {
     fn test_new_gga() -> miette::Result<()> {
         init_log();
         let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
-
-        let gga = Gga::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let gga = Gga::new(&mut ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", gga);
 
         Ok(())

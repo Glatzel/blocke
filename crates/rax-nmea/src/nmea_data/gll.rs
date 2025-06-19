@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, NavigationSystem};
+use crate::nmea_data::{FaaMode, INmeaData, NavigationSystem};
 use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -34,15 +34,16 @@ readonly_struct!(
     {data_valid: Option<GllDataValid>},
     {faa_mode: Option<FaaMode>}
 );
-impl Gll {
-    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
-        clerk::trace!("Gga::new: sentence='{}'", sentence);
+impl INmeaData for Gll {
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
+        clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         clerk::debug!("Parsing lat...");
         let lat = ctx
@@ -83,7 +84,8 @@ mod test {
     fn test_new_ggl() -> miette::Result<()> {
         init_log();
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
-        let gll = Gll::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let gll = Gll::new(ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", gll);
         Ok(())
     }

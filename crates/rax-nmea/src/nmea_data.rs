@@ -11,10 +11,15 @@ pub use dhv::*;
 pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
+use rax::str_parser::StrParserContext;
 use serde::{Deserialize, Serialize};
 pub use vtg::*;
 pub use zda::*;
-
+pub trait INmeaData {
+    fn new(ctx: &mut StrParserContext, navigation_system: NavigationSystem) -> miette::Result<Self>
+    where
+        Self: Sized;
+}
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
 pub enum NmeaDataType {
     DHV,

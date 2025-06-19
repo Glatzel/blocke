@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{NavigationSystem, SystemId};
+use crate::nmea_data::{INmeaData, NavigationSystem, SystemId};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -52,13 +52,14 @@ readonly_struct!(
     {vdop: Option<f64>},
     {system_id:Option<SystemId>}
 );
-impl Gsa {
-    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
+impl INmeaData for Gsa {
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         let selection_mode = ctx
             .skip_strict(&until_comma)?
@@ -102,7 +103,8 @@ mod test {
     fn test_new_gsa() -> miette::Result<()> {
         init_log();
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
-        let gsa = Gsa::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let gsa = Gsa::new(&mut ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", gsa);
         Ok(())
     }

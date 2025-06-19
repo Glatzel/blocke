@@ -2,7 +2,7 @@ use rax::str_parser::rules::{Char, Until};
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, NavigationSystem};
+use crate::nmea_data::{FaaMode, INmeaData, NavigationSystem};
 
 readonly_struct!(
     Vtg ,
@@ -15,13 +15,14 @@ readonly_struct!(
     {speed_over_ground_kph: Option<f64>},
     {mode: Option<FaaMode>}
 );
-impl Vtg {
-    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Vtg> {
+impl INmeaData for Vtg {
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         let course_over_ground_true = ctx
             .skip_strict(&until_comma)?
@@ -53,7 +54,8 @@ mod test {
     fn test_new_vtg() -> miette::Result<()> {
         init_log();
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
-        let vtg = Vtg::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let vtg = Vtg::new(&mut ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", vtg);
 
         Ok(())

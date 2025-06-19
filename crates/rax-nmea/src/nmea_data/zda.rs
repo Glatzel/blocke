@@ -20,14 +20,12 @@ readonly_struct!(
 
 impl Zda {
     pub fn new(
-        sentence: &'static str,
+        ctx: &mut StrParserContext,
         navigation_system: NavigationSystem,
     ) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         let utc_time = ctx
             .skip_strict(&until_comma)?
@@ -61,7 +59,8 @@ mod test {
     fn test_new_zda() -> miette::Result<()> {
         init_log();
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
-        let zda = Zda::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let zda = Zda::new(&mut ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", zda);
         Ok(())
     }

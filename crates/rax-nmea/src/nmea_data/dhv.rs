@@ -3,7 +3,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
 use crate::macros::readonly_struct;
-use crate::nmea_data::NavigationSystem;
+use crate::nmea_data::{INmeaData, NavigationSystem};
 
 readonly_struct!(
     Dhv ,
@@ -17,13 +17,14 @@ readonly_struct!(
     {speed_z: Option<f64>},
     {gdspd: Option<f64>}
 );
-impl Dhv {
-    pub fn new(sentence: &'static str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
+impl INmeaData for Dhv {
+    fn new(
+        ctx: &mut StrParserContext,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-
-        let mut ctx = StrParserContext::new(sentence);
 
         let utc_time = ctx
             .skip_strict(&until_comma)?
@@ -56,8 +57,8 @@ mod test {
     fn test_new_dhv() -> miette::Result<()> {
         init_log();
         let s = "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65";
-
-        let dhv = Dhv::new(s, NavigationSystem::GN)?;
+        let mut ctx = StrParserContext::new();
+        let dhv = Dhv::new(ctx.init(s), NavigationSystem::GN)?;
         println!("{:?}", dhv);
         Ok(())
     }

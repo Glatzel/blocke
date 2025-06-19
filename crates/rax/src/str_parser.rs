@@ -1,33 +1,28 @@
 pub mod filters;
 pub mod rules;
-use std::sync::{LazyLock, Mutex, MutexGuard};
+
 mod parse_opt;
 pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
-pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> = LazyLock::new(|| {
-    Mutex::new(StrParserContext {
-        full: String::new(),
-        rest: "",
-    })
-});
 pub struct StrParserContext<'a> {
-    full: String,
+    full: &'a str,
     rest: &'a str,
 }
 
 impl<'a> StrParserContext<'a> {
-    pub fn new(sentence: String) -> MutexGuard<'static, StrParserContext<'a>> {
-        let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
-        ctx.init(sentence);
-        ctx
+    pub fn new() -> Self { Self { full: "", rest: "" } }
+    pub fn init(&mut self, input: &'a str) -> &mut Self {
+        self.full = input;
+        self.rest = input;
+        self
     }
-    fn init(&'a mut self, sentence: String) {
-        self.full = sentence;
-        self.rest = &self.full;
+    pub fn clean(&mut self) -> &mut Self {
+        self.full = "";
+        self.rest = "";
+        self
     }
-
-    pub fn full_str(&self) -> &str { self.full.as_str() }
+    pub fn full_str(&self) -> &str { self.full }
     pub fn rest_str(&self) -> &str { self.rest }
 }
 
