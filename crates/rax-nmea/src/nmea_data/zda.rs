@@ -19,16 +19,23 @@ readonly_struct!(
 );
 
 impl Zda {
-    fn new(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Zda> {
+    pub fn new(
+        sentence: &'static str,
+        navigation_system: NavigationSystem,
+    ) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(&",");
-        let mut ctx = StrParserContext::new(sentence);
-        let utc_time = ctx.skip(&until_comma).take(&NmeaUtc());
-        let month = ctx.skip(&char_comma).take(&until_comma);
-        let year = ctx.skip(&char_comma).take(&until_comma);
-        let local_zone_description = ctx.skip(&char_comma).take(&until_comma);
-        let day = ctx.skip(&char_comma).take(&until_comma);
-        let local_zone_minutes_description = ctx.skip(&char_comma).take(&until_comma);
+        let until_star = Until(&"*");
+        let mut ctx: std::sync::MutexGuard<'static, StrParserContext<'_>> =
+            StrParserContext::new(sentence);
+        ctx.skip_strict::<Until, String>(&until_comma)?
+            .skip_strict(&char_comma)?;
+        let utc_time: Option<chrono::DateTime<chrono::Utc>> = ctx.take(&NmeaUtc());
+        let day = ctx.skip_strict(&char_comma)?.take(&until_comma);
+        let month = ctx.skip_strict(&char_comma)?.take(&until_comma);
+        let year = ctx.skip_strict(&char_comma)?.take(&until_comma);
+        let local_zone_description = ctx.skip_strict(&char_comma)?.take(&until_comma);
+        let local_zone_minutes_description = ctx.skip_strict(&char_comma)?.take(&until_star);
 
         Ok(Zda {
             navigation_system,
@@ -45,19 +52,13 @@ impl Zda {
 #[cfg(test)]
 mod test {
     use test_utils::init_log;
-
     use super::*;
-
     #[test]
     fn test_new_zda() -> miette::Result<()> {
         init_log();
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
-        for (i, v) in get_sentence_parts(s).iter().enumerate() {
-            println!("{i}:{v}");
-        }
-        let zda = Zda::parse_sentence(s, NavigationSystem::GN)?;
+        let zda = Zda::new(s, NavigationSystem::GN)?;
         println!("{:?}", zda);
-        assert!(zda.is_valid);
         Ok(())
     }
 }

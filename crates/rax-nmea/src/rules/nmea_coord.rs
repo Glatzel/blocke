@@ -1,4 +1,4 @@
-use rax::str_parser::{IStrFlowRule, StrParserContext};
+use rax::str_parser::IStrFlowRule;
 
 pub struct NmeaCoord();
 impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
@@ -55,7 +55,7 @@ mod tests {
     fn test_nmea_coord_west() {
         let rule = NmeaCoord();
         let input = "12319.123,W,foo";
-        
+
         let result = rule.apply(input);
         let expected = -(123.0 + 19.123 / 60.0);
         assert!(result.is_some());
@@ -68,7 +68,7 @@ mod tests {
     fn test_nmea_coord_north() {
         let rule = NmeaCoord();
         let input = "4807.038,N,bar";
-        
+
         let result = rule.apply(input);
         let expected = 48.0 + 7.038 / 60.0;
         assert!(result.is_some());
@@ -81,7 +81,7 @@ mod tests {
     fn test_nmea_coord_south() {
         let rule = NmeaCoord();
         let input = "4807.038,S,xyz";
-        
+
         let result = rule.apply(input);
         let expected = -(48.0 + 7.038 / 60.0);
         assert!(result.is_some());
@@ -94,7 +94,7 @@ mod tests {
     fn test_nmea_coord_invalid_sign() {
         let rule = NmeaCoord();
         let input = "12319.123,X,rest";
-        
+
         let result = rule.apply(input);
         assert!(result.is_none());
     }
@@ -103,7 +103,7 @@ mod tests {
     fn test_nmea_coord_invalid_number() {
         let rule = NmeaCoord();
         let input = "notanumber,E,rest";
-        
+
         let result = rule.apply(input);
         assert!(result.is_none());
     }
@@ -112,7 +112,7 @@ mod tests {
     fn test_nmea_coord_missing_comma() {
         let rule = NmeaCoord();
         let input = "12319.123Erest";
-        
+
         let result = rule.apply(input);
         assert!(result.is_none());
     }

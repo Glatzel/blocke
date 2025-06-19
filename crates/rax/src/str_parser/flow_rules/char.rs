@@ -8,7 +8,7 @@ impl<'a> IStrFlowRule<'a, char> for Char<'a> {
         match chars.next() {
             Some((i, c)) => {
                 if self.0 == &c {
-                    Some((c, &input[i..]))
+                    Some((c, &input[i + 1..]))
                 } else {
                     None
                 }
@@ -27,7 +27,7 @@ mod tests {
         let rule = Char(&'a');
         let input = "a123";
         let result = rule.apply(input);
-        assert_eq!(result, Some(('a', "a123")));
+        assert_eq!(result, Some(('a', "123")));
     }
 
     #[test]

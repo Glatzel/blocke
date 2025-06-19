@@ -5,15 +5,15 @@ use std::sync::{LazyLock, Mutex, MutexGuard};
 
 pub use flow_rules::IStrFlowRule;
 pub use global_rules::IStrGlobalRules;
-static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
+pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
     LazyLock::new(|| Mutex::new(StrParserContext { full: "", rest: "" }));
 pub struct StrParserContext<'a> {
     full: &'a str,
     rest: &'a str,
 }
 
-impl<'a> StrParserContext<'a> {
-    pub fn new(sentence: &'a str) -> MutexGuard<'static, StrParserContext> {
+impl StrParserContext<'static> {
+    pub fn new<'a>(sentence: &'static str) -> MutexGuard<'static, StrParserContext<'static>> {
         let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
         ctx.full = sentence;
         ctx.rest = sentence;
@@ -28,8 +28,8 @@ impl<'a> StrParserContext<'a> {
         self.rest = "";
         self
     }
-    fn full_str(&self) -> &'a str { self.full }
-    fn rest_str(&self) -> &'a str { self.rest }
+    pub fn full_str(&self) -> &'static str { self.full }
+    pub fn rest_str(&self) -> &'static str { self.rest }
 }
 
 impl<'a> StrParserContext<'a> {
@@ -51,7 +51,7 @@ impl<'a> StrParserContext<'a> {
     {
         match self.take(rule) {
             Some(s) => Ok(s),
-            None => miette::bail!("input string is shorter than requested count"),
+            None => miette::bail!("take fail"),
         }
     }
 }
@@ -59,7 +59,7 @@ impl<'a> StrParserContext<'a> {
 impl<'a> StrParserContext<'a> {
     pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
     where
-        R: flow_rules::IStrFlowRule<'a, O>,
+        R: flow_rules::IStrFlowRule<'a, String>,
     {
         self.take(rule);
         self
