@@ -2,8 +2,8 @@ use super::IStrFlowRule;
 use crate::str_parser::rules::IRule;
 
 /// Rule to extract a fixed number of bytes from the input string.
-/// Returns a tuple of (prefix, rest) if enough bytes are present and the split is on a valid UTF-8 boundary,
-/// otherwise returns None.
+/// Returns a tuple of (prefix, rest) if enough bytes are present and the split
+/// is on a valid UTF-8 boundary, otherwise returns None.
 pub struct ByteCount(usize);
 
 impl IRule for ByteCount {
@@ -12,16 +12,27 @@ impl IRule for ByteCount {
 
 impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
     /// Applies the ByteCount rule to the input string.
-    /// If the input contains at least `self.0` bytes and the split is on a valid UTF-8 boundary,
-    /// returns the first `self.0` bytes and the rest of the string.
-    /// Otherwise, returns None.
+    /// If the input contains at least `self.0` bytes and the split is on a
+    /// valid UTF-8 boundary, returns the first `self.0` bytes and the rest
+    /// of the string. Otherwise, returns None.
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+        // Log the input and the requested byte count at trace level.
+        clerk::trace!("ByteCount rule: input='{}', byte_count={}", input, self.0);
+
         match input.get(..self.0) {
             Some(out) => {
                 let rest = &input[self.0..];
+                clerk::debug!("ByteCount: matched prefix='{}', rest='{}'", out, rest);
                 Some((out, rest))
             }
-            None => None,
+            None => {
+                clerk::debug!(
+                    "ByteCount: not enough bytes or invalid UTF-8 boundary for count {} in '{}'",
+                    self.0,
+                    input
+                );
+                None
+            }
         }
     }
 }

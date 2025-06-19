@@ -3,9 +3,7 @@ use rax::str_parser::IRule;
 
 pub struct NmeaUtc();
 impl IRule for NmeaUtc {
-    fn name(&self) -> &str {
-        todo!()
-    }
+    fn name(&self) -> &str { todo!() }
 }
 impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
     fn apply(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {

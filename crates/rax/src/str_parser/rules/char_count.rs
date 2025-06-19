@@ -49,6 +49,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
                 return Some((&input[..idx], &input[idx..]));
             }
         }
+
         // Not enough characters in the input.
         clerk::warn!(
             "CharCount: not enough chars in input (needed {}, found {})",

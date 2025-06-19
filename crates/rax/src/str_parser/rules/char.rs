@@ -18,6 +18,7 @@ impl<'a> IStrFlowRule<'a, char> for Char<'a> {
         // Log the input and the expected character at trace level.
         clerk::trace!("Char rule: input='{}', expected='{}'", input, self.0);
         let mut chars = input.char_indices();
+        
         // Get the first character and its byte offset.
         let (_, out) = chars.next()?; // first char's byte offset (0)
         if &out == self.0 {

@@ -1,11 +1,24 @@
 use rax::str_parser::{IRule, IStrFlowRule};
 
+/// Rule to parse an NMEA coordinate in the format "DDDMM.MMM,<sign>,...".
+/// Converts the coordinate to decimal degrees, applying the correct sign.
+/// Returns a tuple of (decimal_degrees, rest_of_input) if successful, otherwise
+/// None.
 pub struct NmeaCoord();
+
 impl IRule for NmeaCoord {
-    fn name(&self) -> &str { todo!() }
+    fn name(&self) -> &str { "NmeaCoord" }
 }
+
 impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
+    /// Applies the NmeaCoord rule to the input string.
+    /// Parses the coordinate and sign, converts to decimal degrees, and returns
+    /// the result and the rest of the string. Logs each step for debugging.
     fn apply(&self, input: &'a str) -> Option<(f64, &'a str)> {
+        // Log the input at trace level.
+        clerk::trace!("NmeaCoord rule: input='{}'", input);
+
+        // Find the index of the second comma, which separates the sign and the rest.
         if let Some(second_comma_idx) = input
             .char_indices()
             .filter(|&(_, c)| c == ',')
@@ -13,21 +26,49 @@ impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
             .map(|(idx, _)| idx)
         {
             let res = &input[..second_comma_idx];
+            // Split into number and sign.
             let (num, sign) = res.split_once(",").unwrap();
+            clerk::debug!("NmeaCoord: parsed num='{}', sign='{}'", num, sign);
             match (num.parse::<f64>(), sign) {
                 (Ok(v), "E" | "N") => {
+                    // Convert to decimal degrees.
                     let deg = (v / 100.0).floor();
                     let min = v - deg * 100.0;
-                    Some((deg + min / 60.0, &input[second_comma_idx..]))
+                    let result = deg + min / 60.0;
+                    clerk::debug!(
+                        "NmeaCoord: positive sign, deg={}, min={}, result={}",
+                        deg,
+                        min,
+                        result
+                    );
+                    Some((result, &input[second_comma_idx..]))
                 }
                 (Ok(v), "W" | "S") => {
+                    // Convert to negative decimal degrees.
                     let deg = (v / 100.0).floor();
                     let min = v - deg * 100.0;
-                    Some((-(deg + min / 60.0), &input[second_comma_idx..]))
+                    let result = -(deg + min / 60.0);
+                    clerk::debug!(
+                        "NmeaCoord: negative sign, deg={}, min={}, result={}",
+                        deg,
+                        min,
+                        result
+                    );
+                    Some((result, &input[second_comma_idx..]))
                 }
-                _ => None,
+                _ => {
+                    // Log parse failure or invalid sign.
+                    clerk::warn!(
+                        "NmeaCoord: failed to parse number or invalid sign: num='{}', sign='{}'",
+                        num,
+                        sign
+                    );
+                    None
+                }
             }
         } else {
+            // Log if the input does not contain two commas.
+            clerk::warn!("NmeaCoord: input does not contain two commas: '{}'", input);
             None
         }
     }
@@ -35,10 +76,13 @@ impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
 
 #[cfg(test)]
 mod tests {
+    use test_utils::init_log;
+
     use super::*;
 
     #[test]
     fn test_nmea_coord_east() {
+        init_log();
         let rule = NmeaCoord();
         // 12319.123,E,rest
         let input = "12319.123,E,rest";
@@ -54,6 +98,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_west() {
+        init_log();
         let rule = NmeaCoord();
         let input = "12319.123,W,foo";
 
@@ -67,6 +112,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_north() {
+        init_log();
         let rule = NmeaCoord();
         let input = "4807.038,N,bar";
 
@@ -80,6 +126,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_south() {
+        init_log();
         let rule = NmeaCoord();
         let input = "4807.038,S,xyz";
 
@@ -93,6 +140,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_invalid_sign() {
+        init_log();
         let rule = NmeaCoord();
         let input = "12319.123,X,rest";
 
@@ -102,6 +150,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_invalid_number() {
+        init_log();
         let rule = NmeaCoord();
         let input = "notanumber,E,rest";
 
@@ -111,6 +160,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_missing_comma() {
+        init_log();
         let rule = NmeaCoord();
         let input = "12319.123Erest";
 
