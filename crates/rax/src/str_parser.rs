@@ -20,8 +20,12 @@ impl<'a> StrParserContext<'a> {
     pub fn new(sentence: String) -> MutexGuard<'static, StrParserContext<'a>> {
         let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
         ctx.full = sentence;
-        ctx.rest = ctx.full.as_str();
+        ctx.init();
         ctx
+    }
+    fn init(&'a mut self) -> &Self {
+        self.rest = &self.full;
+        self
     }
     pub fn reset(&'a mut self) -> &Self {
         self.rest = &self.full;
