@@ -15,9 +15,9 @@
 //     {gdspd: Option<f64>}
 // );
 // impl INmeaData for Dhv {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Dhv> {
-//         let parts: Vec<&str> = get_sentence_parts(sentence);
-//         Ok(Dhv {
+//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
+// miette::Result<Dhv> {         let parts: Vec<&str> =
+// get_sentence_parts(sentence);         Ok(Dhv {
 //             navigation_system,
 //             is_valid: is_valid(sentence),
 //             utc_time: parse_utc(&parts, 1)?,

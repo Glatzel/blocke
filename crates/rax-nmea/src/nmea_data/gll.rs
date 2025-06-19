@@ -2,7 +2,6 @@
 
 // use serde::{Deserialize, Serialize};
 
-
 // use crate::nmea_data::{FaaMode, NavigationSystem};
 // use crate::rules::{readonly_struct, *};
 // #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -33,9 +32,9 @@
 //     {faa_mode: Option<FaaMode>}
 // );
 // impl INmeaData for Gll {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gll> {
-//         let parts: Vec<&str> = get_sentence_parts(sentence);
-//         Ok(Gll {
+//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
+// miette::Result<Gll> {         let parts: Vec<&str> =
+// get_sentence_parts(sentence);         Ok(Gll {
 //             navigation_system,
 //             is_valid: is_valid(sentence),
 //             lat: parse_latitude(&parts, 1, 2)?,

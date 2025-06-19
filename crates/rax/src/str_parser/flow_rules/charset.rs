@@ -1,5 +1,4 @@
 use super::IStrFlowRule;
-use crate::str_parser::StrParserContext;
 use crate::str_parser::filters::IFilter;
 
 pub struct CharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);

@@ -1,5 +1,5 @@
 pub mod nmea_data;
 
-mod rules;
 mod macros;
+mod rules;
 pub use rules::*;

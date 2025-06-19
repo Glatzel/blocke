@@ -52,9 +52,9 @@
 //     {system_id:Option<SystemId>}
 // );
 // impl INmeaData for Gsa {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gsa> {
-//         let parts: Vec<&str> = get_sentence_parts(sentence);
-//         Ok(Gsa {
+//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
+// miette::Result<Gsa> {         let parts: Vec<&str> =
+// get_sentence_parts(sentence);         Ok(Gsa {
 //             navigation_system,
 //             is_valid: is_valid(sentence),
 //             selection_mode: parse_primitive(&parts, 1)?,

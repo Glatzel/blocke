@@ -12,9 +12,8 @@ fn main() -> miette::Result<()> {
     let mut reader = rax::io::RaxReader::new(BufReader::new(port));
     loop {
         let message = reader.read_line()?;
-        match message {
-            Some(m) => println!("{}", m),
-            None => (),
+        if let Some(m) = message {
+            println!("{}", m)
         }
     }
 }

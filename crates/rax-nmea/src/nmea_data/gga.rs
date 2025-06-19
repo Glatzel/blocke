@@ -54,9 +54,9 @@
 //     {differential_reference_station_id: Option<u16>}
 // );
 // impl INmeaData for Gga {
-//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) -> miette::Result<Gga> {
-//         let parts: Vec<&str> = get_sentence_parts(sentence);
-//         Ok(Gga {
+//     fn parse_sentence(sentence: &str, navigation_system: NavigationSystem) ->
+// miette::Result<Gga> {         let parts: Vec<&str> =
+// get_sentence_parts(sentence);         Ok(Gga {
 //             navigation_system,
 //             is_valid: is_valid(sentence),
 //             utc_time: parse_utc(&parts, 1)?,
@@ -82,7 +82,8 @@
 //     #[test]
 //     fn test_new_gga() -> miette::Result<()> {
 //         init_log();
-//         let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+//         let s =
+// "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
 //         for (i, v) in get_sentence_parts(s).iter().enumerate() {
 //             println!("{i}:{v}");
 //         }

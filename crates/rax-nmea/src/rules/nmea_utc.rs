@@ -34,7 +34,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
                                     .and_time(time);
                             Some((dt.and_utc(), &input[first_comma_idx..]))
                         }
-                        _ => return None,
+                        _ => None,
                     }
                 }
                 None => None,

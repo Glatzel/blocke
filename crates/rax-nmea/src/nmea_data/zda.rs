@@ -24,8 +24,8 @@ impl Zda {
         navigation_system: NavigationSystem,
     ) -> miette::Result<Self> {
         let char_comma = Char(&',');
-        let until_comma = Until(&",");
-        let until_star = Until(&"*");
+        let until_comma = Until(",");
+        let until_star = Until("*");
         let mut ctx: std::sync::MutexGuard<'static, StrParserContext<'_>> =
             StrParserContext::new(sentence);
         ctx.skip_strict::<Until, String>(&until_comma)?
@@ -52,6 +52,7 @@ impl Zda {
 #[cfg(test)]
 mod test {
     use test_utils::init_log;
+
     use super::*;
     #[test]
     fn test_new_zda() -> miette::Result<()> {
