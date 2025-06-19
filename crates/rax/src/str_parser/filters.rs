@@ -1,4 +1,7 @@
-pub trait IFilter<'a, O> {
+mod char;
+pub use self::char::*;
+
+pub trait IFilter< I> {
     fn name(&self) -> &str;
-    fn filter<I>(&self, input: I) -> bool;
+    fn filter(&self, input: I) -> bool;
 }

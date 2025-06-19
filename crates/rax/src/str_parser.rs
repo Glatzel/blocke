@@ -1,6 +1,5 @@
-pub mod filters;
 pub mod rules;
-
+pub mod filters;
 // pub trait IStrParser {
 //     /// Parse a line or frame of data into a structured message.
 //     fn parse(&self, input: &str) -> Self;
