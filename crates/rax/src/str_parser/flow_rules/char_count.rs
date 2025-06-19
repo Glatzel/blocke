@@ -14,12 +14,10 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
             return Some((input, ""));
         }
 
-        let mut count = 0;
-        for (idx, _) in input.char_indices() {
+        for (count, (idx, _)) in input.char_indices().enumerate() {
             if count == self.0 {
                 return Some((&input[..idx], &input[idx..]));
             }
-            count += 1;
         }
         None
     }
