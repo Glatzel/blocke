@@ -79,6 +79,7 @@ impl<'a> StrParserContext<'a> {
         rule.apply(self.full)
     }
 }
+
 pub trait ParseOptExt<T> {
     fn parse_opt<U: std::str::FromStr>(self) -> Option<U>;
 }
