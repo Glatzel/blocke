@@ -22,14 +22,9 @@ impl<'a> StrParserContext<'a> {
         ctx.init(sentence);
         ctx
     }
-    fn init(&'a mut self, sentence: String) -> &Self {
+    fn init(&'a mut self, sentence: String) {
         self.full = sentence;
         self.rest = &self.full;
-        self
-    }
-    pub fn reset(&'a mut self) -> &Self {
-        self.rest = &self.full;
-        self
     }
 
     pub fn full_str(&self) -> &str { self.full.as_str() }
