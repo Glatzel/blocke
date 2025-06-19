@@ -1,3 +1,3 @@
 if ($IsLinux) {
-    apt-get install libudev-dev
+    sudo apt-get install libudev-dev
 }
