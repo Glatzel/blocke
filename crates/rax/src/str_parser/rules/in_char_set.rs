@@ -2,22 +2,18 @@ use super::IStrFlowRule;
 use crate::str_parser::IRule;
 use crate::str_parser::filters::IFilter;
 
-pub struct CharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
-impl<'a> IRule for CharSet<'a> {
+pub struct InCharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
+impl<'a> IRule for InCharSet<'a> {
     fn name(&self) -> &str { todo!() }
 }
-impl<'a> IStrFlowRule<'a, char> for CharSet<'a> {
+impl<'a> IStrFlowRule<'a, char> for InCharSet<'a> {
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
-        let mut chars = input.char_indices();
-        match chars.next() {
-            Some((i, c)) => {
-                if self.0.filter(&c) {
-                    Some((c, &input[i..]))
-                } else {
-                    None
-                }
-            }
-            None => None,
+        let (_, c) = input.char_indices().next()?; // safely unwrap with ?
+        if self.0.filter(&c) {
+            let next_i = input.char_indices().nth(1).map_or(input.len(), |(j, _)| j);
+            Some((c, &input[next_i..]))
+        } else {
+            None
         }
     }
 }
@@ -30,16 +26,16 @@ mod tests {
     #[test]
     fn test_char_match() {
         let filter = FilterCharSet::ascii();
-        let rule = CharSet(&filter);
+        let rule = InCharSet(&filter);
         let input = "a123";
         let result = rule.apply(input);
-        assert_eq!(result, Some(('a', "a123")));
+        assert_eq!(result, Some(('a', "123")));
     }
 
     #[test]
     fn test_char_no_match() {
         let filter = FilterCharSet::digits();
-        let rule = CharSet(&filter);
+        let rule = InCharSet(&filter);
         let input = "abc";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -48,7 +44,7 @@ mod tests {
     #[test]
     fn test_char_empty_input() {
         let filter = FilterCharSet::ascii();
-        let rule = CharSet(&filter);
+        let rule = InCharSet(&filter);
         let input = "";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -57,9 +53,9 @@ mod tests {
     #[test]
     fn test_char_unicode() {
         let filter = FilterCharSet::from_string("你");
-        let rule = CharSet(&filter);
+        let rule = InCharSet(&filter);
         let input = "你好";
         let result = rule.apply(input);
-        assert_eq!(result, Some(('你', "你好")));
+        assert_eq!(result, Some(('你', "好")));
     }
 }

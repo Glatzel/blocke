@@ -17,7 +17,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
             return Some((input, ""));
         }
 
-        for (count, (idx, _)) in input.char_indices().enumerate() {
+        for (count, (idx, _)) in input.char_indices().by_ref().enumerate() {
             if count == self.0 {
                 return Some((&input[..idx], &input[idx..]));
             }
