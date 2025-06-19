@@ -5,31 +5,31 @@ mod parse_opt;
 pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
-pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
-    LazyLock::new(|| Mutex::new(StrParserContext { full: "", rest: "" }));
+pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> = LazyLock::new(|| {
+    Mutex::new(StrParserContext {
+        full: String::new(),
+        rest: "",
+    })
+});
 pub struct StrParserContext<'a> {
-    full: &'a str,
+    full: String,
     rest: &'a str,
 }
 
-impl StrParserContext<'static> {
-    pub fn new(sentence: &'static str) -> MutexGuard<'static, StrParserContext<'static>> {
+impl<'a> StrParserContext<'a> {
+    pub fn new(sentence: String) -> MutexGuard<'static, StrParserContext<'a>> {
         let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
         ctx.full = sentence;
-        ctx.rest = sentence;
+        ctx.rest = ctx.full.as_str();
         ctx
     }
-    pub fn reset(&mut self) -> &Self {
-        self.rest = self.full;
+    pub fn reset(&'a mut self) -> &Self {
+        self.rest = &self.full;
         self
     }
-    pub fn clean(&mut self) -> &Self {
-        self.full = "";
-        self.rest = "";
-        self
-    }
-    pub fn full_str(&self) -> &'static str { self.full }
-    pub fn rest_str(&self) -> &'static str { self.rest }
+
+    pub fn full_str(&self) -> &str { self.full.as_str() }
+    pub fn rest_str(&self) -> &str { self.rest }
 }
 
 impl<'a> StrParserContext<'a> {
@@ -73,10 +73,10 @@ impl<'a> StrParserContext<'a> {
     }
 }
 impl<'a> StrParserContext<'a> {
-    pub fn global<R, O>(&mut self, rule: R) -> O
+    pub fn global<R, O>(&'a mut self, rule: R) -> O
     where
         R: IStrGlobalRule<'a, O>,
     {
-        rule.apply(self.full)
+        rule.apply(&self.full)
     }
 }
