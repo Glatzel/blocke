@@ -1,30 +1,57 @@
 use super::IStrFlowRule;
 use crate::str_parser::rules::IRule;
 
+/// Rule to extract a fixed number of characters from the input string.
+/// Returns a tuple of (prefix, rest) if enough characters are present,
+/// otherwise returns None.
 pub struct CharCount(usize);
+
 impl IRule for CharCount {
     fn name(&self) -> &str { "CharCount" }
 }
+
 impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
+    /// Applies the CharCount rule to the input string.
+    /// If the input contains at least `self.0` characters, returns
+    /// the first `self.0` characters and the rest of the string.
+    /// Otherwise, returns None.
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+        clerk::trace!("CharCount rule: input='{}', count={}", input, self.0);
+
         if self.0 == 0 {
+            clerk::debug!("CharCount: count is zero, returning empty prefix and full input.");
             return Some(("", input));
         }
 
         let indices = input.char_indices();
         let length = indices.count();
         if self.0 == length {
+            clerk::debug!("CharCount: count matches input length, returning whole input.");
             return Some((input, ""));
         }
 
+        // Iterate over char boundaries to find the split point
         for (count, (idx, _)) in input.char_indices().by_ref().enumerate() {
             if count == self.0 {
+                clerk::debug!(
+                    "CharCount: found split at char {}, byte idx {}: prefix='{}', rest='{}'",
+                    count,
+                    idx,
+                    &input[..idx],
+                    &input[idx..]
+                );
                 return Some((&input[..idx], &input[idx..]));
             }
         }
+        clerk::warn!(
+            "CharCount: not enough chars in input (needed {}, found {})",
+            self.0,
+            length
+        );
         None
     }
 }
+
 #[cfg(test)]
 mod tests {
     use test_utils::init_log;
@@ -81,9 +108,7 @@ mod tests {
         init_log();
         let rule = CharCount(2);
         let input = "你好世界";
-        // Each Chinese character is 3 bytes, but .get(..n) is by byte index, not char
-        // index. So Count(2) will get the first 2 bytes, which is not a valid
-        // UTF-8 boundary. This should return None.
+        // Should return first 2 chars ("你", "好") and the rest ("世界")
         let result = rule.apply(input);
         assert_eq!(result, Some(("你好", "世界")));
     }

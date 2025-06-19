@@ -7,12 +7,19 @@ impl<'a> IRule for Char<'a> {
 }
 impl<'a> IStrFlowRule<'a, char> for Char<'a> {
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
+        clerk::trace!("Char rule: input='{}', expected='{}'", input, self.0);
         let mut chars = input.char_indices();
         let (_, out) = chars.next()?; // first char's byte offset (0)
         if &out == self.0 {
             let (end, _) = chars.next().unwrap_or((input.len(), '\0')); // second char or end of string
+            clerk::debug!("Char rule matched: '{}', rest='{}'", out, &input[end..]);
             Some((out, &input[end..]))
         } else {
+            clerk::debug!(
+                "Char rule did not match: found '{}', expected '{}'",
+                out,
+                self.0
+            );
             None
         }
     }
