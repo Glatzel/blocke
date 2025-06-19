@@ -1,6 +1,5 @@
-use crate::str_parser::StrParserContext;
-
 use super::IStrFlowRule;
+use crate::str_parser::StrParserContext;
 
 pub struct CharCount(usize);
 impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
@@ -34,7 +33,8 @@ mod tests {
     fn test_count_exact_length() {
         let rule = CharCount(4);
         let input = "test";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(("test", "")));
     }
 
@@ -42,7 +42,8 @@ mod tests {
     fn test_count_less_than_length() {
         let rule = CharCount(2);
         let input = "hello";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(("he", "llo")));
     }
 
@@ -50,7 +51,8 @@ mod tests {
     fn test_count_more_than_length() {
         let rule = CharCount(10);
         let input = "short";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, None);
     }
 
@@ -58,7 +60,8 @@ mod tests {
     fn test_count_zero() {
         let rule = CharCount(0);
         let input = "abc";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(("", "abc")));
     }
 
@@ -66,7 +69,8 @@ mod tests {
     fn test_count_empty_input() {
         let rule = CharCount(0);
         let input = "";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(("", "")));
     }
 
@@ -77,7 +81,8 @@ mod tests {
         // Each Chinese character is 3 bytes, but .get(..n) is by byte index, not char
         // index. So Count(2) will get the first 2 bytes, which is not a valid
         // UTF-8 boundary. This should return None.
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(("你好", "世界")));
     }
 }

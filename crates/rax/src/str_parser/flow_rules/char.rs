@@ -1,11 +1,10 @@
-use crate::str_parser::StrParserContext;
-
 use super::IStrFlowRule;
+use crate::str_parser::StrParserContext;
 
 pub struct Char<'a>(&'a char);
 impl<'a> IStrFlowRule<'a, char> for Char<'a> {
     fn name(&self) -> &str { "char" }
-    fn apply(&self,_: &StrParserContext, input: &'a str) -> Option<(char, &'a str)> {
+    fn apply(&self, _: &StrParserContext, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {
             Some((i, c)) => {
@@ -23,13 +22,13 @@ impl<'a> IStrFlowRule<'a, char> for Char<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::str_parser::filters::FilterCharSet;
 
     #[test]
     fn test_char_match() {
         let rule = Char(&'a');
         let input = "a123";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(('a', "a123")));
     }
 
@@ -37,7 +36,8 @@ mod tests {
     fn test_char_no_match() {
         let rule = Char(&'d');
         let input = "abc";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, None);
     }
 
@@ -45,7 +45,8 @@ mod tests {
     fn test_char_empty_input() {
         let rule = Char(&'a');
         let input = "";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, None);
     }
 
@@ -53,7 +54,8 @@ mod tests {
     fn test_char_unicode() {
         let rule = Char(&'你');
         let input = "你好";
-        let result = rule.apply(input);
+        let ctx = StrParserContext::new(input);
+        let result = rule.apply(&ctx, ctx.full);
         assert_eq!(result, Some(('你', "你好")));
     }
 }
