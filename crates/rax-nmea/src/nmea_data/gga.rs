@@ -150,7 +150,7 @@ mod test {
         init_log();
         let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
         let mut ctx = StrParserContext::new();
-        let gga = Gga::new(&mut ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let gga = Gga::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", gga);
 
         Ok(())

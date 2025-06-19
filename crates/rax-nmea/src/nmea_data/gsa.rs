@@ -104,7 +104,7 @@ mod test {
         init_log();
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
         let mut ctx = StrParserContext::new();
-        let gsa = Gsa::new(&mut ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let gsa = Gsa::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", gsa);
         Ok(())
     }

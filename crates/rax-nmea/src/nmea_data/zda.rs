@@ -60,7 +60,7 @@ mod test {
         init_log();
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
         let mut ctx = StrParserContext::new();
-        let zda = Zda::new(&mut ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let zda = Zda::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
         println!("{:?}", zda);
         Ok(())
     }
