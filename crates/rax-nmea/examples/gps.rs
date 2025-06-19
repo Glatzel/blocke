@@ -23,8 +23,8 @@ fn main() -> miette::Result<()> {
             // iteration
             {
                 let nv = NavigationSystem::from_str(&m)?;
-                match NmeaDataType::from_str(&m) {
-                    Ok(t) => match t {
+                if let Ok(t) = NmeaDataType::from_str(&m) {
+                    match t {
                         NmeaDataType::DHV => {
                             let ctx = ctx.init(m);
                             let nmea = Dhv::new(ctx, nv)?;
@@ -56,8 +56,7 @@ fn main() -> miette::Result<()> {
                             println!("{:?}", nmea)
                         }
                         NmeaDataType::Other(_) => (),
-                    },
-                    Err(_) => (),
+                    }
                 }
             }
         }

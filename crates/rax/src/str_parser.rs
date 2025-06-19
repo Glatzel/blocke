@@ -10,6 +10,10 @@ pub struct StrParserContext {
     rest: *const str,
 }
 
+impl Default for StrParserContext {
+    fn default() -> Self { Self::new() }
+}
+
 impl StrParserContext {
     pub fn new() -> Self {
         Self {
