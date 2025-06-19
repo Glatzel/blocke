@@ -2,7 +2,7 @@ pub mod filters;
 pub mod rules;
 use std::sync::{LazyLock, Mutex, MutexGuard};
 
-pub use rules::{IStrGlobalRule, IStrTakeRule};
+pub use rules::{IRule, IStrGlobalRule, IStrTakeRule};
 
 pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
     LazyLock::new(|| Mutex::new(StrParserContext { full: "", rest: "" }));

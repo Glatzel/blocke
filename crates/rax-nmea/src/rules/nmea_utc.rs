@@ -1,9 +1,13 @@
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
+use rax::str_parser::IRule;
 
 pub struct NmeaUtc();
+impl IRule for NmeaUtc {
+    fn name(&self) -> &str {
+        todo!()
+    }
+}
 impl<'a> rax::str_parser::IStrTakeRule<'a, DateTime<Utc>> for NmeaUtc {
-    fn name(&self) -> &str { todo!() }
-
     fn apply(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {
         if let Some(first_comma_idx) = input.find(",") {
             let res = &input[..first_comma_idx];

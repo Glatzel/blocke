@@ -1,8 +1,12 @@
+use crate::str_parser::rules::IRule;
+
 use super::IStrTakeRule;
 
 pub struct CharCount(usize);
+impl IRule for CharCount {
+    fn name(&self) -> &str { "CharCount" }
+}
 impl<'a> IStrTakeRule<'a, &'a str> for CharCount {
-    fn name(&self) -> &str { "byte count" }
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
         if self.0 == 0 {
             return Some(("", input));

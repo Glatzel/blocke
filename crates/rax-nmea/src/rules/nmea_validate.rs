@@ -1,7 +1,12 @@
-pub struct NmeaValidate();
-impl<'a> rax::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
-    fn name(&self) -> &str { todo!() }
+use rax::str_parser::IRule;
 
+pub struct NmeaValidate();
+impl IRule for NmeaValidate {
+    fn name(&self) -> &str {
+        todo!()
+    }
+}
+impl<'a> rax::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
     fn apply(&self, input: &'a str) -> miette::Result<()> {
         if !input.starts_with('$') {
             miette::bail!("sentence doesn't start with `$`");

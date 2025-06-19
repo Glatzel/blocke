@@ -1,8 +1,11 @@
-use rax::str_parser::IStrTakeRule;
+use rax::str_parser::{IRule, IStrTakeRule};
 
 pub struct NmeaCoord();
+impl IRule for NmeaCoord {
+    fn name(&self) -> &str { todo!() }
+}
 impl<'a> IStrTakeRule<'a, f64> for NmeaCoord {
-    fn name(&self) -> &str { "NmeaCoord" }
+
 
     fn apply(&self, input: &'a str) -> Option<(f64, &'a str)> {
         if let Some(second_comma_idx) = input

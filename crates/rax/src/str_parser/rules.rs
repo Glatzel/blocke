@@ -8,11 +8,15 @@ mod charset;
 pub use charset::*;
 mod char;
 pub use self::char::*;
-pub trait IStrTakeRule<'a, O> {
+pub trait IRule {
     fn name(&self) -> &str;
+}
+pub trait IStrTakeRule<'a, O>: IRule {
     fn apply(&self, input: &'a str) -> Option<(O, &'a str)>;
 }
-pub trait IStrGlobalRule<'a, O> {
-    fn name(&self) -> &str;
+pub trait IStrSkipRule<'a, O>: IRule {
+    fn apply(&self, input: &'a str) -> Option<(O, &'a str)>;
+}
+pub trait IStrGlobalRule<'a, O>: IRule {
     fn apply(&self, input: &'a str) -> O;
 }

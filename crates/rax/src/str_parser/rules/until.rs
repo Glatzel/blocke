@@ -1,13 +1,16 @@
 use std::str::FromStr;
 
 use super::IStrTakeRule;
+use crate::str_parser::IRule;
 
 pub struct Until<'a>(pub &'a str);
+impl<'a> IRule for Until<'a> {
+    fn name(&self) -> &str { "Until" }
+}
 impl<'a, O> IStrTakeRule<'a, O> for Until<'a>
 where
     O: FromStr,
 {
-    fn name(&self) -> &str { "until" }
     fn apply(&self, input: &'a str) -> Option<(O, &'a str)> {
         match input.find(self.0) {
             Some(idx) => match input[..idx].parse::<O>() {

@@ -1,8 +1,11 @@
 use super::IStrTakeRule;
+use crate::str_parser::rules::IRule;
 
 pub struct Char<'a>(pub &'a char);
-impl<'a> IStrTakeRule<'a, char> for Char<'a> {
+impl<'a> IRule for Char<'a> {
     fn name(&self) -> &str { "char" }
+}
+impl<'a> IStrTakeRule<'a, char> for Char<'a> {
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {

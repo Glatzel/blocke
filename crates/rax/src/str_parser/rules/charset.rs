@@ -1,9 +1,12 @@
 use super::IStrTakeRule;
+use crate::str_parser::IRule;
 use crate::str_parser::filters::IFilter;
 
 pub struct CharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
+impl<'a> IRule for CharSet<'a> {
+    fn name(&self) -> &str { todo!() }
+}
 impl<'a> IStrTakeRule<'a, char> for CharSet<'a> {
-    fn name(&self) -> &str { "char" }
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {

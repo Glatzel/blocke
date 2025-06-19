@@ -1,8 +1,11 @@
 use super::IStrTakeRule;
+use crate::str_parser::rules::IRule;
 
 pub struct ByteCount(usize);
-impl<'a> IStrTakeRule<'a, &'a str> for ByteCount {
+impl IRule for ByteCount {
     fn name(&self) -> &str { "byte count" }
+}
+impl<'a> IStrTakeRule<'a, &'a str> for ByteCount {
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
         match input.get(..self.0) {
             Some(out) => {
