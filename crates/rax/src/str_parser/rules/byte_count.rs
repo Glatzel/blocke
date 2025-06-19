@@ -1,10 +1,10 @@
-pub struct Count(usize);
-impl<'a> super::IRule<'a, &'a str> for Count {
-    fn name(&self) -> &str { "count" }
-    fn apply_rule(&self, sentence: &'a str) -> Option<(&'a str, &'a str)> {
-        match sentence.get(..self.0) {
+pub struct ByteCount(usize);
+impl<'a> super::IRule<'a, &'a str> for ByteCount {
+    fn name(&self) -> &str { "byte count" }
+    fn apply_rule(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+        match input.get(..self.0) {
             Some(out) => {
-                let rest = &sentence[self.0..];
+                let rest = &input[self.0..];
                 Some((out, rest))
             }
             None => None,
@@ -18,7 +18,7 @@ mod tests {
 
     #[test]
     fn test_count_exact_length() {
-        let rule = Count(4);
+        let rule = ByteCount(4);
         let input = "test";
         let result = rule.apply_rule(input);
         assert_eq!(result, Some(("test", "")));
@@ -26,7 +26,7 @@ mod tests {
 
     #[test]
     fn test_count_less_than_length() {
-        let rule = Count(2);
+        let rule = ByteCount(2);
         let input = "hello";
         let result = rule.apply_rule(input);
         assert_eq!(result, Some(("he", "llo")));
@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn test_count_more_than_length() {
-        let rule = Count(10);
+        let rule = ByteCount(10);
         let input = "short";
         let result = rule.apply_rule(input);
         assert_eq!(result, None);
@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn test_count_zero() {
-        let rule = Count(0);
+        let rule = ByteCount(0);
         let input = "abc";
         let result = rule.apply_rule(input);
         assert_eq!(result, Some(("", "abc")));
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn test_count_empty_input() {
-        let rule = Count(0);
+        let rule = ByteCount(0);
         let input = "";
         let result = rule.apply_rule(input);
         assert_eq!(result, Some(("", "")));
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_count_non_ascii() {
-        let rule = Count(2);
+        let rule = ByteCount(2);
         let input = "你好世界";
         // Each Chinese character is 3 bytes, but .get(..n) is by byte index, not char
         // index. So Count(2) will get the first 2 bytes, which is not a valid
