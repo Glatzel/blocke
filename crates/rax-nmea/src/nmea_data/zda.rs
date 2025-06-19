@@ -26,10 +26,13 @@ impl Zda {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
-        let mut ctx: std::sync::MutexGuard<'static, StrParserContext<'_>> =
-            StrParserContext::new(sentence);
-        ctx.skip_strict(&until_comma)?.skip_strict(&char_comma)?;
-        let utc_time: Option<chrono::DateTime<chrono::Utc>> = ctx.take(&NmeaUtc());
+
+        let mut ctx = StrParserContext::new(sentence);
+
+        let utc_time = ctx
+            .skip_strict(&until_comma)?
+            .skip_strict(&char_comma)?
+            .take(&NmeaUtc());
         let day = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let month = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let year = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
