@@ -1,4 +1,4 @@
-use super::IStrTakeRule;
+use super::IStrFlowRule;
 use crate::str_parser::IRule;
 use crate::str_parser::filters::IFilter;
 
@@ -6,8 +6,8 @@ pub struct CharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
 impl<'a> IRule for CharSet<'a> {
     fn name(&self) -> &str { todo!() }
 }
-impl<'a> IStrTakeRule<'a, char> for CharSet<'a> {
-    fn apply_take_rule(&self, input: &'a str) -> Option<(char, &'a str)> {
+impl<'a> IStrFlowRule<'a, char> for CharSet<'a> {
+    fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {
             Some((i, c)) => {
@@ -32,7 +32,7 @@ mod tests {
         let filter = FilterCharSet::ascii();
         let rule = CharSet(&filter);
         let input = "a123";
-        let result = rule.apply_take_rule(input);
+        let result = rule.apply(input);
         assert_eq!(result, Some(('a', "a123")));
     }
 
@@ -41,7 +41,7 @@ mod tests {
         let filter = FilterCharSet::digits();
         let rule = CharSet(&filter);
         let input = "abc";
-        let result = rule.apply_take_rule(input);
+        let result = rule.apply(input);
         assert_eq!(result, None);
     }
 
@@ -50,7 +50,7 @@ mod tests {
         let filter = FilterCharSet::ascii();
         let rule = CharSet(&filter);
         let input = "";
-        let result = rule.apply_take_rule(input);
+        let result = rule.apply(input);
         assert_eq!(result, None);
     }
 
@@ -59,7 +59,7 @@ mod tests {
         let filter = FilterCharSet::from_string("你");
         let rule = CharSet(&filter);
         let input = "你好";
-        let result = rule.apply_take_rule(input);
+        let result = rule.apply(input);
         assert_eq!(result, Some(('你', "你好")));
     }
 }

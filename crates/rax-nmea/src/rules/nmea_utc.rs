@@ -7,8 +7,8 @@ impl IRule for NmeaUtc {
         todo!()
     }
 }
-impl<'a> rax::str_parser::IStrTakeRule<'a, DateTime<Utc>> for NmeaUtc {
-    fn apply_take_rule(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {
+impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
+    fn apply(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {
         if let Some(first_comma_idx) = input.find(",") {
             let res = &input[..first_comma_idx];
             clerk::debug!("utc hhmmss: {}", res);

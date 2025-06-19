@@ -5,7 +5,7 @@ impl IRule for NmeaValidate {
     fn name(&self) -> &str { todo!() }
 }
 impl<'a> rax::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
-    fn apply_global_rule(&self, input: &'a str) -> miette::Result<()> {
+    fn apply(&self, input: &'a str) -> miette::Result<()> {
         if !input.starts_with('$') {
             miette::bail!("sentence doesn't start with `$`");
         }

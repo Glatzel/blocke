@@ -1,22 +1,14 @@
-use std::str::FromStr;
-
-use super::IStrTakeRule;
+use super::IStrFlowRule;
 use crate::str_parser::IRule;
 
 pub struct Until<'a>(pub &'a str);
 impl<'a> IRule for Until<'a> {
     fn name(&self) -> &str { "Until" }
 }
-impl<'a, O> IStrTakeRule<'a, O> for Until<'a>
-where
-    O: FromStr,
-{
-    fn apply_take_rule(&self, input: &'a str) -> Option<(O, &'a str)> {
+impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
+    fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
         match input.find(self.0) {
-            Some(idx) => match input[..idx].parse::<O>() {
-                Ok(out) => Some((out, &input[idx..])),
-                Err(_) => None,
-            },
+            Some(idx) => Some((&input[..idx], &input[idx..])),
             None => None,
         }
     }
@@ -33,41 +25,23 @@ mod tests {
         let rule = Until(";");
         let input = "hello;world";
 
-        let result: Option<(String, &str)> = rule.apply_take_rule(input);
-        assert_eq!(result, Some(("hello".to_string(), ";world")));
-    }
-
-    #[test]
-    fn test_until_int_output() {
-        let rule = Until(",");
-        let input = "123,rest";
-        let result: Option<(u32, &str)> = rule.apply_take_rule(input);
-        assert_eq!(result, Some((123, ",rest")));
+        let result = rule.apply(input);
+        assert_eq!(result, Some(("hello", ";world")));
     }
 
     #[test]
     fn test_until_parse_fail() {
         let rule = Until(",");
-        let input = "abc,rest";
-
-        let result: Option<(String, &str)> = rule.apply_take_rule(input);
+        let input = "abc rest";
+        let result = rule.apply(input);
         assert!(result.is_none());
     }
-
-    #[test]
-    fn test_until_not_found() {
-        let rule = Until("|");
-        let input = "no delimiter here";
-        let result: Option<(String, &str)> = rule.apply_take_rule(input);
-        assert!(result.is_none());
-    }
-
     #[test]
     fn test_until_at_start() {
         let rule = Until("-");
         let input = "-start";
-        let result: Option<(String, &str)> = rule.apply_take_rule(input);
-        assert_eq!(result, Some(("".to_string(), "-start")));
+        let result = rule.apply(input);
+        assert_eq!(result, Some(("", "-start")));
     }
 
     #[test]
@@ -75,7 +49,7 @@ mod tests {
         let rule = Until(",");
         let input = "";
 
-        let result: Option<(String, &str)> = rule.apply_take_rule(input);
+        let result = rule.apply(input);
         assert_eq!(result, None);
     }
 }

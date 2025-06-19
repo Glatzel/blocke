@@ -2,7 +2,7 @@ pub mod filters;
 pub mod rules;
 use std::sync::{LazyLock, Mutex, MutexGuard};
 
-pub use rules::{IRule, IStrGlobalRule, IStrTakeRule};
+pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
 pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
     LazyLock::new(|| Mutex::new(StrParserContext { full: "", rest: "" }));
@@ -34,9 +34,9 @@ impl StrParserContext<'static> {
 impl<'a> StrParserContext<'a> {
     pub fn take<R, O>(&mut self, rule: &R) -> Option<O>
     where
-        R: rules::IStrTakeRule<'a, O>,
+        R: rules::IStrFlowRule<'a, O>,
     {
-        match rule.apply_take_rule(self.rest) {
+        match rule.apply(self.rest) {
             Some(result) => {
                 self.rest = result.1;
                 Some(result.0)
@@ -46,7 +46,7 @@ impl<'a> StrParserContext<'a> {
     }
     pub fn take_strict<R, O>(&mut self, rule: &R) -> miette::Result<O>
     where
-        R: rules::IStrTakeRule<'a, O>,
+        R: rules::IStrFlowRule<'a, O>,
     {
         match self.take(rule) {
             Some(s) => Ok(s),
@@ -58,14 +58,14 @@ impl<'a> StrParserContext<'a> {
 impl<'a> StrParserContext<'a> {
     pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
     where
-        R: rules::IStrTakeRule<'a, String>,
+        R: rules::IStrFlowRule<'a, String>,
     {
         self.take(rule);
         self
     }
     pub fn skip_strict<R, O>(&mut self, rule: &R) -> miette::Result<&mut Self>
     where
-        R: rules::IStrTakeRule<'a, O>,
+        R: rules::IStrFlowRule<'a, O>,
     {
         self.take_strict(rule)?;
         Ok(self)
@@ -76,6 +76,13 @@ impl<'a> StrParserContext<'a> {
     where
         R: IStrGlobalRule<'a, O>,
     {
-        rule.apply_global_rule(self.full)
+        rule.apply(self.full)
     }
+}
+pub trait ParseOptExt<T> {
+    fn parse_opt<U: std::str::FromStr>(self) -> Option<U>;
+}
+
+impl<'a> ParseOptExt<&'a str> for Option<&'a str> {
+    fn parse_opt<U: std::str::FromStr>(self) -> Option<U> { self.and_then(|s| s.parse::<U>().ok()) }
 }

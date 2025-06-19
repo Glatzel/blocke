@@ -1,5 +1,5 @@
-use rax::str_parser::StrParserContext;
 use rax::str_parser::rules::{Char, Until};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
 use crate::macros::readonly_struct;
@@ -28,14 +28,14 @@ impl Zda {
         let until_star = Until("*");
         let mut ctx: std::sync::MutexGuard<'static, StrParserContext<'_>> =
             StrParserContext::new(sentence);
-        ctx.skip_strict::<Until, String>(&until_comma)?
-            .skip_strict(&char_comma)?;
+        ctx.skip_strict(&until_comma)?.skip_strict(&char_comma)?;
         let utc_time: Option<chrono::DateTime<chrono::Utc>> = ctx.take(&NmeaUtc());
-        let day = ctx.skip_strict(&char_comma)?.take(&until_comma);
-        let month = ctx.skip_strict(&char_comma)?.take(&until_comma);
-        let year = ctx.skip_strict(&char_comma)?.take(&until_comma);
-        let local_zone_description = ctx.skip_strict(&char_comma)?.take(&until_comma);
-        let local_zone_minutes_description = ctx.skip_strict(&char_comma)?.take(&until_star);
+        let day = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let month = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let year = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let local_zone_description = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let local_zone_minutes_description =
+            ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Zda {
             navigation_system,
