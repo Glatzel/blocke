@@ -1,11 +1,20 @@
 use super::IStrFlowRule;
 use crate::str_parser::rules::IRule;
 
+/// Rule to extract a fixed number of bytes from the input string.
+/// Returns a tuple of (prefix, rest) if enough bytes are present and the split is on a valid UTF-8 boundary,
+/// otherwise returns None.
 pub struct ByteCount(usize);
+
 impl IRule for ByteCount {
     fn name(&self) -> &str { "byte count" }
 }
+
 impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
+    /// Applies the ByteCount rule to the input string.
+    /// If the input contains at least `self.0` bytes and the split is on a valid UTF-8 boundary,
+    /// returns the first `self.0` bytes and the rest of the string.
+    /// Otherwise, returns None.
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
         match input.get(..self.0) {
             Some(out) => {
@@ -16,6 +25,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
         }
     }
 }
+
 #[cfg(test)]
 mod tests {
     use test_utils::init_log;

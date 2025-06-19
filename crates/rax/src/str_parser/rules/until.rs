@@ -17,9 +17,25 @@ impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
     /// and the rest of the string (starting with the delimiter).
     /// Otherwise, returns None.
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+        // Log the input and delimiter at trace level.
+        clerk::trace!("Until rule: input='{}', delimiter='{}'", input, self.0);
         match input.find(self.0) {
-            Some(idx) => Some((&input[..idx], &input[idx..])),
-            None => None,
+            Some(idx) => {
+                clerk::debug!(
+                    "Until rule matched: prefix='{}', rest='{}'",
+                    &input[..idx],
+                    &input[idx..]
+                );
+                Some((&input[..idx], &input[idx..]))
+            }
+            None => {
+                clerk::debug!(
+                    "Until rule did not match: delimiter '{}' not found in '{}'",
+                    self.0,
+                    input
+                );
+                None
+            }
         }
     }
 }
