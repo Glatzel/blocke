@@ -1,7 +1,7 @@
-use rax::str_parser::IStrFlowRule;
+use rax::str_parser::IStrTakeRule;
 
 pub struct NmeaCoord();
-impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
+impl<'a> IStrTakeRule<'a, f64> for NmeaCoord {
     fn name(&self) -> &str { "NmeaCoord" }
 
     fn apply(&self, input: &'a str) -> Option<(f64, &'a str)> {

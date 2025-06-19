@@ -1,7 +1,7 @@
-use super::IStrFlowRule;
+use super::IStrTakeRule;
 
 pub struct ByteCount(usize);
-impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
+impl<'a> IStrTakeRule<'a, &'a str> for ByteCount {
     fn name(&self) -> &str { "byte count" }
     fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
         match input.get(..self.0) {

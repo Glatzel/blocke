@@ -1,5 +1,5 @@
 use rax::str_parser::StrParserContext;
-use rax::str_parser::flow_rules::{Char, Until};
+use rax::str_parser::rules::{Char, Until};
 
 use crate::NmeaUtc;
 use crate::macros::readonly_struct;

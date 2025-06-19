@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-use super::IStrFlowRule;
+use super::IStrTakeRule;
 
 pub struct Until<'a>(pub &'a str);
-impl<'a, O> IStrFlowRule<'a, O> for Until<'a>
+impl<'a, O> IStrTakeRule<'a, O> for Until<'a>
 where
     O: FromStr,
 {

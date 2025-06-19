@@ -1,15 +1,14 @@
-use super::IStrFlowRule;
-use crate::str_parser::filters::IFilter;
+use super::IStrTakeRule;
 
-pub struct CharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
-impl<'a> IStrFlowRule<'a, char> for CharSet<'a> {
+pub struct Char<'a>(pub &'a char);
+impl<'a> IStrTakeRule<'a, char> for Char<'a> {
     fn name(&self) -> &str { "char" }
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
         match chars.next() {
             Some((i, c)) => {
-                if self.0.filter(&c) {
-                    Some((c, &input[i..]))
+                if self.0 == &c {
+                    Some((c, &input[i + 1..]))
                 } else {
                     None
                 }
@@ -22,21 +21,18 @@ impl<'a> IStrFlowRule<'a, char> for CharSet<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::str_parser::filters::FilterCharSet;
 
     #[test]
     fn test_char_match() {
-        let filter = FilterCharSet::ascii();
-        let rule = CharSet(&filter);
+        let rule = Char(&'a');
         let input = "a123";
         let result = rule.apply(input);
-        assert_eq!(result, Some(('a', "a123")));
+        assert_eq!(result, Some(('a', "123")));
     }
 
     #[test]
     fn test_char_no_match() {
-        let filter = FilterCharSet::digits();
-        let rule = CharSet(&filter);
+        let rule = Char(&'d');
         let input = "abc";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -44,8 +40,7 @@ mod tests {
 
     #[test]
     fn test_char_empty_input() {
-        let filter = FilterCharSet::ascii();
-        let rule = CharSet(&filter);
+        let rule = Char(&'a');
         let input = "";
         let result = rule.apply(input);
         assert_eq!(result, None);
@@ -53,8 +48,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() {
-        let filter = FilterCharSet::from_string("你");
-        let rule = CharSet(&filter);
+        let rule = Char(&'你');
         let input = "你好";
         let result = rule.apply(input);
         assert_eq!(result, Some(('你', "你好")));

@@ -1,5 +1,5 @@
 pub struct NmeaValidate();
-impl<'a> rax::str_parser::IStrGlobalRules<'a, miette::Result<()>> for NmeaValidate {
+impl<'a> rax::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
     fn name(&self) -> &str { todo!() }
 
     fn apply(&self, input: &'a str) -> miette::Result<()> {

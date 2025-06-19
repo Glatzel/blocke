@@ -1,7 +1,7 @@
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
 
 pub struct NmeaUtc();
-impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
+impl<'a> rax::str_parser::IStrTakeRule<'a, DateTime<Utc>> for NmeaUtc {
     fn name(&self) -> &str { todo!() }
 
     fn apply(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {
