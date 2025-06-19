@@ -8,15 +8,12 @@ impl<'a> IRule for Char<'a> {
 impl<'a> IStrFlowRule<'a, char> for Char<'a> {
     fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
         let mut chars = input.char_indices();
-        match chars.next() {
-            Some((i, c)) => {
-                if self.0 == &c {
-                    Some((c, &input[i + 1..]))
-                } else {
-                    None
-                }
-            }
-            None => None,
+        let (_, out) = chars.next()?; // first char's byte offset (0)
+        if &out == self.0 {
+            let (end, _) = chars.next().unwrap_or((input.len(), '\0')); // second char or end of string
+            Some((out, &input[end..]))
+        } else {
+            None
         }
     }
 }
@@ -54,6 +51,6 @@ mod tests {
         let rule = Char(&'你');
         let input = "你好";
         let result = rule.apply(input);
-        assert_eq!(result, Some(('你', "你好")));
+        assert_eq!(result, Some(('你', "好")));
     }
 }
