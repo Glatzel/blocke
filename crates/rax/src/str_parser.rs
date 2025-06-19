@@ -1,7 +1,8 @@
 pub mod filters;
 pub mod rules;
 use std::sync::{LazyLock, Mutex, MutexGuard};
-
+mod parse_opt;
+pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
 pub static STR_PARSER_CONTEXT: LazyLock<Mutex<StrParserContext>> =
@@ -78,12 +79,4 @@ impl<'a> StrParserContext<'a> {
     {
         rule.apply(self.full)
     }
-}
-
-pub trait ParseOptExt<T> {
-    fn parse_opt<U: std::str::FromStr>(self) -> Option<U>;
-}
-
-impl<'a> ParseOptExt<&'a str> for Option<&'a str> {
-    fn parse_opt<U: std::str::FromStr>(self) -> Option<U> { self.and_then(|s| s.parse::<U>().ok()) }
 }

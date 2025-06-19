@@ -8,6 +8,7 @@ mod charset;
 pub use charset::*;
 mod char;
 pub use self::char::*;
+
 pub trait IRule {
     fn name(&self) -> &str;
 }
