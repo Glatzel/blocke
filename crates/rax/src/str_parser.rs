@@ -19,11 +19,11 @@ pub struct StrParserContext<'a> {
 impl<'a> StrParserContext<'a> {
     pub fn new(sentence: String) -> MutexGuard<'static, StrParserContext<'a>> {
         let mut ctx = STR_PARSER_CONTEXT.lock().unwrap();
-        ctx.full = sentence;
-        ctx.init();
+        ctx.init(sentence);
         ctx
     }
-    fn init(&'a mut self) -> &Self {
+    fn init(&'a mut self, sentence: String) -> &Self {
+        self.full = sentence;
         self.rest = &self.full;
         self
     }
