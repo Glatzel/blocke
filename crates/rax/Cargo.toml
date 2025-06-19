@@ -6,7 +6,6 @@ version.workspace = true
 [dependencies]
 clerk = { workspace = true, features = ["log"] }
 miette = { workspace = true }
-nmea = { workspace = true }
 serialport = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }

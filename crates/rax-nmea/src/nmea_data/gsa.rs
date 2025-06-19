@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::INmeaData;
 use crate::nmea_data::{NavigationSystem, SystemId};
-use crate::utils::{readonly_struct, *};
+use crate::rules::{readonly_struct, *};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
     Manual,

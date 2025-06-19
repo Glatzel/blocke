@@ -191,17 +191,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
 
 [[package]]
-name = "gps"
-version = "0.0.26"
-dependencies = [
- "clerk",
- "nmea",
- "serialport",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "hashbrown"
 version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -406,21 +395,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nmea"
-version = "0.0.26"
-dependencies = [
- "chrono",
- "clerk",
- "float-cmp",
- "lru",
- "miette",
- "num_enum",
- "serde",
- "strum",
- "test_utils",
-]
-
-[[package]]
 name = "nu-ansi-term"
 version = "0.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -532,10 +506,24 @@ version = "0.0.26"
 dependencies = [
  "clerk",
  "miette",
- "nmea",
  "serialport",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "rax-nmea"
+version = "0.0.26"
+dependencies = [
+ "chrono",
+ "clerk",
+ "float-cmp",
+ "lru",
+ "miette",
+ "num_enum",
+ "serde",
+ "strum",
+ "test_utils",
 ]
 
 [[package]]

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::INmeaData;
 use crate::nmea_data::{FaaMode, NavigationSystem};
-use crate::utils::{readonly_struct, *};
+use crate::rules::{readonly_struct, *};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GllDataValid {
     Valid,

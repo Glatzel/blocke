@@ -1,6 +1,6 @@
 use crate::INmeaData;
 use crate::nmea_data::NavigationSystem;
-use crate::utils::*;
+use crate::rules::*;
 readonly_struct!(
     Dhv ,
     "Dhv",

@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "nmea"
+name = "rax-nmea"
 version.workspace = true
 
 [dependencies]
