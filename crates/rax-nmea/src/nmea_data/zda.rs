@@ -3,12 +3,12 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
 use crate::macros::readonly_struct;
-use crate::nmea_data::NavigationSystem;
+use crate::nmea_data::Talker;
 
 readonly_struct!(
     Zda ,
     "Zda",
-    {navigation_system: NavigationSystem},
+    {navigation_system: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {day : Option<u8>},
@@ -19,10 +19,7 @@ readonly_struct!(
 );
 
 impl Zda {
-    pub fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: NavigationSystem,
-    ) -> miette::Result<Self> {
+    pub fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -60,7 +57,7 @@ mod test {
         init_log();
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
         let mut ctx = StrParserContext::new();
-        let zda = Zda::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let zda = Zda::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", zda);
         Ok(())
     }

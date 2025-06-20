@@ -5,9 +5,7 @@ use std::time::Duration;
 use miette::IntoDiagnostic;
 use rax::io::IRaxReader;
 use rax::str_parser::StrParserContext;
-use rax_nmea::nmea_data::{
-    Dhv, Gga, Gll, Gsa, INmeaData, NavigationSystem, NmeaDataType, Vtg, Zda,
-};
+use rax_nmea::nmea_data::{Dhv, Gga, Gll, Gsa, INmeaData, Identifier, Talker, Vtg, Zda};
 fn main() -> miette::Result<()> {
     let path = "COM4";
     let port = serialport::new(path, 9600)
@@ -22,40 +20,40 @@ fn main() -> miette::Result<()> {
             // Process the message in a new scope so the borrow ends before the next
             // iteration
             {
-                let nv = NavigationSystem::from_str(&m)?;
-                if let Ok(t) = NmeaDataType::from_str(&m) {
+                let nv = Talker::from_str(&m)?;
+                if let Ok(t) = Identifier::from_str(&m) {
                     match t {
-                        NmeaDataType::DHV => {
+                        Identifier::DHV => {
                             let ctx = ctx.init(m);
                             let nmea = Dhv::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::GGA => {
+                        Identifier::GGA => {
                             let ctx = ctx.init(m);
                             let nmea = Gga::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::GLL => {
+                        Identifier::GLL => {
                             let ctx = ctx.init(m);
                             let nmea = Gll::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::GSA => {
+                        Identifier::GSA => {
                             let ctx = ctx.init(m);
                             let nmea = Gsa::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::VTG => {
+                        Identifier::VTG => {
                             let ctx = ctx.init(m);
                             let nmea = Vtg::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::ZDA => {
+                        Identifier::ZDA => {
                             let ctx = ctx.init(m);
                             let nmea = Zda::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
-                        NmeaDataType::Other(_) => (),
+                        Identifier::Other(_) => (),
                     }
                 }
             }

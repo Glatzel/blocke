@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, INmeaData, NavigationSystem};
+use crate::nmea_data::{FaaMode, INmeaData, Talker};
 use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -26,7 +26,7 @@ impl FromStr for GllDataValid {
 readonly_struct!(
     Gll ,
     "Gll",
-    {navigation_system: NavigationSystem},
+    {navigation_system: Talker},
 
     {lat: Option<f64>},
     {lon: Option<f64>},
@@ -35,10 +35,7 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: NavigationSystem,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
@@ -85,7 +82,7 @@ mod test {
         init_log();
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
         let mut ctx = StrParserContext::new();
-        let gll = Gll::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let gll = Gll::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gll);
         Ok(())
     }

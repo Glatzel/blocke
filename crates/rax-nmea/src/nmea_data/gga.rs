@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{INmeaData, NavigationSystem};
+use crate::nmea_data::{INmeaData, Talker};
 use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -41,7 +41,7 @@ impl FromStr for GgaQualityIndicator {
 readonly_struct!(
     Gga ,
     "Gga",
-    {navigation_system: NavigationSystem},
+    {navigation_system: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {lat: Option<f64>},
@@ -55,10 +55,7 @@ readonly_struct!(
     {differential_reference_station_id: Option<u16>}
 );
 impl INmeaData for Gga {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: NavigationSystem,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
@@ -150,7 +147,7 @@ mod test {
         init_log();
         let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
         let mut ctx = StrParserContext::new();
-        let gga = Gga::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gga);
 
         Ok(())

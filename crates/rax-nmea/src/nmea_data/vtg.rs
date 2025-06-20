@@ -2,12 +2,12 @@ use rax::str_parser::rules::{Char, Until};
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, INmeaData, NavigationSystem};
+use crate::nmea_data::{FaaMode, INmeaData, Talker};
 
 readonly_struct!(
     Vtg ,
     "Vtg",
-    {navigation_system: NavigationSystem},
+    {navigation_system: Talker},
 
     {course_over_ground_true: Option<f64>},
     {course_over_ground_magnetic : Option<f64>},
@@ -16,10 +16,7 @@ readonly_struct!(
     {mode: Option<FaaMode>}
 );
 impl INmeaData for Vtg {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: NavigationSystem,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -55,7 +52,7 @@ mod test {
         init_log();
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
         let mut ctx = StrParserContext::new();
-        let vtg = Vtg::new(ctx.init(s.to_string()), NavigationSystem::GN)?;
+        let vtg = Vtg::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", vtg);
 
         Ok(())
