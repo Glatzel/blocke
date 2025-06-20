@@ -16,12 +16,12 @@ use serde::{Deserialize, Serialize};
 pub use vtg::*;
 pub use zda::*;
 pub trait INmeaData {
-    fn new(ctx: &mut StrParserContext, navigation_system: NavigationSystem) -> miette::Result<Self>
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self>
     where
         Self: Sized;
 }
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
-pub enum NmeaDataType {
+pub enum Identifier {
     DHV,
     GGA,
     GLL,
@@ -30,7 +30,7 @@ pub enum NmeaDataType {
     ZDA,
     Other(String),
 }
-impl FromStr for NmeaDataType {
+impl FromStr for Identifier {
     type Err = miette::Report;
 
     fn from_str(sentence: &str) -> Result<Self, Self::Err> {
@@ -60,7 +60,7 @@ impl FromStr for NmeaDataType {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
-pub enum NavigationSystem {
+pub enum Talker {
     ///BeiDou (China)
     BD,
     ///GLONASS, according to IEIC 61162-1
@@ -71,7 +71,7 @@ pub enum NavigationSystem {
     GP,
 }
 
-impl FromStr for NavigationSystem {
+impl FromStr for Talker {
     type Err = miette::Report;
 
     fn from_str(sentence: &str) -> miette::Result<Self> {
@@ -85,7 +85,7 @@ impl FromStr for NavigationSystem {
         Ok(out)
     }
 }
-impl Display for NavigationSystem {
+impl Display for Talker {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             Self::BD => "BD",
