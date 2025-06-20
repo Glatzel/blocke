@@ -5,7 +5,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{INmeaData, Talker, SystemId};
+use crate::nmea_data::{INmeaData, SystemId, Talker};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -53,10 +53,7 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: Talker,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");

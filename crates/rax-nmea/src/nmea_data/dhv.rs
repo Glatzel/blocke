@@ -18,10 +18,7 @@ readonly_struct!(
     {gdspd: Option<f64>}
 );
 impl INmeaData for Dhv {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: Talker,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");

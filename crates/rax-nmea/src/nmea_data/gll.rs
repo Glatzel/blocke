@@ -35,10 +35,7 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn new(
-        ctx: &mut StrParserContext,
-        navigation_system: Talker,
-    ) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
