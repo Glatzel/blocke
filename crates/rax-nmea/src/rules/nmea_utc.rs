@@ -16,11 +16,14 @@ impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
     /// Parses the UTC time, converts to `DateTime<Utc>` using today's date, and
     /// returns the result and the rest of the string. Logs each step for
     /// debugging.
-    fn apply(&self, input: &'a str) -> Option<(DateTime<Utc>, &'a str)> {
+    fn apply(&self, input: &'a str) -> (std::option::Option<DateTime<Utc>>, &'a str) {
         clerk::trace!("NmeaUtc rule: input='{}'", input);
 
         // Find the first comma, which separates the UTC time from the rest.
-        let first_comma_idx = input.find(",")?;
+        let first_comma_idx = match input.find(",") {
+            Some(idx) => idx,
+            None => return (None, input),
+        };
         let res = &input[..first_comma_idx];
         clerk::debug!("utc hhmmss: {}", res);
 
@@ -37,11 +40,18 @@ impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
         };
 
         // Parse hours, minutes, seconds.
-        let (hour, min, sec) = (
-            main.get(0..2)?.parse::<u32>().ok()?,
-            main.get(2..4)?.parse::<u32>().ok()?,
-            main.get(4..6)?.parse::<u32>().ok()?,
-        );
+        let hour = match main.get(0..2).and_then(|s| s.parse::<u32>().ok()) {
+            Some(h) => h,
+            None => return (None, input),
+        };
+        let min = match main.get(2..4).and_then(|s| s.parse::<u32>().ok()) {
+            Some(m) => m,
+            None => return (None, input),
+        };
+        let sec = match main.get(4..6).and_then(|s| s.parse::<u32>().ok()) {
+            Some(s) => s,
+            None => return (None, input),
+        };
         clerk::debug!(
             "NmeaUtc: parsed hour={}, min={}, sec={}, nanos={}",
             hour,
@@ -59,6 +69,6 @@ impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
         let dt = NaiveDate::from_ymd_opt(today.year(), today.month(), today.day())?.and_time(time);
         clerk::debug!("NmeaUtc: constructed DateTime<Utc>: {}", dt);
 
-        Some((dt.and_utc(), &input[first_comma_idx..]))
+        (Some(dt.and_utc()), &input[first_comma_idx..])
     }
 }

@@ -86,13 +86,11 @@ mod tests {
         let rule = NmeaCoord();
         // 12319.123,E,rest
         let input = "12319.123,E,rest";
-        let result = rule.apply(input);
+        let (val, rest) = rule.apply(input);
         // 12319.123 means 123 degrees, 19.123 minutes
         // deg = 123, min = 19.123, value = 123 + 19.123/60
         let expected = 123.0 + 19.123 / 60.0;
-        assert!(result.is_some());
-        let (val, rest) = result.unwrap();
-        assert!((val - expected).abs() < 1e-6);
+        assert_eq!(val, Some(expected));
         assert_eq!(rest, ",rest");
     }
 
@@ -102,11 +100,9 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123,W,foo";
 
-        let result = rule.apply(input);
+        let (val, rest) = rule.apply(input);
         let expected = -(123.0 + 19.123 / 60.0);
-        assert!(result.is_some());
-        let (val, rest) = result.unwrap();
-        assert!((val - expected).abs() < 1e-6);
+        assert_eq!(val, Some(expected));
         assert_eq!(rest, ",foo");
     }
 
@@ -116,11 +112,9 @@ mod tests {
         let rule = NmeaCoord();
         let input = "4807.038,N,bar";
 
-        let result = rule.apply(input);
+        let (val, rest) = rule.apply(input);
         let expected = 48.0 + 7.038 / 60.0;
-        assert!(result.is_some());
-        let (val, rest) = result.unwrap();
-        assert!((val - expected).abs() < 1e-6);
+        assert_eq!(val, Some(expected));
         assert_eq!(rest, ",bar");
     }
 
@@ -130,11 +124,9 @@ mod tests {
         let rule = NmeaCoord();
         let input = "4807.038,S,xyz";
 
-        let result = rule.apply(input);
+        let (val, rest) = rule.apply(input);
         let expected = -(48.0 + 7.038 / 60.0);
-        assert!(result.is_some());
-        let (val, rest) = result.unwrap();
-        assert!((val - expected).abs() < 1e-6);
+        assert_eq!(val, Some(expected));
         assert_eq!(rest, ",xyz");
     }
 
@@ -144,8 +136,9 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123,X,rest";
 
-        let result = rule.apply(input);
-        assert!(result.is_none());
+        let (val, rest) = rule.apply(input);
+        assert_eq!(val, None);
+        assert_eq!(rest, ",rest");
     }
 
     #[test]
@@ -154,8 +147,9 @@ mod tests {
         let rule = NmeaCoord();
         let input = "notanumber,E,rest";
 
-        let result = rule.apply(input);
-        assert!(result.is_none());
+        let (val, rest) = rule.apply(input);
+        assert_eq!(val, None);
+        assert_eq!(rest, ",rest");
     }
 
     #[test]
@@ -164,7 +158,8 @@ mod tests {
         let rule = NmeaCoord();
         let input = "12319.123Erest";
 
-        let result = rule.apply(input);
-        assert!(result.is_none());
+        let (val, rest) = rule.apply(input);
+        assert_eq!(val, None);
+        assert_eq!(rest, "12319.123Erest");
     }
 }
