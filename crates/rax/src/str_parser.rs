@@ -58,7 +58,7 @@ impl<'a> StrParserContext {
 impl<'a> StrParserContext {
     pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
     where
-        R: rules::IStrFlowRule<'a, String>,
+        R: rules::IStrFlowRule<'a, O>,
     {
         self.take(rule);
         self
