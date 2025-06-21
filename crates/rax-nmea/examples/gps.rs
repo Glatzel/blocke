@@ -21,7 +21,6 @@ fn main() -> miette::Result<()> {
             // Process the message in a new scope so the borrow ends before the next
             // iteration
             {
-
                 if let Ok(t) = Identifier::from_str(&m) {
                     if let Ok(nv) = Talker::from_str(&m) {
                         match t {
