@@ -15,21 +15,25 @@ impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
     /// Applies the OneOfCharSet rule to the input string.
     /// If the first character is in the set, returns the character and the rest
     /// of the string. Otherwise, returns None.
-    fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
+    fn apply(&self, input: &'a str) -> (Option<char>, &'a str) {
         // Log the input at trace level.
         clerk::trace!("OneOfCharSet rule: input='{}'", input);
         // Get the first character and its byte offset.
-        let (_, c) = input.char_indices().next()?; // safely unwrap with ?
-        if self.0.filter(&c) {
-            // If the character is in the set, find the next char boundary (or end of
-            // string).
-            let next_i = input.char_indices().nth(1).map_or(input.len(), |(j, _)| j);
-            clerk::debug!("OneOfCharSet matched: '{}', rest='{}'", c, &input[next_i..]);
-            Some((c, &input[next_i..]))
+        if let Some((_, c)) = input.char_indices().next() {
+            if self.0.filter(&c) {
+                // If the character is in the set, find the next char boundary (or end of
+                // string).
+                let next_i = input.char_indices().nth(1).map_or(input.len(), |(j, _)| j);
+                clerk::debug!("OneOfCharSet matched: '{}', rest='{}'", c, &input[next_i..]);
+                (Some(c), &input[next_i..])
+            } else {
+                // If the character is not in the set, log and return None.
+                clerk::debug!("OneOfCharSet did not match: found '{}', not in set", c);
+                (None, input)
+            }
         } else {
-            // If the character is not in the set, log and return None.
-            clerk::debug!("OneOfCharSet did not match: found '{}', not in set", c);
-            None
+            // No character in input, return None and the original input
+            (None, input)
         }
     }
 }
@@ -47,8 +51,9 @@ mod tests {
         let filter = FilterCharSet::ascii();
         let rule = OneOfCharSet(&filter);
         let input = "a123";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(('a', "123")));
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, Some('a'));
+        assert_eq!(rest, "123");
     }
 
     #[test]
@@ -57,8 +62,9 @@ mod tests {
         let filter = FilterCharSet::digits();
         let rule = OneOfCharSet(&filter);
         let input = "abc";
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, None);
+        assert_eq!(rest, "abc");
     }
 
     #[test]
@@ -67,8 +73,9 @@ mod tests {
         let filter = FilterCharSet::ascii();
         let rule = OneOfCharSet(&filter);
         let input = "";
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, None);
+        assert_eq!(rest, "");
     }
 
     #[test]
@@ -77,7 +84,8 @@ mod tests {
         let filter = FilterCharSet::from_string("你");
         let rule = OneOfCharSet(&filter);
         let input = "你好";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(('你', "好")));
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, Some('你'));
+        assert_eq!(rest, "好");
     }
 }

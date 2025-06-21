@@ -73,40 +73,65 @@ where
     F: Fn(&SerialPortInfo) -> bool,
 {
     let ports = serialport::available_ports().into_diagnostic()?;
-    Ok(ports
+    // Log the number of ports found before filtering
+    clerk::info!(
+        "[Device] Found {} serial ports before filtering",
+        ports.len()
+    );
+    let filtered_ports: Vec<_> = ports.into_iter().filter(&filter).collect();
+    // Log the number of ports after filtering
+    clerk::info!(
+        "[Device] {} serial ports after filtering",
+        filtered_ports.len()
+    );
+    // Map filtered SerialPortInfo into DeviceInfo, logging each port type
+    Ok(filtered_ports
         .into_iter()
-        .filter(filter)
         .map(|p| match p.port_type {
-            SerialPortType::UsbPort(info) => DeviceInfo::new(
-                p.port_name,
-                DeviceType::Usb,
-                Some(info.vid),
-                Some(info.pid),
-                info.serial_number,
-                info.manufacturer,
-                info.product,
-            ),
+            SerialPortType::UsbPort(info) => {
+                // Log USB port details
+                clerk::debug!("[Device] USB port: {:?}", p.port_name);
+                DeviceInfo::new(
+                    p.port_name,
+                    DeviceType::Usb,
+                    Some(info.vid),
+                    Some(info.pid),
+                    info.serial_number,
+                    info.manufacturer,
+                    info.product,
+                )
+            }
             SerialPortType::PciPort => {
+                // Log PCI port details
+                clerk::debug!("[Device] PCI port: {:?}", p.port_name);
                 DeviceInfo::new(p.port_name, DeviceType::Pci, None, None, None, None, None)
             }
-            SerialPortType::BluetoothPort => DeviceInfo::new(
-                p.port_name,
-                DeviceType::Bluetooth,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
-            SerialPortType::Unknown => DeviceInfo::new(
-                p.port_name,
-                DeviceType::Unknown,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
+            SerialPortType::BluetoothPort => {
+                // Log Bluetooth port details
+                clerk::debug!("[Device] Bluetooth port: {:?}", p.port_name);
+                DeviceInfo::new(
+                    p.port_name,
+                    DeviceType::Bluetooth,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                )
+            }
+            SerialPortType::Unknown => {
+                // Log unknown port details
+                clerk::debug!("[Device] Unknown port: {:?}", p.port_name);
+                DeviceInfo::new(
+                    p.port_name,
+                    DeviceType::Unknown,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                )
+            }
         })
         .collect())
 }

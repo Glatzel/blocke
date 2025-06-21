@@ -2,8 +2,11 @@ mod dhv;
 mod gga;
 mod gll;
 mod gsa;
+mod gst;
+mod rmc;
 mod vtg;
 mod zda;
+
 use std::fmt::Display;
 use std::str::FromStr;
 
@@ -11,10 +14,13 @@ pub use dhv::*;
 pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
+pub use gst::*;
 use rax::str_parser::StrParserContext;
+pub use rmc::*;
 use serde::{Deserialize, Serialize};
 pub use vtg::*;
 pub use zda::*;
+
 pub trait INmeaData {
     fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self>
     where
@@ -26,6 +32,8 @@ pub enum Identifier {
     GGA,
     GLL,
     GSA,
+    GST,
+    RMC,
     VTG,
     ZDA,
     Other(String),
@@ -42,7 +50,8 @@ impl FromStr for Identifier {
             "GGA" => Self::GGA,
             "GLL" => Self::GLL,
             "GSA" => Self::GSA,
-
+            "GST" => Self::GST,
+            "RMC" => Self::RMC,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
@@ -137,6 +146,21 @@ impl FromStr for SystemId {
             "4" => Ok(Self::QZSS),
             "5" => Ok(Self::NavIC),
             other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+        }
+    }
+}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum Status {
+    Valid,
+    Invalid,
+}
+impl FromStr for Status {
+    type Err = miette::Report;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "A" => Ok(Self::Valid),
+            "V" => Ok(Self::Invalid),
+            other => miette::bail!("Unknown GllDataValid {}", other),
         }
     }
 }
