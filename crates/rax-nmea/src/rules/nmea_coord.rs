@@ -14,7 +14,7 @@ impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
     /// Applies the NmeaCoord rule to the input string.
     /// Parses the coordinate and sign, converts to decimal degrees, and returns
     /// the result and the rest of the string. Logs each step for debugging.
-    fn apply(&self, input: &'a str) -> Option<(f64, &'a str)> {
+    fn apply(&self, input: &'a str) -> (std::option::Option<f64>, &'a str) {
         // Log the input at trace level.
         clerk::trace!("NmeaCoord rule: input='{}'", input);
 
@@ -41,7 +41,7 @@ impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
                         min,
                         result
                     );
-                    Some((result, &input[second_comma_idx..]))
+                    (Some(result), &input[second_comma_idx..])
                 }
                 (Ok(v), "W" | "S") => {
                     // Convert to negative decimal degrees.
@@ -54,22 +54,22 @@ impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
                         min,
                         result
                     );
-                    Some((result, &input[second_comma_idx..]))
+                    (Some(result), &input[second_comma_idx..])
                 }
                 _ => {
                     // Log parse failure or invalid sign.
-                    clerk::warn!(
+                    clerk::info!(
                         "NmeaCoord: failed to parse number or invalid sign: num='{}', sign='{}'",
                         num,
                         sign
                     );
-                    None
+                    (None, &input[second_comma_idx..])
                 }
             }
         } else {
             // Log if the input does not contain two commas.
             clerk::warn!("NmeaCoord: input does not contain two commas: '{}'", input);
-            None
+            (None, input)
         }
     }
 }
