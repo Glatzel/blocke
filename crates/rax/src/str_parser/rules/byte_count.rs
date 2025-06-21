@@ -15,7 +15,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
     /// If the input contains at least `self.0` bytes and the split is on a
     /// valid UTF-8 boundary, returns the first `self.0` bytes and the rest
     /// of the string. Otherwise, returns None.
-    fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+    fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // Log the input and the requested byte count at trace level.
         clerk::trace!("ByteCount rule: input='{}', byte_count={}", input, self.0);
 
@@ -23,7 +23,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
             Some(out) => {
                 let rest = &input[self.0..];
                 clerk::debug!("ByteCount: matched prefix='{}', rest='{}'", out, rest);
-                Some((out, rest))
+                (Some(out), rest)
             }
             None => {
                 clerk::debug!(
@@ -31,7 +31,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
                     self.0,
                     input
                 );
-                None
+                (None, input)
             }
         }
     }
@@ -49,7 +49,7 @@ mod tests {
         let rule = ByteCount(4);
         let input = "test";
         let result = rule.apply(input);
-        assert_eq!(result, Some(("test", "")));
+        assert_eq!(result, (Some("test"), ""));
     }
 
     #[test]
