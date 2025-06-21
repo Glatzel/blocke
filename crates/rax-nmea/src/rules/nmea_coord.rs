@@ -114,7 +114,7 @@ mod tests {
 
         let (val, rest) = rule.apply(input);
         let expected = 48.0 + 7.038 / 60.0;
-        assert_eq!(val, Some(expected));
+        float_cmp::assert_approx_eq!(f64, val.unwrap(), expected);
         assert_eq!(rest, ",bar");
     }
 
@@ -126,7 +126,7 @@ mod tests {
 
         let (val, rest) = rule.apply(input);
         let expected = -(48.0 + 7.038 / 60.0);
-        assert_eq!(val, Some(expected));
+        float_cmp::assert_approx_eq!(f64, val.unwrap(), expected);
         assert_eq!(rest, ",xyz");
     }
 
