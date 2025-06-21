@@ -151,7 +151,8 @@ mod test {
         println!("{:?}", gga);
 
         Ok(())
-    } #[test]
+    }
+    #[test]
     fn test_new_gga2() -> miette::Result<()> {
         init_log();
         let s = "$GNGGA,130301.000,,,,,0,00,25.5,,,,,,*7A";
