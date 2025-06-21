@@ -95,14 +95,14 @@ impl INmeaData for Gga {
         clerk::debug!("altitude: {:?}", altitude);
 
         clerk::debug!("Skipping char_comma and char_m for altitude units...");
-        ctx.skip_strict(&char_comma)?.skip_strict(&char_m)?;
+        ctx.skip_strict(&char_comma)?.skip(&char_m);
 
         clerk::debug!("Parsing geoid_separation...");
         let geoid_separation = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         clerk::debug!("geoid_separation: {:?}", geoid_separation);
 
         clerk::debug!("Skipping char_comma and char_m for geoid units...");
-        ctx.skip_strict(&char_comma)?.skip_strict(&char_m)?;
+        ctx.skip_strict(&char_comma)?.skip(&char_m);
 
         clerk::debug!("Parsing age_of_differential_gps_data...");
         let age_of_differential_gps_data =
