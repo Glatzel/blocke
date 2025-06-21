@@ -58,7 +58,7 @@ mod tests {
         let rule = ByteCount(2);
         let input = "hello";
         let result = rule.apply(input);
-        assert_eq!(result, Some(("he", "llo")));
+        assert_eq!(result, (Some("he"), "llo"));
     }
 
     #[test]
@@ -67,7 +67,7 @@ mod tests {
         let rule = ByteCount(10);
         let input = "short";
         let result = rule.apply(input);
-        assert_eq!(result, None);
+        assert_eq!(result, (None, "short"));
     }
 
     #[test]
@@ -76,7 +76,7 @@ mod tests {
         let rule = ByteCount(0);
         let input = "abc";
         let result = rule.apply(input);
-        assert_eq!(result, Some(("", "abc")));
+        assert_eq!(result, (Some(""), "abc"));
     }
 
     #[test]
@@ -84,7 +84,7 @@ mod tests {
         let rule = ByteCount(0);
         let input = "";
         let result = rule.apply(input);
-        assert_eq!(result, Some(("", "")));
+        assert_eq!(result, (Some(""), ""));
     }
 
     #[test]
@@ -96,6 +96,6 @@ mod tests {
         // index. So Count(2) will get the first 2 bytes, which is not a valid
         // UTF-8 boundary. This should return None.
         let result = rule.apply(input);
-        assert_eq!(result, None);
+        assert_eq!(result, (None, "你好世界"));
     }
 }
