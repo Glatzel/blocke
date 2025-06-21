@@ -5,7 +5,7 @@ use std::time::Duration;
 use miette::IntoDiagnostic;
 use rax::io::IRaxReader;
 use rax::str_parser::StrParserContext;
-use rax_nmea::nmea_data::{Dhv, Gga, Gll, Gsa, INmeaData, Identifier, Talker, Vtg, Zda};
+use rax_nmea::nmea_data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Talker, Vtg, Zda};
 fn main() -> miette::Result<()> {
     let path = "COM4";
     let port = serialport::new(path, 9600)
@@ -41,6 +41,16 @@ fn main() -> miette::Result<()> {
                         Identifier::GSA => {
                             let ctx = ctx.init(m);
                             let nmea = Gsa::new(ctx, nv)?;
+                            println!("{:?}", nmea)
+                        }
+                        Identifier::GST => {
+                            let ctx = ctx.init(m);
+                            let nmea = Gst::new(ctx, nv)?;
+                            println!("{:?}", nmea)
+                        }
+                        Identifier::RMC => {
+                            let ctx = ctx.init(m);
+                            let nmea = Rmc::new(ctx, nv)?;
                             println!("{:?}", nmea)
                         }
                         Identifier::VTG => {
