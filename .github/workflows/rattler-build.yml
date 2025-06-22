@@ -17,7 +17,7 @@ permissions:
   id-token: write
   pull-requests: write
 jobs:
-  rattler-build:
+  build:
     strategy:
       fail-fast: false
       matrix: 
