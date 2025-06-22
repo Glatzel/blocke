@@ -16,7 +16,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
     /// If the delimiter is found, returns the substring before the delimiter
     /// and the rest of the string (starting with the delimiter).
     /// Otherwise, returns None.
-    fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+    fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // Log the input and delimiter at trace level.
         clerk::trace!("Until rule: input='{}', delimiter='{}'", input, self.0);
         match input.find(self.0) {
@@ -26,7 +26,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
                     &input[..idx],
                     &input[idx..]
                 );
-                Some((&input[..idx], &input[idx..]))
+                (Some(&input[..idx]), &input[idx..])
             }
             None => {
                 clerk::debug!(
@@ -34,7 +34,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
                     self.0,
                     input
                 );
-                None
+                (None, input)
             }
         }
     }
@@ -48,44 +48,42 @@ mod tests {
 
     #[test]
     fn test_until_str_output() {
-        // O = &str is not supported because FromStr is not implemented for &str
-        // So we use String as output type
         init_log();
         let rule = Until(";");
         let input = "hello;world";
 
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("hello", ";world")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("hello"));
+        assert_eq!(rest, ";world");
     }
 
     #[test]
     fn test_until_parse_fail() {
-        // Test when the delimiter is not found in the input.
         init_log();
         let rule = Until(",");
         let input = "abc rest";
-        let result = rule.apply(input);
-        assert!(result.is_none());
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, None);
+        assert_eq!(rest, "abc rest");
     }
 
     #[test]
     fn test_until_at_start() {
-        // Test when the delimiter is at the start of the input.
         init_log();
         let rule = Until("-");
         let input = "-start";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("", "-start")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some(""));
+        assert_eq!(rest, "-start");
     }
 
     #[test]
     fn test_until_empty_input() {
-        // Test with an empty input string.
         init_log();
         let rule = Until(",");
         let input = "";
-
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, None);
+        assert_eq!(rest, "");
     }
 }

@@ -15,28 +15,27 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
     /// If the input contains at least `self.0` characters, returns
     /// the first `self.0` characters and the rest of the string.
     /// Otherwise, returns None.
-    fn apply(&self, input: &'a str) -> Option<(&'a str, &'a str)> {
+    fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // Log the input and the requested character count at trace level.
         clerk::trace!("CharCount rule: input='{}', count={}", input, self.0);
 
         // If count is zero, return empty prefix and full input.
         if self.0 == 0 {
             clerk::debug!("CharCount: count is zero, returning empty prefix and full input.");
-            return Some(("", input));
+            return (Some(""), input);
         }
 
         // Count the number of characters in the input.
-        let indices = input.char_indices();
-        let length = indices.count();
+        let length = input.chars().count();
 
         // If count matches input length, return the whole input as prefix.
         if self.0 == length {
             clerk::debug!("CharCount: count matches input length, returning whole input.");
-            return Some((input, ""));
+            return (Some(input), "");
         }
 
         // Iterate over char boundaries to find the split point.
-        for (count, (idx, _)) in input.char_indices().by_ref().enumerate() {
+        for (count, (idx, _)) in input.char_indices().enumerate() {
             if count == self.0 {
                 // Found the split point at the requested character count.
                 clerk::debug!(
@@ -46,7 +45,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
                     &input[..idx],
                     &input[idx..]
                 );
-                return Some((&input[..idx], &input[idx..]));
+                return (Some(&input[..idx]), &input[idx..]);
             }
         }
 
@@ -56,7 +55,7 @@ impl<'a> IStrFlowRule<'a, &'a str> for CharCount {
             self.0,
             length
         );
-        None
+        (None, input)
     }
 }
 
@@ -71,8 +70,9 @@ mod tests {
         init_log();
         let rule = CharCount(4);
         let input = "test";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("test", "")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("test"));
+        assert_eq!(rest, "");
     }
 
     #[test]
@@ -80,8 +80,9 @@ mod tests {
         init_log();
         let rule = CharCount(2);
         let input = "hello";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("he", "llo")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("he"));
+        assert_eq!(rest, "llo");
     }
 
     #[test]
@@ -89,8 +90,9 @@ mod tests {
         init_log();
         let rule = CharCount(10);
         let input = "short";
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, None);
+        assert_eq!(rest, "short");
     }
 
     #[test]
@@ -98,8 +100,9 @@ mod tests {
         init_log();
         let rule = CharCount(0);
         let input = "abc";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("", "abc")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some(""));
+        assert_eq!(rest, "abc");
     }
 
     #[test]
@@ -107,8 +110,9 @@ mod tests {
         init_log();
         let rule = CharCount(0);
         let input = "";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("", "")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some(""));
+        assert_eq!(rest, "");
     }
 
     #[test]
@@ -117,7 +121,8 @@ mod tests {
         let rule = CharCount(2);
         let input = "你好世界";
         // Should return first 2 chars ("你", "好") and the rest ("世界")
-        let result = rule.apply(input);
-        assert_eq!(result, Some(("你好", "世界")));
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("你好"));
+        assert_eq!(rest, "世界");
     }
 }

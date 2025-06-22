@@ -1,28 +1,10 @@
-use std::str::FromStr;
-
 use rax::str_parser::rules::{Char, Until};
 use rax::str_parser::{ParseOptExt, StrParserContext};
-use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, INmeaData, Talker};
+use crate::nmea_data::{FaaMode, INmeaData, Status, Talker};
 use crate::{NmeaCoord, NmeaUtc};
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum GllDataValid {
-    Valid,
-    Invalid,
-}
-impl FromStr for GllDataValid {
-    type Err = miette::Report;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "A" => Ok(Self::Valid),
-            "V" => Ok(Self::Invalid),
-            other => miette::bail!("Unknown GllDataValid {}", other),
-        }
-    }
-}
 readonly_struct!(
     Gll ,
     "Gll",
@@ -31,7 +13,7 @@ readonly_struct!(
     {lat: Option<f64>},
     {lon: Option<f64>},
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {data_valid: Option<GllDataValid>},
+    {data_valid: Option<Status>},
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {

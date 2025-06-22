@@ -37,11 +37,14 @@ impl<'a> StrParserContext {
         R: rules::IStrFlowRule<'a, O>,
     {
         match rule.apply(unsafe { &*self.rest }) {
-            Some(result) => {
-                self.rest = result.1;
-                Some(result.0)
+            (Some(result), rest) => {
+                self.rest = rest;
+                Some(result)
             }
-            None => None,
+            (None, rest) => {
+                self.rest = rest;
+                None
+            }
         }
     }
     pub fn take_strict<R, O>(&mut self, rule: &R) -> miette::Result<O>
@@ -58,7 +61,7 @@ impl<'a> StrParserContext {
 impl<'a> StrParserContext {
     pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
     where
-        R: rules::IStrFlowRule<'a, String>,
+        R: rules::IStrFlowRule<'a, O>,
     {
         self.take(rule);
         self

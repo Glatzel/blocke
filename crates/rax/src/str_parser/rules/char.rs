@@ -14,26 +14,31 @@ impl<'a> IStrFlowRule<'a, char> for Char<'a> {
     /// Applies the Char rule to the input string.
     /// If the first character matches `self.0`, returns the character and the
     /// rest of the string. Otherwise, returns None.
-    fn apply(&self, input: &'a str) -> Option<(char, &'a str)> {
+    fn apply(&self, input: &'a str) -> (Option<char>, &'a str) {
         // Log the input and the expected character at trace level.
         clerk::trace!("Char rule: input='{}', expected='{}'", input, self.0);
         let mut chars = input.char_indices();
 
         // Get the first character and its byte offset.
-        let (_, out) = chars.next()?; // first char's byte offset (0)
-        if &out == self.0 {
-            // If the character matches, find the next char boundary (or end of string).
-            let (end, _) = chars.next().unwrap_or((input.len(), '\0')); // second char or end of string
-            clerk::debug!("Char rule matched: '{}', rest='{}'", out, &input[end..]);
-            Some((out, &input[end..]))
+        if let Some((_, out)) = chars.next() {
+            // first char's byte offset (0)
+            if &out == self.0 {
+                // If the character matches, find the next char boundary (or end of string).
+                let (end, _) = chars.next().unwrap_or((input.len(), '\0')); // second char or end of string
+                clerk::debug!("Char rule matched: '{}', rest='{}'", out, &input[end..]);
+                (Some(out), &input[end..])
+            } else {
+                // If the character does not match, log and return None.
+                clerk::debug!(
+                    "Char rule did not match: found '{}', expected '{}'",
+                    out,
+                    self.0
+                );
+                (None, input)
+            }
         } else {
-            // If the character does not match, log and return None.
-            clerk::debug!(
-                "Char rule did not match: found '{}', expected '{}'",
-                out,
-                self.0
-            );
-            None
+            // No character in input
+            (None, input)
         }
     }
 }
@@ -49,8 +54,9 @@ mod tests {
         init_log();
         let rule = Char(&'a');
         let input = "a123";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(('a', "123")));
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, Some('a'));
+        assert_eq!(rest, "123");
     }
 
     #[test]
@@ -58,8 +64,9 @@ mod tests {
         init_log();
         let rule = Char(&'d');
         let input = "abc";
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, None);
+        assert_eq!(rest, "abc");
     }
 
     #[test]
@@ -67,8 +74,9 @@ mod tests {
         init_log();
         let rule = Char(&'a');
         let input = "";
-        let result = rule.apply(input);
-        assert_eq!(result, None);
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, None);
+        assert_eq!(rest, "");
     }
 
     #[test]
@@ -76,7 +84,8 @@ mod tests {
         init_log();
         let rule = Char(&'你');
         let input = "你好";
-        let result = rule.apply(input);
-        assert_eq!(result, Some(('你', "好")));
+        let (matched, rest) = rule.apply(input);
+        assert_eq!(matched, Some('你'));
+        assert_eq!(rest, "好");
     }
 }

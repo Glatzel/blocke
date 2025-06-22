@@ -13,7 +13,7 @@ pub trait IRule {
     fn name(&self) -> &str;
 }
 pub trait IStrFlowRule<'a, O>: IRule {
-    fn apply(&self, input: &'a str) -> Option<(O, &'a str)>;
+    fn apply(&self, input: &'a str) -> (Option<O>, &'a str);
 }
 pub trait IStrGlobalRule<'a, O>: IRule {
     fn apply(&self, input: &'a str) -> O;
