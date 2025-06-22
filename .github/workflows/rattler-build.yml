@@ -6,7 +6,7 @@ on:
             type: boolean
             default: false
             description: wheather to upload conda packages
-  
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -20,8 +20,8 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      matrix: 
-        pkg: 
+      matrix:
+        pkg:
           - proj
 
     runs-on: ubuntu-latest
