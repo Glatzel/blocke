@@ -52,5 +52,5 @@ jobs:
       - name: publish
         if: ${{inputs.publish}}
         run: |
-          ./scripts/upload.ps1 -pkg ${{matrix.pkg}}
+          ./scripts/publish.ps1 -pkg ${{matrix.pkg}}
         shell: pwsh
