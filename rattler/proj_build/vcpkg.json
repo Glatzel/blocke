@@ -1,0 +1,17 @@
+{
+  "dependencies": [
+    {
+      "name": "proj",
+      "features": [
+        "tools"
+      ]
+    }
+  ],
+  "builtin-baseline": "a6149c39c5474bcf72820f4ac5aab615798a596b",
+  "overrides": [
+    {
+      "name": "proj",
+      "version": "9.6.2"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+context:
+  name: proj
+package:
+  version: 9.6.2
+  name: ${{ name }}
+build:
+  number: 0
+  script:
+    - pwsh -f $RECIPE_DIR/build-${{ name }}.ps1
+about:
+  repository: https://github.com/OSGeo/PROJ
