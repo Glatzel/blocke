@@ -4,7 +4,6 @@ on:
     inputs:
         publish:
             type: boolean
-            required: false
             default: false
             description: wheather to upload conda packages
   
