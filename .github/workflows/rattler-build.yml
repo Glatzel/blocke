@@ -1,0 +1,58 @@
+name: rattler-build
+on:
+  workflow_dispatch:
+    inputs:
+        publish:
+            type: boolean
+            default: false
+            description: wheather to upload conda packages
+  
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'push'}}
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+jobs:
+  rattler-build:
+    strategy:
+      fail-fast: false
+      matrix: 
+        pkg: 
+          - proj
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static g++-aarch64-linux-gnu cmake ninja-build
+
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.8.10
+        with:
+          run-install: false
+
+      - name: main
+        id: main
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: ./packages/${{matrix.pkg}}/ci-${{matrix.pkg}}.ps1
+        shell: pwsh
+
+      - name: upload
+        if: ${{!inputs.publish}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.pkg}}-${{runner.os}}
+          path: ./packages/${{matrix.pkg}}/output
+
+      - name: publish
+        if: ${{inputs.publish}}
+        run: |
+          ./scripts/upload.ps1 -pkg ${{matrix.pkg}}
+        shell: pwsh
