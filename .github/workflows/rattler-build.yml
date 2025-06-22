@@ -5,7 +5,7 @@ on:
         publish:
             type: boolean
             default: false
-            description: wheather to upload conda packages
+            description: whether to upload conda packages
 
 
 concurrency:
