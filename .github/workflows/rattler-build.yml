@@ -46,7 +46,7 @@ jobs:
         if: ${{!inputs.publish}}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.pkg}}-${{runner.os}}
+          name: ${{matrix.pkg}}
           path: ./rattler/${{matrix.pkg}}/output
 
       - name: publish
