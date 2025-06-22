@@ -39,9 +39,7 @@ jobs:
 
       - name: main
         id: main
-        env:
-          GH_TOKEN: ${{github.token}}
-        run: ./${{matrix.pkg}}/ci-${{matrix.pkg}}.ps1
+        run: ./rattler/${{matrix.pkg}}/ci-${{matrix.pkg}}.ps1
         shell: pwsh
 
       - name: upload
