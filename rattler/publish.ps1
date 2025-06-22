@@ -1,8 +1,7 @@
 param($pkg)
 Set-Location $PSScriptRoot
-Set-Location ..
 
-foreach ($pkg_file in Get-ChildItem "./$pkg/output/*/*.conda" -Recurse -ErrorAction Continue) {
+foreach ($pkg_file in Get-ChildItem "./$pkg/output/linux-aarch64/*.conda" -Recurse -ErrorAction Continue) {
     Write-Output "::group:: upload $pkg"
         Write-Output "$pkg is a public package"
         pixi run rattler-build upload prefix -s -c glatzel $pkg_file
