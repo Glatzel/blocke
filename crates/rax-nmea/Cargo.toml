@@ -7,7 +7,7 @@ version.workspace = true
 chrono = { workspace = true }
 clerk = { workspace = true }
 miette = { workspace = true }
-rax = { workspace = true }
+rax-parser = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]

@@ -7,7 +7,8 @@ edition = "2024"
 version = "0.0.26"
 
 [workspace.dependencies]
-rax = { path = "./crates/rax" }
+rax-parser = { path = "./crates/rax-parser" }
+rax-utils = { path = "./crates/rax-utils" }
 rax-nmea = { path = "./crates/rax-nmea" }
 test-utils = { path = "./crates/test_utils/" }
 

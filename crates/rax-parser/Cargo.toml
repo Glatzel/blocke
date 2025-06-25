@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "rax"
+name = "rax-parser"
 version.workspace = true
 
 [dependencies]

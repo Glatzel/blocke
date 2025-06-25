@@ -417,7 +417,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "rax"
+name = "rax-nmea"
+version = "0.0.26"
+dependencies = [
+ "chrono",
+ "clerk",
+ "float-cmp",
+ "miette",
+ "rax-parser",
+ "serde",
+ "serialport",
+ "test-utils",
+]
+
+[[package]]
+name = "rax-parser"
 version = "0.0.26"
 dependencies = [
  "clerk",
@@ -427,15 +441,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "rax-nmea"
+name = "rax-utils"
 version = "0.0.26"
 dependencies = [
- "chrono",
  "clerk",
- "float-cmp",
  "miette",
- "rax",
- "serde",
  "serialport",
  "test-utils",
 ]
