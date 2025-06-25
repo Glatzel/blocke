@@ -1,4 +1,4 @@
-use rax::str_parser::IRule;
+use rax_parser::str_parser::IRule;
 
 /// Rule to validate an NMEA sentence for correct start character and checksum.
 /// Returns Ok(()) if the sentence is valid, otherwise returns a miette error.
@@ -8,7 +8,7 @@ impl IRule for NmeaValidate {
     fn name(&self) -> &str { "NmeaValidate" }
 }
 
-impl<'a> rax::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
+impl<'a> rax_parser::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
     /// Applies the NmeaValidate rule to the input string.
     /// Checks that the sentence starts with '$', contains a checksum delimiter
     /// '*', and that the calculated checksum matches the provided checksum.

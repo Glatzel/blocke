@@ -1,0 +1,12 @@
+[package]
+edition.workspace = true
+name = "rax-utils"
+version.workspace = true
+
+[dependencies]
+clerk = { workspace = true, features = ["log"] }
+miette = { workspace = true }
+serialport = { workspace = true }
+
+[dev-dependencies]
+test-utils = { workspace = true }

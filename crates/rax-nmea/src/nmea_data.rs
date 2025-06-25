@@ -15,7 +15,7 @@ pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
 pub use gst::*;
-use rax::str_parser::StrParserContext;
+use rax_parser::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
 pub use vtg::*;

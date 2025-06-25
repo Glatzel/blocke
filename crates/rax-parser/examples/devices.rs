@@ -1,4 +1,4 @@
-use rax::devices::{DeviceFilter, list_devices};
+use rax_utils::devices::{DeviceFilter, list_devices};
 
 fn main() -> miette::Result<()> {
     test_utils::init_log();
