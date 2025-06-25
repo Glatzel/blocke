@@ -5,7 +5,7 @@ Set-Location $PSScriptRoot/..
 switch ($Model) {
     "orangepi_zero_2w" { $url = "https://dietpi.com/downloads/images/DietPi_OrangePiZero2W-ARMv8-Bookworm.img.xz" }
     default {
-        Write-Error "Unknown SBC model" 
+        Write-Error "Unknown SBC model"
         exit
     }
 }
