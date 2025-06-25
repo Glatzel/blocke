@@ -1,5 +1,5 @@
 use chrono::{DateTime, Datelike, NaiveDate, NaiveTime, Utc};
-use rax::str_parser::IRule;
+use rax_parser::str_parser::IRule;
 
 /// Rule to parse an NMEA UTC time string in the format "hhmmss.sss,...".
 /// Converts the time to a `DateTime<Utc>` using today's date.
@@ -11,7 +11,7 @@ impl IRule for NmeaUtc {
     fn name(&self) -> &str { "NmeaUtc" }
 }
 
-impl<'a> rax::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
+impl<'a> rax_parser::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
     /// Applies the NmeaUtc rule to the input string.
     /// Parses the UTC time, converts to `DateTime<Utc>` using today's date, and
     /// returns the result and the rest of the string. Logs each step for
