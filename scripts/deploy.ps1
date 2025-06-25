@@ -3,7 +3,7 @@ param (
     [Parameter(Mandatory = $true)][string]$IP
 )
 
-Set-Location "$PSScriptRoot/.."
+Set-Location $PSScriptRoot/..
 
 # download passmark
 aria2c -c -x16 -s16 `
