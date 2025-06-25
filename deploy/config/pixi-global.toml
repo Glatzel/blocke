@@ -1,19 +1,19 @@
 version = 1
 
 [envs.dev-tool]
-channels = ["https://repo.prefix.dev/glatzel-private","conda-forge"]
+channels = ["https://repo.prefix.dev/glatzel-private", "conda-forge"]
 
 [envs.dev-tool.dependencies]
 aria2 = "*"
+bottom = "*"
+edit = "*"
 jq = "*"
 p7zip = "*"
 zstd = "*"
-bottom="*"
-edit="*"
 
 [envs.dev-tool.exposed]
 7z = "7z"
 aria2 = "aria2c"
+btm = "*"
 jq = "jq"
 zstd = "zstd"
-btm="*"
