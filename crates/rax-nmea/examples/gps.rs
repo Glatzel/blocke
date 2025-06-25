@@ -3,9 +3,9 @@ use std::str::FromStr;
 use std::time::Duration;
 
 use miette::IntoDiagnostic;
-use rax::io::IRaxReader;
-use rax::str_parser::StrParserContext;
 use rax_nmea::nmea_data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Talker, Vtg, Zda};
+use rax_parser::io::IRaxReader;
+use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
     test_utils::init_log();
     let path = "COM4";
@@ -13,7 +13,7 @@ fn main() -> miette::Result<()> {
         .timeout(Duration::from_millis(3000))
         .open()
         .into_diagnostic()?;
-    let mut reader = rax::io::RaxReader::new(BufReader::new(port));
+    let mut reader = rax_parser::io::RaxReader::new(BufReader::new(port));
     let mut ctx = StrParserContext::new();
     loop {
         let message = reader.read_line()?;
