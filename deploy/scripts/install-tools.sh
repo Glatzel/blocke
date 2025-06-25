@@ -1,4 +1,5 @@
 sudo apt update
+sudo apt upgrade
 
 apt install -y \
 curl \
