@@ -8,5 +8,6 @@ clerk = { workspace = true, features = ["log"] }
 miette = { workspace = true }
 
 [dev-dependencies]
+rax-utils = { workspace = true }
 serialport = { workspace = true }
 test-utils = { workspace = true }

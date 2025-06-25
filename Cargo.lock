@@ -436,6 +436,7 @@ version = "0.0.26"
 dependencies = [
  "clerk",
  "miette",
+ "rax-utils",
  "serialport",
  "test-utils",
 ]
