@@ -5,8 +5,6 @@
 # Example: ./bench_temp.sh 2     # prints every 2 s
 #          ./bench_temp.sh       # prints every 1 s (default)
 
-set -euo pipefail
-
 INTERVAL="${1:-1}"
 
 if ! [[ "$INTERVAL" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
@@ -23,7 +21,7 @@ elif [[ -f /sys/class/thermal/thermal_zone0/temp ]]; then
         local t
         t=$(cat /sys/class/thermal/thermal_zone0/temp)
         # Convert millidegrees to degrees with 1 decimal
-        printf "%.1f'C\n" "$(echo "scale=1; $t/1000" | bc)"
+        echo "scale=1; $(cat /sys/class/thermal/thermal_zone0/temp)/1000" | bc
     }
 else
     echo "❌  No known temperature sensor interface found."
