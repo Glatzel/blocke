@@ -1,4 +1,6 @@
-# APT cache cleanup
+# APT
+apt update
+apt upgrade
 echo "Cleaning APT cache..."
 apt-get clean
 apt-get autoclean
@@ -14,6 +16,7 @@ echo "Cleaning /tmp and /var/tmp..."
 rm -rf /tmp/*
 rm -rf /var/tmp/*
 
-# Pixi cache cleanup
+# Pixi
+pixi global update
 echo "Cleaning Pixi cache..."
 pixi clean cache -y

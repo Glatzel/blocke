@@ -1,6 +1,0 @@
-[workspace]
-channels = ["https://repo.prefix.dev/glatzel", "conda-forge"]
-platforms = ["linux-aarch64"]
-
-[dependencies]
-passmark-performance-test = "*"
