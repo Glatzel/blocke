@@ -73,6 +73,22 @@ jobs:
       #   with:
       #     run-install: false
 
+      - name: cross-build-release
+        if: ${{inputs.release}}
+        run: ./scripts/cross-build.ps1 -Release
+        shell: pwsh
+
       - name: cross-build
+        if: ${{!inputs.release}}
         run: ./scripts/cross-build.ps1
         shell: pwsh
+
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: aarch64
+          path: |
+            ./target/aarch64-unknown-linux-gnu/*/examples/gps
+            ./target/aarch64-unknown-linux-gnu/*/examples/list-devices
+            ./target/aarch64-unknown-linux-gnu/*/examples/serial-reader
+          if-no-files-found: error
