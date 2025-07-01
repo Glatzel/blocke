@@ -73,7 +73,13 @@ jobs:
       #   with:
       #     run-install: false
 
+      - name: cross-build-release
+        if: ${{inputs.release}}
+        run: ./scripts/cross-build.ps1 -Release
+        shell: pwsh
+
       - name: cross-build
+        if: ${{!inputs.release}}
         run: ./scripts/cross-build.ps1
         shell: pwsh
       
