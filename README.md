@@ -45,11 +45,11 @@ for (talker, identifier, message) in dispatcher {
 
 ## Development
 
-- Clone the repo:  
+- Clone the repo:
   `git clone https://github.com/Glatzel/blocke.git`
-- Run tests:  
+- Run tests:
   `cargo test`
-- Check code coverage:  
+- Check code coverage:
   `cargo tarpaulin --out Html`
 
 ## License
