@@ -1,9 +1,9 @@
 version = 1
 
-[envs.dev-tool]
+[envs.base]
 channels = ["https://repo.prefix.dev/glatzel", "conda-forge"]
 
-[envs.dev-tool.dependencies]
+[envs.base.dependencies]
 aria2 = "*"
 bottom = "*"
 curl = "*"
@@ -13,9 +13,9 @@ p7zip = "*"
 wget = "*"
 zstd = "*"
 
-[envs.dev-tool.exposed]
+[envs.base.exposed]
 7z = "7z"
-aria2 = "aria2c"
+aria2c = "aria2c"
 btm = "btm"
 curl = "curl"
 edit = "edit"
