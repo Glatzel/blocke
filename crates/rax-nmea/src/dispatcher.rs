@@ -103,7 +103,58 @@ where
             //single line
             i => panic!("Identifier `{:?}` is not a multiline nmea.", i),
         };
-        if count == idx { todo!() } else { todo!() }
+
+        match (
+            idx == 1,
+            count == idx,
+            self.buffer.get(&(talker, identifier)),
+        ) {
+            (true, true, _) => return Some((talker, identifier, sentence)),
+            (true, false, None) => {
+                self.buffer
+                    .insert((talker, identifier), (1, count, sentence));
+                return None;
+            }
+            (true, false, Some(s)) => {
+                clerk::warn!(
+                    "A newer `{}{}` arrived, remove older one: {}",
+                    talker,
+                    identifier,
+                    s.2
+                );
+                self.buffer.remove(&(talker, identifier));
+                self.buffer
+                    .insert((talker, identifier), (1, count, sentence));
+                return None;
+            }
+            (false, true, Some(v)) => {
+                clerk::debug!("`{}{}` is complete.", talker, identifier);
+                return Some((talker, identifier, format!("{}{}", v.2, sentence)));
+            }
+            (false, _, None) => {
+                clerk::warn!(
+                    "Former `{}{}` doesn't exist, will skip this sentence: {}",
+                    talker,
+                    identifier,
+                    sentence
+                );
+                return None;
+            }
+            (false, false, Some(_)) => {
+                clerk::debug!(
+                    "Append new sentence to `{}{}`: {}",
+                    talker,
+                    identifier,
+                    sentence
+                );
+                match self.buffer.get_mut(&(talker, identifier)) {
+                    Some(v) => *v = (v.0, v.1 + 1, format!("{}{}", v.2, sentence)),
+                    //this should never reached.
+                    None => panic!("Former `{}{}` doesn't exist.", talker, identifier,),
+                }
+                return None;
+            }
+        }
     }
     fn dispatch_by_lines(&mut self) -> (Talker, Identifier, std::string::String) {
         loop {

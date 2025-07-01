@@ -26,7 +26,7 @@ pub trait INmeaData {
     where
         Self: Sized;
 }
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum Identifier {
     DHV,
     GGA,
@@ -61,7 +61,22 @@ impl FromStr for Identifier {
         Ok(out)
     }
 }
-
+impl Display for Identifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Self::DHV => "DHV,",
+            Self::GGA => "GGA,",
+            Self::GLL => "GLL,",
+            Self::GSA => "GSA,",
+            Self::GST => "GST,",
+            Self::GSV => "GSV,",
+            Self::RMC => "RMC,",
+            Self::VTG => "VTG,",
+            Self::ZDA => "ZDA,",
+        };
+        write!(f, "{}", s)
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
 pub enum Talker {
     ///BeiDou (China)
