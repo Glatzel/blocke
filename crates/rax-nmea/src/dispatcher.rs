@@ -71,14 +71,14 @@ where
         sentence: String,
     ) -> Option<(Talker, Identifier, String)> {
         // Only GSV is supported as multiline
-        let (count, idx) = if let Identifier::GSV = identifier {
+        let (count, idx) = if let Identifier::GSV | Identifier::Txt = identifier {
             let parts: Vec<&str> = sentence.split(',').collect();
             let c = parts.get(1).and_then(|s| s.parse().ok());
             let i = parts.get(2).and_then(|s| s.parse().ok());
             match (c, i) {
                 (Some(c), Some(i)) => (c, i),
                 _ => {
-                    clerk::warn!("Malformed GSV sentence: {}", sentence);
+                    clerk::warn!("Malformed sentence: {}", sentence);
                     return None;
                 }
             }
@@ -162,7 +162,7 @@ where
                 | Identifier::ZDA => return (talker, identifier, sentence),
 
                 // Multi-line sentences
-                Identifier::GSV => {
+                Identifier::GSV | Identifier::Txt => {
                     if let Some(result) = self.process_multilines(talker, identifier, sentence) {
                         return result;
                     }

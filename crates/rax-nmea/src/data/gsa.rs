@@ -43,7 +43,7 @@ impl FromStr for GsaMode {
 readonly_struct!(
     Gsa ,
     "Gsa",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {selection_mode: Option<GsaSelectionMode>},
     {mode : Option<GsaMode>},
@@ -54,7 +54,7 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -79,7 +79,7 @@ impl INmeaData for Gsa {
         let system_id = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Gsa {
-            navigation_system,
+            talker,
             selection_mode,
             mode,
             satellite_ids,
@@ -93,8 +93,8 @@ impl INmeaData for Gsa {
 
 impl fmt::Debug for Gsa {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Gsa");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("GSA");
+        ds.field("talker", &self.talker);
 
         if let Some(selection_mode) = self.selection_mode {
             ds.field("selection_mode", &selection_mode);

@@ -7,7 +7,7 @@ use crate::macros::readonly_struct;
 readonly_struct!(
     Vtg ,
     "Vtg",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {course_over_ground_true: Option<f64>},
     {course_over_ground_magnetic : Option<f64>},
@@ -16,7 +16,7 @@ readonly_struct!(
     {mode: Option<FaaMode>}
 );
 impl INmeaData for Vtg {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -32,7 +32,7 @@ impl INmeaData for Vtg {
         let mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Vtg {
-            navigation_system,
+            talker,
             course_over_ground_true,
             course_over_ground_magnetic,
             speed_over_ground_knots,
@@ -46,8 +46,8 @@ use std::fmt;
 
 impl fmt::Debug for Vtg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Vtg");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("VTG");
+        ds.field("talker", &self.talker);
 
         if let Some(course_over_ground_true) = self.course_over_ground_true {
             ds.field("course_over_ground_true", &course_over_ground_true);

@@ -35,6 +35,7 @@ pub enum Identifier {
     GST,
     GSV,
     RMC,
+    Txt,
     VTG,
     ZDA,
 }
@@ -53,6 +54,7 @@ impl FromStr for Identifier {
             "GST" => Self::GST,
             "GSV" => Self::GSV,
             "RMC" => Self::RMC,
+            "TXT" => Self::Txt,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
@@ -71,6 +73,7 @@ impl Display for Identifier {
             Self::GST => "GST,",
             Self::GSV => "GSV,",
             Self::RMC => "RMC,",
+            Self::Txt => "TXT",
             Self::VTG => "VTG,",
             Self::ZDA => "ZDA,",
         };

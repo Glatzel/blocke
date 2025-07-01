@@ -50,7 +50,7 @@ use std::fmt;
 impl fmt::Debug for Dhv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("DHV");
-        ds.field("navigation_system", &self.talker);
+        ds.field("talker", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);

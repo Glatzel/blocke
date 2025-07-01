@@ -42,7 +42,7 @@ impl FromStr for GgaQualityIndicator {
 readonly_struct!(
     Gga ,
     "Gga",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {lat: Option<f64>},
@@ -56,7 +56,7 @@ readonly_struct!(
     {differential_reference_station_id: Option<u16>}
 );
 impl INmeaData for Gga {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
@@ -122,7 +122,7 @@ impl INmeaData for Gga {
         );
 
         Ok(Gga {
-            navigation_system,
+            talker,
             utc_time,
             lat,
             lon,
@@ -139,8 +139,8 @@ impl INmeaData for Gga {
 
 impl fmt::Debug for Gga {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Gga");
-        ds.field("talker", &self.navigation_system);
+        let mut ds = f.debug_struct("GGA");
+        ds.field("talker", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);

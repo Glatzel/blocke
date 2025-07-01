@@ -8,7 +8,7 @@ use crate::macros::readonly_struct;
 readonly_struct!(
     Zda ,
     "Zda",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {day : Option<u8>},
@@ -19,7 +19,7 @@ readonly_struct!(
 );
 
 impl Zda {
-    pub fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -36,7 +36,7 @@ impl Zda {
             ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Zda {
-            navigation_system,
+            talker,
             utc_time,
             day,
             month,
@@ -51,8 +51,8 @@ use std::fmt;
 
 impl fmt::Debug for Zda {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Zda");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("ZDA");
+        ds.field("talker", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);

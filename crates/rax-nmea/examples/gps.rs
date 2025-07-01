@@ -47,11 +47,16 @@ fn main() -> miette::Result<()> {
                     let nmea = Gst::new(ctx, talker)?;
                     println!("{:?}", nmea)
                 }
-                Identifier::GSV => println!("\nGSV#######################\n{sentence}######################\n"),
+                Identifier::GSV => {
+                    println!("\nGSV#######################\n{sentence}######################\n")
+                }
                 Identifier::RMC => {
                     let ctx = ctx.init(sentence);
                     let nmea = Rmc::new(ctx, talker)?;
                     println!("{:?}", nmea)
+                }
+                Identifier::Txt => {
+                    println!("\nTXT#######################\n{sentence}######################\n")
                 }
                 Identifier::VTG => {
                     let ctx = ctx.init(sentence);

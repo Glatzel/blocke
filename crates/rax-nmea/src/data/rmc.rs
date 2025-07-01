@@ -9,7 +9,7 @@ use crate::{NmeaCoord, NmeaDate, NmeaUtc};
 readonly_struct!(
     Rmc ,
     "Rmc",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {status : Option<Status>},
@@ -23,7 +23,7 @@ readonly_struct!(
 );
 
 impl Rmc {
-    pub fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -41,7 +41,7 @@ impl Rmc {
         let magnetic_variation = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
         let faa_mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
         Ok(Rmc {
-            navigation_system,
+            talker,
             utc_time,
             status,
             latitude,
@@ -59,8 +59,8 @@ use std::fmt;
 
 impl fmt::Debug for Rmc {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Rmc");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("RMC");
+        ds.field("talker", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);

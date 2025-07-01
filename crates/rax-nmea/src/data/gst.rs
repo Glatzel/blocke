@@ -8,7 +8,7 @@ use crate::macros::readonly_struct;
 readonly_struct!(
     Gst ,
     "Gst",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {rms  : Option<f64>},
@@ -19,7 +19,7 @@ readonly_struct!(
     {std_dev_semi_altitude: Option<f64>}
 );
 impl INmeaData for Gst {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -36,7 +36,7 @@ impl INmeaData for Gst {
         let std_dev_semi_altitude = ctx.skip_strict(&until_star)?.take(&until_comma).parse_opt();
 
         Ok(Gst {
-            navigation_system,
+            talker,
             utc_time,
             rms,
             std_dev_semi_major,
@@ -52,8 +52,8 @@ use std::fmt;
 
 impl fmt::Debug for Gst {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Gst");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("GST");
+        ds.field("talker", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);
