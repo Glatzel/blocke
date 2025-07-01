@@ -6,7 +6,7 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Vtg, Zda};
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
-    // test_utils::init_log();
+    test_utils::init_log();
     #[cfg(target_os = "windows")]
     let path = "COM3";
     #[cfg(target_os = "linux")]
@@ -47,7 +47,7 @@ fn main() -> miette::Result<()> {
                     let nmea = Gst::new(ctx, talker)?;
                     println!("{:?}", nmea)
                 }
-                Identifier::GSV => println!("【\n{sentence}】"),
+                Identifier::GSV => println!("\nGSV#######################\n{sentence}######################\n"),
                 Identifier::RMC => {
                     let ctx = ctx.init(sentence);
                     let nmea = Rmc::new(ctx, talker)?;

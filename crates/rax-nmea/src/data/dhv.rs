@@ -2,13 +2,13 @@ use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
-use crate::macros::readonly_struct;
 use crate::data::{INmeaData, Talker};
+use crate::macros::readonly_struct;
 
 readonly_struct!(
     Dhv ,
     "Dhv",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {speed3d : Option<f64>},
@@ -18,7 +18,7 @@ readonly_struct!(
     {gdspd: Option<f64>}
 );
 impl INmeaData for Dhv {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -34,7 +34,7 @@ impl INmeaData for Dhv {
         let gdspd = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Dhv {
-            navigation_system,
+            talker,
             utc_time,
             speed3d,
             speed_x,
@@ -49,8 +49,8 @@ use std::fmt;
 
 impl fmt::Debug for Dhv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("Dhv");
-        ds.field("navigation_system", &self.navigation_system);
+        let mut ds = f.debug_struct("DHV");
+        ds.field("navigation_system", &self.talker);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);

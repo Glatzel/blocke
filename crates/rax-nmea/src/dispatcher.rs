@@ -115,7 +115,9 @@ where
             // Last line, combine with buffer and return
             (false, true, Some(v)) => {
                 clerk::debug!("`{}{}` is complete.", talker, identifier);
-                Some((talker, identifier, format!("{}{}", v.2, sentence)))
+                let sentence = format!("{}{}", v.2, sentence);
+                self.buffer.remove(&(talker, identifier));
+                Some((talker, identifier, sentence))
             }
             // Out-of-order line, skip
             (false, _, None) => {
@@ -128,7 +130,7 @@ where
                 None
             }
             // Middle line, append to buffer
-            (false, false, Some(v)) => {
+            (false, false, Some(_)) => {
                 clerk::debug!(
                     "Append new sentence to `{}{}`: {}",
                     talker,

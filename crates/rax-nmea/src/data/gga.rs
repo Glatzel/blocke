@@ -140,7 +140,7 @@ impl INmeaData for Gga {
 impl fmt::Debug for Gga {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("Gga");
-        ds.field("navigation_system", &self.navigation_system);
+        ds.field("talker", &self.navigation_system);
 
         if let Some(ref utc_time) = self.utc_time {
             ds.field("utc_time", utc_time);
