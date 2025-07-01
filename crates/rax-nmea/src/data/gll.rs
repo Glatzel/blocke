@@ -1,8 +1,8 @@
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::macros::readonly_struct;
 use crate::data::{FaaMode, INmeaData, Status, Talker};
+use crate::macros::readonly_struct;
 use crate::{NmeaCoord, NmeaUtc};
 
 readonly_struct!(
@@ -51,6 +51,33 @@ impl INmeaData for Gll {
             data_valid,
             faa_mode,
         })
+    }
+}
+
+use std::fmt;
+
+impl fmt::Debug for Gll {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Gll");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(lat) = self.lat {
+            ds.field("lat", &lat);
+        }
+        if let Some(lon) = self.lon {
+            ds.field("lon", &lon);
+        }
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(ref data_valid) = self.data_valid {
+            ds.field("data_valid", data_valid);
+        }
+        if let Some(ref faa_mode) = self.faa_mode {
+            ds.field("faa_mode", faa_mode);
+        }
+
+        ds.finish()
     }
 }
 

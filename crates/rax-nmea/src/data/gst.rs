@@ -2,8 +2,8 @@ use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
-use crate::macros::readonly_struct;
 use crate::data::{INmeaData, Talker};
+use crate::macros::readonly_struct;
 
 readonly_struct!(
     Gst ,
@@ -45,6 +45,39 @@ impl INmeaData for Gst {
             std_dev_semi_longitude,
             std_dev_semi_altitude,
         })
+    }
+}
+
+use std::fmt;
+
+impl fmt::Debug for Gst {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Gst");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(rms) = self.rms {
+            ds.field("rms", &rms);
+        }
+        if let Some(std_dev_semi_major) = self.std_dev_semi_major {
+            ds.field("std_dev_semi_major", &std_dev_semi_major);
+        }
+        if let Some(std_dev_semi_minor) = self.std_dev_semi_minor {
+            ds.field("std_dev_semi_minor", &std_dev_semi_minor);
+        }
+        if let Some(std_dev_semi_latitude) = self.std_dev_semi_latitude {
+            ds.field("std_dev_semi_latitude", &std_dev_semi_latitude);
+        }
+        if let Some(std_dev_semi_longitude) = self.std_dev_semi_longitude {
+            ds.field("std_dev_semi_longitude", &std_dev_semi_longitude);
+        }
+        if let Some(std_dev_semi_altitude) = self.std_dev_semi_altitude {
+            ds.field("std_dev_semi_altitude", &std_dev_semi_altitude);
+        }
+
+        ds.finish()
     }
 }
 

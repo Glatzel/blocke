@@ -66,7 +66,7 @@ impl<'a, R> Iterator for Dispatcher<'a, R>
 where
     R: IRaxReader,
 {
-    type Item = String;
+    type Item = (Talker, Identifier, std::string::String);
 
     fn next(&mut self) -> Option<Self::Item> {
         let (talker, identifier, sentence) = self.preprocess();
@@ -79,7 +79,7 @@ where
             | Identifier::GST
             | Identifier::RMC
             | Identifier::VTG
-            | Identifier::ZDA => todo!(),
+            | Identifier::ZDA => Some((talker, identifier, sentence)),
 
             //multiline
             Identifier::GSV => todo!(),

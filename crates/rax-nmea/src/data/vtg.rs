@@ -1,8 +1,8 @@
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::macros::readonly_struct;
 use crate::data::{FaaMode, INmeaData, Talker};
+use crate::macros::readonly_struct;
 
 readonly_struct!(
     Vtg ,
@@ -39,6 +39,33 @@ impl INmeaData for Vtg {
             speed_over_ground_kph,
             mode,
         })
+    }
+}
+
+use std::fmt;
+
+impl fmt::Debug for Vtg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Vtg");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(course_over_ground_true) = self.course_over_ground_true {
+            ds.field("course_over_ground_true", &course_over_ground_true);
+        }
+        if let Some(course_over_ground_magnetic) = self.course_over_ground_magnetic {
+            ds.field("course_over_ground_magnetic", &course_over_ground_magnetic);
+        }
+        if let Some(speed_over_ground_knots) = self.speed_over_ground_knots {
+            ds.field("speed_over_ground_knots", &speed_over_ground_knots);
+        }
+        if let Some(speed_over_ground_kph) = self.speed_over_ground_kph {
+            ds.field("speed_over_ground_kph", &speed_over_ground_kph);
+        }
+        if let Some(ref mode) = self.mode {
+            ds.field("mode", mode);
+        }
+
+        ds.finish()
     }
 }
 

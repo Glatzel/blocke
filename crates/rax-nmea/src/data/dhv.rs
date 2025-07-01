@@ -45,6 +45,36 @@ impl INmeaData for Dhv {
     }
 }
 
+use std::fmt;
+
+impl fmt::Debug for Dhv {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Dhv");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(speed3d) = self.speed3d {
+            ds.field("speed3d", &speed3d);
+        }
+        if let Some(speed_x) = self.speed_x {
+            ds.field("speed_x", &speed_x);
+        }
+        if let Some(speed_y) = self.speed_y {
+            ds.field("speed_y", &speed_y);
+        }
+        if let Some(speed_z) = self.speed_z {
+            ds.field("speed_z", &speed_z);
+        }
+        if let Some(gdspd) = self.gdspd {
+            ds.field("gdspd", &gdspd);
+        }
+
+        ds.finish()
+    }
+}
+
 #[cfg(test)]
 mod test {
     use test_utils::init_log;

@@ -1,11 +1,12 @@
+use std::fmt;
 use std::str::FromStr;
 
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::macros::readonly_struct;
 use crate::data::{INmeaData, Talker};
+use crate::macros::readonly_struct;
 use crate::{NmeaCoord, NmeaUtc};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -133,6 +134,52 @@ impl INmeaData for Gga {
             age_of_differential_gps_data,
             differential_reference_station_id,
         })
+    }
+}
+
+impl fmt::Debug for Gga {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Gga");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(lat) = self.lat {
+            ds.field("lat", &lat);
+        }
+        if let Some(lon) = self.lon {
+            ds.field("lon", &lon);
+        }
+        if let Some(ref quality) = self.quality {
+            ds.field("quality", quality);
+        }
+        if let Some(satellite_count) = self.satellite_count {
+            ds.field("satellite_count", &satellite_count);
+        }
+        if let Some(hdop) = self.hdop {
+            ds.field("hdop", &hdop);
+        }
+        if let Some(altitude) = self.altitude {
+            ds.field("altitude", &altitude);
+        }
+        if let Some(geoid_separation) = self.geoid_separation {
+            ds.field("geoid_separation", &geoid_separation);
+        }
+        if let Some(age_of_differential_gps_data) = self.age_of_differential_gps_data {
+            ds.field(
+                "age_of_differential_gps_data",
+                &age_of_differential_gps_data,
+            );
+        }
+        if let Some(differential_reference_station_id) = self.differential_reference_station_id {
+            ds.field(
+                "differential_reference_station_id",
+                &differential_reference_station_id,
+            );
+        }
+
+        ds.finish()
     }
 }
 

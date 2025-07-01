@@ -1,11 +1,12 @@
+use std::fmt;
 use std::str::FromStr;
 
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::macros::readonly_struct;
 use crate::data::{INmeaData, SystemId, Talker};
+use crate::macros::readonly_struct;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -87,6 +88,37 @@ impl INmeaData for Gsa {
             vdop,
             system_id,
         })
+    }
+}
+
+impl fmt::Debug for Gsa {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Gsa");
+        ds.field("navigation_system", &self.navigation_system);
+
+        if let Some(selection_mode) = self.selection_mode {
+            ds.field("selection_mode", &selection_mode);
+        }
+        if let Some(mode) = self.mode {
+            ds.field("mode", &mode);
+        }
+        if !self.satellite_ids.is_empty() {
+            ds.field("satellite_ids", &self.satellite_ids);
+        }
+        if let Some(pdop) = self.pdop {
+            ds.field("pdop", &pdop);
+        }
+        if let Some(hdop) = self.hdop {
+            ds.field("hdop", &hdop);
+        }
+        if let Some(vdop) = self.vdop {
+            ds.field("vdop", &vdop);
+        }
+        if let Some(system_id) = self.system_id {
+            ds.field("system_id", &system_id);
+        }
+
+        ds.finish()
     }
 }
 
