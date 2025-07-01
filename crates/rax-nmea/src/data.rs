@@ -33,10 +33,10 @@ pub enum Identifier {
     GLL,
     GSA,
     GST,
+    GSV,
     RMC,
     VTG,
     ZDA,
-    Other(String),
 }
 impl FromStr for Identifier {
     type Err = miette::Report;
@@ -51,18 +51,12 @@ impl FromStr for Identifier {
             "GLL" => Self::GLL,
             "GSA" => Self::GSA,
             "GST" => Self::GST,
+            "GSV" => Self::GSV,
             "RMC" => Self::RMC,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
-            _ => Self::Other(
-                sentence
-                    .split(",")
-                    .collect::<Vec<&str>>()
-                    .first()
-                    .unwrap()
-                    .to_string(),
-            ),
+            s => miette::bail!("Unknown identifier: {}", s),
         };
         Ok(out)
     }

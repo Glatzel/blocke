@@ -5,7 +5,7 @@ use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::macros::readonly_struct;
-use crate::nmea_data::{INmeaData, SystemId, Talker};
+use crate::data::{INmeaData, SystemId, Talker};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {

@@ -3,7 +3,7 @@ use std::str::FromStr;
 use std::time::Duration;
 
 use miette::IntoDiagnostic;
-use rax_nmea::nmea_data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Talker, Vtg, Zda};
+use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Talker, Vtg, Zda};
 use rax_parser::io::IRaxReader;
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
@@ -67,7 +67,6 @@ fn main() -> miette::Result<()> {
                                 let nmea = Zda::new(ctx, nv)?;
                                 println!("{:?}", nmea)
                             }
-                            Identifier::Other(_) => (),
                         }
                     }
                 }

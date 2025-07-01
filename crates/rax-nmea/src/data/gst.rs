@@ -3,7 +3,7 @@ use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
 use crate::macros::readonly_struct;
-use crate::nmea_data::{INmeaData, Talker};
+use crate::data::{INmeaData, Talker};
 
 readonly_struct!(
     Gst ,
