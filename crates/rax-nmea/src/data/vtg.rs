@@ -2,7 +2,7 @@ use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, INmeaData, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
+use crate::rules::*;
 
 readonly_struct!(
     Vtg ,

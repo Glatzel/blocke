@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;
-use crate::sign::*;
+use crate::rules::*;
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Satellite {
     id: Option<u16>,

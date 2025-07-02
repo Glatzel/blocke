@@ -2,7 +2,7 @@ use std::fmt::{self};
 
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
-use crate::sign::*;
+use crate::rules::*;
 use crate::data::Talker;
 use crate::macros::readonly_struct;
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

@@ -1,9 +1,8 @@
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::NmeaUtc;
 use crate::data::Talker;
 use crate::macros::readonly_struct;
-use crate::sign::*;
+use crate::rules::*;
 
 readonly_struct!(
     Zda ,
@@ -23,7 +22,7 @@ impl Zda {
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaUtc());
+            .take(&*NMEA_UTC);
         let day = ctx
             .skip_strict(&*CHAR_COMMA)?
             .take(&*UNTIL_COMMA)

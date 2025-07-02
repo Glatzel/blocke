@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
-use crate::{NmeaCoord, NmeaUtc};
+use crate::rules::*;
+
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GgaQualityIndicator {
@@ -63,15 +63,15 @@ impl INmeaData for Gga {
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaUtc());
+            .take(&*NMEA_UTC);
         clerk::debug!("utc_time: {:?}", utc_time);
 
         clerk::debug!("Parsing lat...");
-        let lat = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
+        let lat = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
+        let lon = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing quality...");

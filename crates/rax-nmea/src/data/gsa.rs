@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::{INmeaData, SystemId, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
+use crate::rules::*;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -60,7 +60,10 @@ impl INmeaData for Gsa {
             .skip_strict(&*UNTIL_COMMA)?
             .take(&*UNTIL_COMMA)
             .parse_opt();
-        let mode = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
+        let mode = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
         let satellite_ids = ctx
             .skip_strict(&*CHAR_COMMA)?
             .take(&*UNTIL_COMMA)
@@ -70,10 +73,22 @@ impl INmeaData for Gsa {
                     .collect::<Vec<u8>>()
             })
             .unwrap_or_default();
-        let pdop = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let hdop = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let vdop = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let system_id = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_STAR).parse_opt();
+        let pdop = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let hdop = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let vdop = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let system_id = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
 
         Ok(Gsa {
             talker,

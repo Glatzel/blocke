@@ -1,10 +1,10 @@
-use rax_parser::str_parser::rules::{Char, Until};
+
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::NmeaUtc;
+
 use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
+use crate::rules::*;
 readonly_struct!(
     Gst ,
     "Gst",
@@ -23,7 +23,7 @@ impl INmeaData for Gst {
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaUtc());
+            .take(&*NMEA_UTC);
         let rms = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
         let std_dev_semi_major = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
         let std_dev_semi_minor = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();

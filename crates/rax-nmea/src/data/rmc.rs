@@ -3,8 +3,8 @@ use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, Status, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
-use crate::{NmeaCoord, NmeaDate, NmeaUtc};
+use crate::rules::*;
+
 
 readonly_struct!(
     Rmc ,
@@ -27,13 +27,13 @@ impl Rmc {
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaUtc());
+            .take(&*NMEA_UTC);
         let status = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let latitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
-        let longitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
+        let latitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
+        let longitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
         let speed_over_ground = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
         let track_made_good = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let date = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaDate());
+        let date = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_DATE);
         let magnetic_variation = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
         let faa_mode = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_STAR).parse_opt();
         Ok(Rmc {

@@ -1,10 +1,8 @@
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, INmeaData, Status, Talker};
 use crate::macros::readonly_struct;
-use crate::sign::*;
-use crate::{NmeaCoord, NmeaUtc};
+use crate::rules::*;
 
 readonly_struct!(
     Gll ,
@@ -25,15 +23,15 @@ impl INmeaData for Gll {
         let lat = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaCoord());
+            .take(&*NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
+        let lon = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing utc_time...");
-        let utc_time = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaUtc());
+        let utc_time = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_UTC);
         clerk::debug!("utc_time: {:?}", utc_time);
 
         let data_valid = ctx

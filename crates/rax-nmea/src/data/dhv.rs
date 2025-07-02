@@ -1,9 +1,8 @@
-
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
-use crate::sign::*;
-use crate::NmeaUtc;
+
 use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
+use crate::rules::*;
 
 readonly_struct!(
     Dhv ,
@@ -19,16 +18,30 @@ readonly_struct!(
 );
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
-            .take(&NmeaUtc());
-        let speed3d = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let speed_x = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let speed_y = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let speed_z = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let gdspd = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_STAR).parse_opt();
+            .take(&*NMEA_UTC);
+        let speed3d = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let speed_x = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let speed_y = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let speed_z = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let gdspd = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
 
         Ok(Dhv {
             talker,
