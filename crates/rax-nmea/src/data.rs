@@ -87,12 +87,16 @@ impl Display for Identifier {
 pub enum Talker {
     ///BeiDou (China)
     BD,
+    //Galileo Positioning System
+    GA,
     ///GLONASS, according to IEIC 61162-1
     GL,
     ///Combination of multiple satellite systems (NMEA 1083)
     GN,
     ///Global Positioning System receiver
     GP,
+    //QZSS (Quectel Quirk)
+    PQ,
 }
 
 impl FromStr for Talker {
@@ -101,9 +105,11 @@ impl FromStr for Talker {
     fn from_str(sentence: &str) -> miette::Result<Self> {
         let out = match &sentence[1..3] {
             "BD" => Self::BD,
+            "GA" => Self::GA,
             "GL" => Self::GL,
             "GN" => Self::GN,
             "GP" => Self::GP,
+            "PQ" => Self::PQ,
             _ => miette::bail!("Unknown talker: {}", &sentence[1..3]),
         };
         Ok(out)
@@ -113,9 +119,11 @@ impl Display for Talker {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             Self::BD => "BD",
+            Self::GA => "GA",
             Self::GL => "GL",
             Self::GN => "GN",
             Self::GP => "GP",
+            Self::PQ => "PQ",
         };
         write!(f, "{}", s)
     }
