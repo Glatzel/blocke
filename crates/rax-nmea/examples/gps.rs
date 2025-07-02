@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
-use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
+use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
     test_utils::init_log();
@@ -48,7 +48,9 @@ fn main() -> miette::Result<()> {
                     println!("{:?}", nmea)
                 }
                 Identifier::GSV => {
-                    println!("\nGSV#######################\n{sentence}######################\n")
+                    let ctx = ctx.init(sentence);
+                    let nmea = Gsv::new(ctx, talker)?;
+                    println!("{:?}", nmea)
                 }
                 Identifier::RMC => {
                     let ctx = ctx.init(sentence);

@@ -79,7 +79,7 @@ impl Txt {
 
 impl fmt::Debug for Txt {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("ZDA");
+        let mut ds = f.debug_struct("TXT");
         ds.field("talker", &self.talker);
 
         ds.field(
