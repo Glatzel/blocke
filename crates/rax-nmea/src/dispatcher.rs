@@ -5,14 +5,14 @@ use rax_parser::io::IRaxReader;
 
 use crate::data::{Identifier, Talker};
 
-/// Dispatcher reads and groups NMEA sentences, handling both single and
-/// multi-line messages.
+/// Dispatcher reads and groups sentences, handling both single and multi-line
+/// messages.
 pub struct Dispatcher<'a, R>
 where
     R: IRaxReader,
 {
     reader: &'a mut R,
-    buffer: HashMap<(Talker, Identifier), (usize, usize, String)>,
+    buffer: HashMap<(Talker, Identifier), String>, // (total count, accumulated sentence)
 }
 
 impl<'a, R> Dispatcher<'a, R>
@@ -31,54 +31,48 @@ where
     /// sentence.
     fn preprocess(&mut self) -> Option<(Talker, Identifier, String)> {
         loop {
-            let sentence = match self.reader.read_line() {
-                Ok(Some(s)) => s,
-                Ok(None) => {
-                    return None;
+            match self.reader.read_line() {
+                Ok(Some(sentence)) => {
+                    let talker = match Talker::from_str(&sentence) {
+                        Ok(t) => t,
+                        Err(e) => {
+                            clerk::warn!("{}", e);
+                            continue;
+                        }
+                    };
+                    let identifier = match Identifier::from_str(&sentence) {
+                        Ok(i) => i,
+                        Err(e) => {
+                            clerk::warn!("{}", e);
+                            continue;
+                        }
+                    };
+                    return Some((talker, identifier, sentence));
                 }
+                Ok(None) => return None,
                 Err(e) => {
                     clerk::warn!("{}", e);
                     continue;
                 }
-            };
-
-            let talker = match Talker::from_str(&sentence) {
-                Ok(t) => t,
-                Err(e) => {
-                    clerk::warn!("{}", e);
-                    continue;
-                }
-            };
-
-            let identifier = match Identifier::from_str(&sentence) {
-                Ok(i) => i,
-                Err(e) => {
-                    clerk::warn!("{}", e);
-                    continue;
-                }
-            };
-
-            return Some((talker, identifier, sentence));
+            }
         }
     }
 
-    /// Handle multi-line sentences (currently only GSV).
+    /// Handle multi-line sentences (e.g., GSV, TXT).
     fn process_multilines(
         &mut self,
         talker: Talker,
         identifier: Identifier,
         sentence: String,
     ) -> Option<(Talker, Identifier, String)> {
-        let (count, idx) = {
-            let parts: Vec<&str> = sentence.split(',').collect();
-            let c = parts.get(1).and_then(|s| s.parse().ok());
-            let i = parts.get(2).and_then(|s| s.parse().ok());
-            match (c, i) {
-                (Some(c), Some(i)) => (c, i),
-                _ => {
-                    clerk::warn!("Malformed sentence: {}", sentence);
-                    return None;
-                }
+        let parts: Vec<&str> = sentence.split(',').collect();
+        let count: Option<usize> = parts.get(1).and_then(|s| s.parse().ok());
+        let idx: Option<usize> = parts.get(2).and_then(|s| s.parse().ok());
+        let (count, idx) = match (count, idx) {
+            (Some(c), Some(i)) => (c, i),
+            _ => {
+                clerk::warn!("Malformed sentence: {}", sentence);
+                return None;
             }
         };
 
@@ -87,33 +81,29 @@ where
             count == idx,
             self.buffer.get(&(talker, identifier)),
         ) {
-            // Only one line, return immediately
-            (true, true, _) => Some((talker, identifier, sentence)),
+            (true, true, _) => Some((talker, identifier, sentence)), 
             // First line of multi-line, buffer it
             (true, false, None) => {
-                self.buffer
-                    .insert((talker, identifier), (1, count, sentence));
+                self.buffer.insert((talker, identifier),  sentence);
                 None
             }
             // Newer first line arrived, replace old buffer
-            (true, false, Some(s)) => {
+            (true, false, Some(old)) => {
                 clerk::warn!(
                     "A newer `{}{}` arrived, remove older one: {}",
                     talker,
                     identifier,
-                    s.2
+                    old
                 );
-                self.buffer.remove(&(talker, identifier));
-                self.buffer
-                    .insert((talker, identifier), (1, count, sentence));
+                self.buffer.insert((talker, identifier), sentence);
                 None
             }
             // Last line, combine with buffer and return
             (false, true, Some(v)) => {
                 clerk::debug!("`{}{}` is complete.", talker, identifier);
-                let sentence = format!("{}{}", v.2, sentence);
+                let combined = format!("{}{}", v, sentence);
                 self.buffer.remove(&(talker, identifier));
-                Some((talker, identifier, sentence))
+                Some((talker, identifier, combined))
             }
             // Out-of-order line, skip
             (false, _, None) => {
@@ -126,16 +116,15 @@ where
                 None
             }
             // Middle line, append to buffer
-            (false, false, Some(_)) => {
+            (false, false, Some(val)) => {
                 clerk::debug!(
                     "Append new sentence to `{}{}`: {}",
                     talker,
                     identifier,
                     sentence
                 );
-                if let Some(val) = self.buffer.get_mut(&(talker, identifier)) {
-                    // Increase the index and append the sentence
-                    *val = (val.0, val.1 + 1, format!("{}{}", val.2, sentence));
+                if let Some(entry) = self.buffer.get_mut(&(talker, identifier)) {
+                    entry.push_str(&sentence);
                 }
                 None
             }
