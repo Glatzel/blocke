@@ -1,79 +1,108 @@
-use std::fmt::{self};
+use std::fmt;
 
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;
-
+#[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Satellite {
-    id: u16,
-    elevation_degrees: u8,
-    azimuth_degree: u16,
-    snr: u8,
+    id: Option<u16>,
+    elevation_degrees: Option<u8>,
+    azimuth_degree: Option<u16>,
+    snr: Option<u8>,
 }
+impl fmt::Debug for Satellite {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("Satellite");
+
+        if let Some(ref id) = self.id {
+            ds.field("id", id);
+        }
+        if let Some(elevation_degrees) = self.elevation_degrees {
+            ds.field("elevation_degrees", &elevation_degrees);
+        }
+        if let Some(azimuth_degree) = self.azimuth_degree {
+            ds.field("azimuth_degree", &azimuth_degree);
+        }
+        if let Some(snr) = self.snr {
+            ds.field("snr", &snr);
+        }
+        ds.finish()
+    }
+}
+
 readonly_struct!(
     Gsv ,
     "Gsv",
-    {talker: Talker}
-
+    {talker: Talker},
+    {satellites: Vec<Satellite>}
 );
 
 impl Gsv {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
-        let mut infos = Vec::new();
+
         let char_comma = Char(&',');
         let until_comma = Until(",");
-        let until_star = Until("*");
-        let until_new_line = Until("\n");
-        let char_new_line = Char(&'\n');
-        for _ in 0..ctx.full_str().lines().count() {
-            let txt_type = ctx
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .take(&until_comma)
-                .parse_opt::<u8>()
-                .map(TxtType::try_from)
-                .and_then(Result::ok);
-            let info = ctx
-                .skip_strict(&char_comma)?
-                .take(&until_star)
-                .map(|f| f.to_string());
-            infos.push((txt_type, info));
-            ctx.skip(&until_new_line).skip(&char_new_line);
-        }
 
-        Ok(Self {
-            talker,
-            info: infos,
-        })
+        // calculate counts
+        let line_count = ctx.full_str().lines().count();
+        let satellite_count = ctx
+            .skip_strict(&until_comma)?
+            .skip_strict(&char_comma)?
+            .skip_strict(&until_comma)?
+            .skip_strict(&char_comma)?
+            .skip_strict(&until_comma)?
+            .skip_strict(&char_comma)?
+            .take(&until_comma)
+            .parse_opt::<usize>()
+            .expect("Can not get the count of satellites.");
+        let last_line_satellite_count = satellite_count % line_count;
+
+        let mut satellites = Vec::with_capacity(satellite_count);
+        //first n-1 lines
+        for _ in 0..line_count - 1 {
+            for _ in 0..4 {
+                let id = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+                let elevation_degrees =
+                    ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+                let azimuth_degree = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+                let snr = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+                satellites.push(Satellite {
+                    id,
+                    elevation_degrees,
+                    azimuth_degree,
+                    snr,
+                });
+            }
+            ctx.skip(&until_comma).skip(&until_comma).skip(&until_comma);
+        }
+        //middle line
+        for _ in 0..last_line_satellite_count {
+            let id = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+            let elevation_degrees = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+            let azimuth_degree = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+            let snr = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+            satellites.push(Satellite {
+                id,
+                elevation_degrees,
+                azimuth_degree,
+                snr,
+            });
+        }
+        // last line
+
+        Ok(Self { talker, satellites })
     }
 }
 
-impl fmt::Debug for Txt {
+impl fmt::Debug for Gsv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut ds = f.debug_struct("ZDA");
+        let mut ds = f.debug_struct("GSV");
         ds.field("talker", &self.talker);
-
-        ds.field(
-            "info",
-            &self
-                .info
-                .iter()
-                .filter(|x| x.0.is_some() || x.1.is_some())
-                .map(|x| match x {
-                    (None, None) => panic!("Null txt info"),
-                    (None, Some(i)) => i.to_string(),
-                    (Some(t), None) => format!("{}: ", t),
-                    (Some(t), Some(i)) => format!("{}: {}", t, i),
-                })
-                .collect::<Vec<String>>(),
-        );
+        ds.field("satellites", &self.satellites);
 
         ds.finish()
     }
@@ -85,9 +114,9 @@ mod test {
 
     use super::*;
     #[test]
-    fn test_new_zda() -> miette::Result<()> {
+    fn test_new_gsv() -> miette::Result<()> {
         init_log();
-        let s = "$GPTXT,03,01,02,MA=CASIC*27\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*71\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
+        let s = "$GPGSV,3,1,10,25,68,053,47,21,59,306,49,29,56,161,49,31,36,265,49*79\r\n $GPGSV,3,2,10,12,29,048,49,05,22,123,49,18,13,000,49,01,00,000,49*72\r\n$GPGSV,3,3,10,14,00,000,03,16,00,000,27*7C";
         let mut ctx = StrParserContext::new();
         let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{:?}", gsv);

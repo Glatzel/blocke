@@ -41,7 +41,7 @@ readonly_struct!(
     "TXT",
     {talker: Talker},
 
-    {info : Vec<( Option<TxtType>,Option<String>)>}
+    {infos : Vec<( Option<TxtType>,Option<String>)>}
 );
 
 impl Txt {
@@ -73,10 +73,7 @@ impl Txt {
             ctx.skip(&until_new_line).skip(&char_new_line);
         }
 
-        Ok(Self {
-            talker,
-            info: infos,
-        })
+        Ok(Self { talker, infos })
     }
 }
 
@@ -88,7 +85,7 @@ impl fmt::Debug for Txt {
         ds.field(
             "info",
             &self
-                .info
+                .infos
                 .iter()
                 .filter(|x| x.0.is_some() || x.1.is_some())
                 .map(|x| match x {
