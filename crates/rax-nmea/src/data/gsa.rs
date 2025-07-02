@@ -1,11 +1,12 @@
+use std::fmt;
 use std::str::FromStr;
 
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
+use crate::data::{INmeaData, SystemId, Talker};
 use crate::macros::readonly_struct;
-use crate::nmea_data::{INmeaData, SystemId, Talker};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GsaSelectionMode {
@@ -42,7 +43,7 @@ impl FromStr for GsaMode {
 readonly_struct!(
     Gsa ,
     "Gsa",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {selection_mode: Option<GsaSelectionMode>},
     {mode : Option<GsaMode>},
@@ -53,7 +54,7 @@ readonly_struct!(
     {system_id:Option<SystemId>}
 );
 impl INmeaData for Gsa {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -78,7 +79,7 @@ impl INmeaData for Gsa {
         let system_id = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Gsa {
-            navigation_system,
+            talker,
             selection_mode,
             mode,
             satellite_ids,
@@ -87,6 +88,37 @@ impl INmeaData for Gsa {
             vdop,
             system_id,
         })
+    }
+}
+
+impl fmt::Debug for Gsa {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("GSA");
+        ds.field("talker", &self.talker);
+
+        if let Some(selection_mode) = self.selection_mode {
+            ds.field("selection_mode", &selection_mode);
+        }
+        if let Some(mode) = self.mode {
+            ds.field("mode", &mode);
+        }
+        if !self.satellite_ids.is_empty() {
+            ds.field("satellite_ids", &self.satellite_ids);
+        }
+        if let Some(pdop) = self.pdop {
+            ds.field("pdop", &pdop);
+        }
+        if let Some(hdop) = self.hdop {
+            ds.field("hdop", &hdop);
+        }
+        if let Some(vdop) = self.vdop {
+            ds.field("vdop", &vdop);
+        }
+        if let Some(system_id) = self.system_id {
+            ds.field("system_id", &system_id);
+        }
+
+        ds.finish()
     }
 }
 

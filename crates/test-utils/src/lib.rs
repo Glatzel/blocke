@@ -6,7 +6,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 static INIT_LOGGING: LazyLock<bool> = LazyLock::new(|| {
     tracing_subscriber::registry()
-        .with(clerk::terminal_layer(LevelFilter::TRACE, true))
+        .with(clerk::terminal_layer(LevelFilter::WARN, true))
         .init();
     true
 });

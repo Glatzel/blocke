@@ -1,0 +1,118 @@
+use std::fmt::{self};
+
+use rax_parser::str_parser::rules::{Char, Until};
+use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use serde::{Deserialize, Serialize};
+
+use crate::data::Talker;
+use crate::macros::readonly_struct;
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum TxtType {
+    Error = 0,
+    Warn = 1,
+    Info = 2,
+    User = 7,
+}
+impl TryFrom<u8> for TxtType {
+    type Error = miette::Report;
+    fn try_from(s: u8) -> miette::Result<Self> {
+        match s {
+            0 => Ok(Self::Error),
+            1 => Ok(Self::Warn),
+            2 => Ok(Self::Info),
+            7 => Ok(Self::User),
+            _ => miette::bail!("Unknown txt type: {}", s),
+        }
+    }
+}
+impl std::fmt::Display for TxtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TxtType::Error => "Error",
+            TxtType::Warn => "Warn",
+            TxtType::Info => "Info",
+            TxtType::User => "User",
+        };
+        write!(f, "{}", s)
+    }
+}
+readonly_struct!(
+    Txt ,
+    "TXT",
+    {talker: Talker},
+
+    {infos : Vec<( Option<TxtType>,Option<String>)>}
+);
+
+impl Txt {
+    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+        clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
+        let mut infos = Vec::new();
+        let char_comma = Char(&',');
+        let until_comma = Until(",");
+        let until_star = Until("*");
+        let until_new_line = Until("\n");
+        let char_new_line = Char(&'\n');
+        for _ in 0..ctx.full_str().lines().count() {
+            let txt_type = ctx
+                .skip_strict(&until_comma)?
+                .skip_strict(&char_comma)?
+                .skip_strict(&until_comma)?
+                .skip_strict(&char_comma)?
+                .skip_strict(&until_comma)?
+                .skip_strict(&char_comma)?
+                .take(&until_comma)
+                .parse_opt::<u8>()
+                .map(TxtType::try_from)
+                .and_then(Result::ok);
+            let info = ctx
+                .skip_strict(&char_comma)?
+                .take(&until_star)
+                .map(|f| f.to_string());
+            infos.push((txt_type, info));
+            ctx.skip(&until_new_line).skip(&char_new_line);
+        }
+
+        Ok(Self { talker, infos })
+    }
+}
+
+impl fmt::Debug for Txt {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("TXT");
+        ds.field("talker", &self.talker);
+
+        ds.field(
+            "info",
+            &self
+                .infos
+                .iter()
+                .filter(|x| x.0.is_some() || x.1.is_some())
+                .map(|x| match x {
+                    (None, None) => panic!("Null txt info"),
+                    (None, Some(i)) => i.to_string(),
+                    (Some(t), None) => format!("{}: ", t),
+                    (Some(t), Some(i)) => format!("{}: {}", t, i),
+                })
+                .collect::<Vec<String>>(),
+        );
+
+        ds.finish()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use test_utils::init_log;
+
+    use super::*;
+    #[test]
+    fn test_new_zda() -> miette::Result<()> {
+        init_log();
+        let s = "$GPTXT,03,01,02,MA=CASIC*27\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*71\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
+        let mut ctx = StrParserContext::new();
+        let txt = Txt::new(ctx.init(s.to_string()), Talker::GP)?;
+        println!("{:?}", txt);
+        Ok(())
+    }
+}

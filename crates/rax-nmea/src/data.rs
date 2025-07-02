@@ -3,10 +3,11 @@ mod gga;
 mod gll;
 mod gsa;
 mod gst;
+mod gsv;
 mod rmc;
+mod txt;
 mod vtg;
 mod zda;
-
 use std::fmt::Display;
 use std::str::FromStr;
 
@@ -15,9 +16,11 @@ pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
 pub use gst::*;
+pub use gsv::*;
 use rax_parser::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
+pub use txt::*;
 pub use vtg::*;
 pub use zda::*;
 
@@ -26,17 +29,18 @@ pub trait INmeaData {
     where
         Self: Sized;
 }
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum Identifier {
     DHV,
     GGA,
     GLL,
     GSA,
     GST,
+    GSV,
     RMC,
+    Txt,
     VTG,
     ZDA,
-    Other(String),
 }
 impl FromStr for Identifier {
     type Err = miette::Report;
@@ -51,33 +55,48 @@ impl FromStr for Identifier {
             "GLL" => Self::GLL,
             "GSA" => Self::GSA,
             "GST" => Self::GST,
+            "GSV" => Self::GSV,
             "RMC" => Self::RMC,
+            "TXT" => Self::Txt,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
-            _ => Self::Other(
-                sentence
-                    .split(",")
-                    .collect::<Vec<&str>>()
-                    .first()
-                    .unwrap()
-                    .to_string(),
-            ),
+            s => miette::bail!("Unknown identifier: {}", s),
         };
         Ok(out)
     }
 }
-
+impl Display for Identifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Self::DHV => "DHV,",
+            Self::GGA => "GGA,",
+            Self::GLL => "GLL,",
+            Self::GSA => "GSA,",
+            Self::GST => "GST,",
+            Self::GSV => "GSV,",
+            Self::RMC => "RMC,",
+            Self::Txt => "TXT",
+            Self::VTG => "VTG,",
+            Self::ZDA => "ZDA,",
+        };
+        write!(f, "{}", s)
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
 pub enum Talker {
     ///BeiDou (China)
     BD,
+    //Galileo Positioning System
+    GA,
     ///GLONASS, according to IEIC 61162-1
     GL,
     ///Combination of multiple satellite systems (NMEA 1083)
     GN,
     ///Global Positioning System receiver
     GP,
+    //QZSS (Quectel Quirk)
+    PQ,
 }
 
 impl FromStr for Talker {
@@ -86,10 +105,12 @@ impl FromStr for Talker {
     fn from_str(sentence: &str) -> miette::Result<Self> {
         let out = match &sentence[1..3] {
             "BD" => Self::BD,
+            "GA" => Self::GA,
             "GL" => Self::GL,
             "GN" => Self::GN,
             "GP" => Self::GP,
-            _ => miette::bail!("Unknown NavigationSystem: {}", &sentence[1..3]),
+            "PQ" => Self::PQ,
+            _ => miette::bail!("Unknown talker: {}", &sentence[1..3]),
         };
         Ok(out)
     }
@@ -98,9 +119,11 @@ impl Display for Talker {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             Self::BD => "BD",
+            Self::GA => "GA",
             Self::GL => "GL",
             Self::GN => "GN",
             Self::GP => "GP",
+            Self::PQ => "PQ",
         };
         write!(f, "{}", s)
     }
@@ -145,7 +168,7 @@ impl FromStr for SystemId {
             "3" => Ok(Self::BDS),
             "4" => Ok(Self::QZSS),
             "5" => Ok(Self::NavIC),
-            other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+            other => miette::bail!("Unknown sysyemid {}", other),
         }
     }
 }
@@ -160,7 +183,7 @@ impl FromStr for Status {
         match s {
             "A" => Ok(Self::Valid),
             "V" => Ok(Self::Invalid),
-            other => miette::bail!("Unknown GllDataValid {}", other),
+            other => miette::bail!("Unknown status {}", other),
         }
     }
 }

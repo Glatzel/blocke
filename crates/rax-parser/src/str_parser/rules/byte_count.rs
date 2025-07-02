@@ -4,7 +4,7 @@ use crate::str_parser::rules::IRule;
 /// Rule to extract a fixed number of bytes from the input string.
 /// Returns a tuple of (prefix, rest) if enough bytes are present and the split
 /// is on a valid UTF-8 boundary, otherwise returns None.
-pub struct ByteCount(usize);
+pub struct ByteCount(pub usize);
 
 impl IRule for ByteCount {
     fn name(&self) -> &str { "byte count" }

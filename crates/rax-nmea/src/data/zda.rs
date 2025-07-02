@@ -2,13 +2,13 @@ use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::NmeaUtc;
+use crate::data::Talker;
 use crate::macros::readonly_struct;
-use crate::nmea_data::Talker;
 
 readonly_struct!(
     Zda ,
     "Zda",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {utc_time: Option<chrono::DateTime<chrono::Utc>>},
     {day : Option<u8>},
@@ -19,7 +19,7 @@ readonly_struct!(
 );
 
 impl Zda {
-    pub fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         let char_comma = Char(&',');
         let until_comma = Until(",");
         let until_star = Until("*");
@@ -36,7 +36,7 @@ impl Zda {
             ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Zda {
-            navigation_system,
+            talker,
             utc_time,
             day,
             month,
@@ -44,6 +44,39 @@ impl Zda {
             local_zone_description,
             local_zone_minutes_description,
         })
+    }
+}
+
+use std::fmt;
+
+impl fmt::Debug for Zda {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("ZDA");
+        ds.field("talker", &self.talker);
+
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(day) = self.day {
+            ds.field("day", &day);
+        }
+        if let Some(month) = self.month {
+            ds.field("month", &month);
+        }
+        if let Some(year) = self.year {
+            ds.field("year", &year);
+        }
+        if let Some(local_zone_description) = self.local_zone_description {
+            ds.field("local_zone_description", &local_zone_description);
+        }
+        if let Some(local_zone_minutes_description) = self.local_zone_minutes_description {
+            ds.field(
+                "local_zone_minutes_description",
+                &local_zone_minutes_description,
+            );
+        }
+
+        ds.finish()
     }
 }
 

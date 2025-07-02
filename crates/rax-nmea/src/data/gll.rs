@@ -1,14 +1,14 @@
 use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
+use crate::data::{FaaMode, INmeaData, Status, Talker};
 use crate::macros::readonly_struct;
-use crate::nmea_data::{FaaMode, INmeaData, Status, Talker};
 use crate::{NmeaCoord, NmeaUtc};
 
 readonly_struct!(
     Gll ,
     "Gll",
-    {navigation_system: Talker},
+    {talker: Talker},
 
     {lat: Option<f64>},
     {lon: Option<f64>},
@@ -17,7 +17,7 @@ readonly_struct!(
     {faa_mode: Option<FaaMode>}
 );
 impl INmeaData for Gll {
-    fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self> {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         let char_comma = Char(&',');
@@ -44,13 +44,40 @@ impl INmeaData for Gll {
         let faa_mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
 
         Ok(Gll {
-            navigation_system,
+            talker,
             lat,
             lon,
             utc_time,
             data_valid,
             faa_mode,
         })
+    }
+}
+
+use std::fmt;
+
+impl fmt::Debug for Gll {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ds = f.debug_struct("GLL");
+        ds.field("talker", &self.talker);
+
+        if let Some(lat) = self.lat {
+            ds.field("lat", &lat);
+        }
+        if let Some(lon) = self.lon {
+            ds.field("lon", &lon);
+        }
+        if let Some(ref utc_time) = self.utc_time {
+            ds.field("utc_time", utc_time);
+        }
+        if let Some(ref data_valid) = self.data_valid {
+            ds.field("data_valid", data_valid);
+        }
+        if let Some(ref faa_mode) = self.faa_mode {
+            ds.field("faa_mode", faa_mode);
+        }
+
+        ds.finish()
     }
 }
 
