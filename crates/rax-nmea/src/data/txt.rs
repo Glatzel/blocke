@@ -63,7 +63,7 @@ impl Txt {
                 .skip_strict(&char_comma)?
                 .take(&until_comma)
                 .parse_opt::<u8>()
-                .map(|f| TxtType::try_from(f))
+                .map(TxtType::try_from)
                 .and_then(Result::ok);
             let info = ctx
                 .skip_strict(&char_comma)?
