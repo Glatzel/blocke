@@ -29,13 +29,12 @@ where
 
     /// Read and parse a line, returning its talker, identifier, and the
     /// sentence.
-    fn preprocess(&mut self) -> (Talker, Identifier, String) {
+    fn preprocess(&mut self) -> Option<(Talker, Identifier, String)> {
         loop {
             let sentence = match self.reader.read_line() {
                 Ok(Some(s)) => s,
                 Ok(None) => {
-                    clerk::warn!("Sentence is none.");
-                    continue;
+                    return None;
                 }
                 Err(e) => {
                     clerk::warn!("{}", e);
@@ -59,7 +58,7 @@ where
                 }
             };
 
-            return (talker, identifier, sentence);
+            return Some((talker, identifier, sentence));
         }
     }
 
@@ -147,26 +146,30 @@ where
     }
 
     /// Dispatches sentences, handling both single and multi-line types.
-    fn dispatch_by_lines(&mut self) -> (Talker, Identifier, String) {
+    fn dispatch_by_lines(&mut self) -> Option<(Talker, Identifier, String)> {
         loop {
-            let (talker, identifier, sentence) = self.preprocess();
-            match identifier {
-                // Single-line sentences
-                Identifier::DHV
-                | Identifier::GGA
-                | Identifier::GLL
-                | Identifier::GSA
-                | Identifier::GST
-                | Identifier::RMC
-                | Identifier::VTG
-                | Identifier::ZDA => return (talker, identifier, sentence),
+            if let Some((talker, identifier, sentence)) = self.preprocess() {
+                match identifier {
+                    // Single-line sentences
+                    Identifier::DHV
+                    | Identifier::GGA
+                    | Identifier::GLL
+                    | Identifier::GSA
+                    | Identifier::GST
+                    | Identifier::RMC
+                    | Identifier::VTG
+                    | Identifier::ZDA => return Some((talker, identifier, sentence)),
 
-                // Multi-line sentences
-                Identifier::GSV | Identifier::Txt => {
-                    if let Some(result) = self.process_multilines(talker, identifier, sentence) {
-                        return result;
+                    // Multi-line sentences
+                    Identifier::GSV | Identifier::Txt => {
+                        if let Some(result) = self.process_multilines(talker, identifier, sentence)
+                        {
+                            return Some(result);
+                        }
                     }
                 }
+            } else {
+                return None;
             }
         }
     }
@@ -178,5 +181,29 @@ where
 {
     type Item = (Talker, Identifier, String);
 
-    fn next(&mut self) -> Option<Self::Item> { Some(self.dispatch_by_lines()) }
+    fn next(&mut self) -> Option<Self::Item> { self.dispatch_by_lines() }
+}
+#[cfg(test)]
+mod test {
+    use std::fs::File;
+    use std::io;
+
+    use miette::IntoDiagnostic;
+    use rax_parser::io::RaxReader;
+    use test_utils::init_log;
+
+    use crate::Dispatcher;
+
+    #[test]
+    fn test_dispatcher() -> miette::Result<()> {
+        init_log();
+        let mut reader = RaxReader::new(io::BufReader::new(
+            File::open("data/nmea1.log").into_diagnostic()?,
+        ));
+        let dispatcher = Dispatcher::new(&mut reader);
+        for i in dispatcher {
+            println!("{:?}", i.1);
+        }
+        Ok(())
+    }
 }
