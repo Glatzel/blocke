@@ -4,6 +4,7 @@ mod gll;
 mod gsa;
 mod gst;
 mod rmc;
+mod txt;
 mod vtg;
 mod zda;
 
@@ -18,6 +19,7 @@ pub use gst::*;
 use rax_parser::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
+pub use txt::*;
 pub use vtg::*;
 pub use zda::*;
 
