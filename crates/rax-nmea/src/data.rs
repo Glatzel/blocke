@@ -3,11 +3,11 @@ mod gga;
 mod gll;
 mod gsa;
 mod gst;
+mod gsv;
 mod rmc;
 mod txt;
 mod vtg;
 mod zda;
-
 use std::fmt::Display;
 use std::str::FromStr;
 
@@ -16,6 +16,7 @@ pub use gga::*;
 pub use gll::*;
 pub use gsa::*;
 pub use gst::*;
+pub use gsv::*;
 use rax_parser::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
