@@ -69,8 +69,7 @@ where
         identifier: Identifier,
         sentence: String,
     ) -> Option<(Talker, Identifier, String)> {
-        // Only GSV is supported as multiline
-        let (count, idx) = if let Identifier::GSV | Identifier::Txt = identifier {
+        let (count, idx) = {
             let parts: Vec<&str> = sentence.split(',').collect();
             let c = parts.get(1).and_then(|s| s.parse().ok());
             let i = parts.get(2).and_then(|s| s.parse().ok());
@@ -81,8 +80,6 @@ where
                     return None;
                 }
             }
-        } else {
-            panic!("Identifier `{:?}` is not a multiline nmea.", identifier);
         };
 
         match (
