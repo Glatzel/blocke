@@ -116,7 +116,7 @@ where
                 None
             }
             // Middle line, append to buffer
-            (false, false, Some(val)) => {
+            (false, false, Some(_)) => {
                 clerk::debug!(
                     "Append new sentence to `{}{}`: {}",
                     talker,
