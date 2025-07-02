@@ -81,10 +81,10 @@ where
             count == idx,
             self.buffer.get(&(talker, identifier)),
         ) {
-            (true, true, _) => Some((talker, identifier, sentence)), 
+            (true, true, _) => Some((talker, identifier, sentence)),
             // First line of multi-line, buffer it
             (true, false, None) => {
-                self.buffer.insert((talker, identifier),  sentence);
+                self.buffer.insert((talker, identifier), sentence);
                 None
             }
             // Newer first line arrived, replace old buffer
