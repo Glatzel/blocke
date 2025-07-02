@@ -1,6 +1,6 @@
-use rax_parser::str_parser::rules::{Char, Until};
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
+use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use crate::sign::*;
 use crate::NmeaUtc;
 use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
@@ -19,19 +19,16 @@ readonly_struct!(
 );
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
 
         let utc_time = ctx
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
             .take(&NmeaUtc());
-        let speed3d = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let speed_x = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let speed_y = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let speed_z = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let gdspd = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+        let speed3d = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
+        let speed_x = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
+        let speed_y = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
+        let speed_z = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
+        let gdspd = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_STAR).parse_opt();
 
         Ok(Dhv {
             talker,

@@ -3,6 +3,7 @@ use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, INmeaData, Status, Talker};
 use crate::macros::readonly_struct;
+use crate::sign::*;
 use crate::{NmeaCoord, NmeaUtc};
 
 readonly_struct!(
@@ -20,28 +21,30 @@ impl INmeaData for Gll {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
-
         clerk::debug!("Parsing lat...");
         let lat = ctx
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
             .take(&NmeaCoord());
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&char_comma)?.take(&NmeaCoord());
+        let lon = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaCoord());
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing utc_time...");
-        let utc_time = ctx.skip_strict(&char_comma)?.take(&NmeaUtc());
+        let utc_time = ctx.skip_strict(&*CHAR_COMMA)?.take(&NmeaUtc());
         clerk::debug!("utc_time: {:?}", utc_time);
 
-        let data_valid = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+        let data_valid = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
 
-        let faa_mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+        let faa_mode = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
 
         Ok(Gll {
             talker,

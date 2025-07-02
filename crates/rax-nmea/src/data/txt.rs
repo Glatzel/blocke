@@ -1,9 +1,8 @@
 use std::fmt::{self};
 
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
-
+use crate::sign::*;
 use crate::data::Talker;
 use crate::macros::readonly_struct;
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -48,29 +47,24 @@ impl Txt {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
         let mut infos = Vec::new();
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
-        let until_new_line = Until("\n");
-        let char_new_line = Char(&'\n');
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .skip_strict(&until_comma)?
-                .skip_strict(&char_comma)?
-                .take(&until_comma)
+                .skip_strict(&*UNTIL_COMMA)?
+                .skip_strict(&*CHAR_COMMA)?
+                .skip_strict(&*UNTIL_COMMA)?
+                .skip_strict(&*CHAR_COMMA)?
+                .skip_strict(&*UNTIL_COMMA)?
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_COMMA)
                 .parse_opt::<u8>()
                 .map(TxtType::try_from)
                 .and_then(Result::ok);
             let info = ctx
-                .skip_strict(&char_comma)?
-                .take(&until_star)
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_STAR)
                 .map(|f| f.to_string());
             infos.push((txt_type, info));
-            ctx.skip(&until_new_line).skip(&char_new_line);
+            ctx.skip(&*UNTIL_NEW_LINE).skip(&*CHAR_NEW_LINE);
         }
 
         Ok(Self { talker, infos })
