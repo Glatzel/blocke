@@ -183,13 +183,16 @@ mod test {
     #[test]
     fn test_dispatcher() -> miette::Result<()> {
         init_log();
-        let mut reader = RaxReader::new(io::BufReader::new(
-            File::open("data/nmea1.log").into_diagnostic()?,
-        ));
-        let dispatcher = Dispatcher::new(&mut reader);
-        for i in dispatcher {
-            println!("{:?}", i.1);
+        for f in [
+            "data/nmea1.log",
+            "data/nmea2.log",
+            "data/nmea_with_sat_info.log",
+        ] {
+            let mut reader = RaxReader::new(io::BufReader::new(File::open(f).into_diagnostic()?));
+            let dispatcher = Dispatcher::new(&mut reader);
+            for _ in dispatcher {}
         }
+
         Ok(())
     }
 }

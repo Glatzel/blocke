@@ -104,7 +104,7 @@ impl FromStr for Talker {
             "GL" => Self::GL,
             "GN" => Self::GN,
             "GP" => Self::GP,
-            _ => miette::bail!("Unknown NavigationSystem: {}", &sentence[1..3]),
+            _ => miette::bail!("Unknown talker: {}", &sentence[1..3]),
         };
         Ok(out)
     }
@@ -160,7 +160,7 @@ impl FromStr for SystemId {
             "3" => Ok(Self::BDS),
             "4" => Ok(Self::QZSS),
             "5" => Ok(Self::NavIC),
-            other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+            other => miette::bail!("Unknown sysyemid {}", other),
         }
     }
 }
@@ -175,7 +175,7 @@ impl FromStr for Status {
         match s {
             "A" => Ok(Self::Valid),
             "V" => Ok(Self::Invalid),
-            other => miette::bail!("Unknown GllDataValid {}", other),
+            other => miette::bail!("Unknown status {}", other),
         }
     }
 }
