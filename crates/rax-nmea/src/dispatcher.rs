@@ -162,7 +162,10 @@ where
 
                     // Multi-line sentences
                     Identifier::GSV | Identifier::Txt => {
-                        return self.process_multilines(talker, identifier, sentence);
+                                                if let Some(result) = self.process_multilines(talker, identifier, sentence)Add commentMore actions
+                        {
+                            return Some(result);
+                        }
                     }
                 }
             } else {
