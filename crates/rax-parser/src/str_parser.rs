@@ -5,8 +5,6 @@ mod parse_opt;
 pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
-use crate::str_parser::rules::IStrFlowRule;
-
 pub struct StrParserContext {
     full: String,
     rest: *const str,

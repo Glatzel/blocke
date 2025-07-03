@@ -11,7 +11,8 @@ impl<'a> IRule for OneOfCharSet<'a> {
     fn name(&self) -> &str { "OneOfCharSet" }
 }
 
-impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
+impl<'a> IStrFlowRule<'a> for OneOfCharSet<'a> {
+    type Output = char;
     /// Applies the OneOfCharSet rule to the input string.
     /// If the first character is in the set, returns the character and the rest
     /// of the string. Otherwise, returns None.

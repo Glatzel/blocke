@@ -5,13 +5,14 @@ use crate::str_parser::IRule;
 /// the first occurrence of a specified delimiter substring.
 /// Returns a tuple of (prefix, rest) if the delimiter is found,
 /// otherwise returns None.
-pub struct Until<'a>(pub &'a str);
+pub struct Until(pub &'static str);
 
-impl<'a> IRule for Until<'a> {
+impl IRule for Until {
     fn name(&self) -> &str { "Until" }
 }
 
-impl<'a> IStrFlowRule<'a, &'a str> for Until<'a> {
+impl<'a> IStrFlowRule<'a> for Until {
+    type Output = &'a str;
     /// Applies the Until rule to the input string.
     /// If the delimiter is found, returns the substring before the delimiter
     /// and the rest of the string (starting with the delimiter).
