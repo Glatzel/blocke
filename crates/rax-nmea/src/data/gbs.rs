@@ -7,7 +7,7 @@ use crate::macros::readonly_struct;
 
 readonly_struct!(
     Gbs,
-    "Gbs",
+    "GPS Satellite Fault Detection",
 
    {talker: Talker}
 );

@@ -40,19 +40,21 @@ impl FromStr for GgaQualityIndicator {
 
 readonly_struct!(
     Gga ,
-    "Gga",
+    "Global Positioning System Fix Data."
+    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver.",
+
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {lat: Option<f64>},
-    {lon: Option<f64>},
-    {quality: Option<GgaQualityIndicator>},
-    {satellite_count: Option<u8>},
-    {hdop: Option<f64>},
-    {altitude: Option<f64>},
-    {geoid_separation: Option<f64>},
-    {age_of_differential_gps_data: Option<f64>},
-    {differential_reference_station_id: Option<u16>}
+    {utc_time: Option<chrono::DateTime<chrono::Utc>>,"UTC of this position report, hh is hours, mm is minutes, ss.ss is seconds."},
+    {lat: Option<f64>,"Latitude, dd is degrees, mm.mm is minutes"},
+    {lon: Option<f64>,"Longitude, dd is degrees, mm.mm is minutes"},
+    {quality: Option<GgaQualityIndicator>,"GPS Quality Indicator"},
+    {satellite_count: Option<u8>,"Number of satellites in use, 00 - 12"},
+    {hdop: Option<f64>,"Horizontal Dilution of precision (meters)"},
+    {altitude: Option<f64>,"Antenna Altitude above/below mean-sea-level (geoid) (in meters)"},
+    {geoid_separation: Option<f64>,"Geoidal separation, the difference between the WGS-84 earth ellipsoid and mean-sea-level (geoid), `-` means mean-sea-level below ellipsoid"},
+    {age_of_differential_gps_data: Option<f64>,"Age of differential GPS data, time in seconds since last SC104 type 1 or 9 update, null field when DGPS is not used"},
+    {differential_reference_station_id: Option<u16>,"Differential reference station ID, 0000-1023"}
 );
 impl INmeaData for Gga {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

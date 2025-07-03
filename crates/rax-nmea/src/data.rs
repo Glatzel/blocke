@@ -37,17 +37,28 @@ pub trait INmeaData {
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum Identifier {
     DHV,
+    ///GPS Satellite Fault Detection
     GBS,
+    ///Global Positioning System Fix Data
     GGA,
+    ///Geographic Position - Latitude/Longitude
     GLL,
+    ///Fix data
     GNS,
+    ///GPS Range Residuals
     GRS,
+    ///GPS Pseudorange Noise Statistics
     GSA,
+    ///GPS DOP and active satellites
     GST,
+    ///Satellites in viewR
     GSV,
+    ///Recommended Minimum Navigation Information
     RMC,
     Txt,
+    ///Track made good and Ground speed
     VTG,
+    ///Time & Date - UTC, day, month, year and local time zone
     ZDA,
 }
 impl FromStr for Identifier {
@@ -80,19 +91,19 @@ impl FromStr for Identifier {
 impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            Self::DHV => "DHV -- ",
-            Self::GBS => "GBS -- ",
-            Self::GGA => "GGA -- ",
-            Self::GLL => "GLL -- ",
-            Self::GNS => "GNS -- ",
-            Self::GRS => "GRS -- ",
-            Self::GSA => "GSA -- ",
-            Self::GST => "GST -- ",
-            Self::GSV => "GSV -- ",
-            Self::RMC => "RMC -- ",
-            Self::Txt => "TXT -- ",
-            Self::VTG => "VTG -- ",
-            Self::ZDA => "ZDA -- ",
+            Self::DHV => "DHV - GPS Satellite Fault Detection",
+            Self::GBS => "GBS - Global Positioning System Fix Data",
+            Self::GGA => "GGA - Geographic Position - Latitude/Longitude",
+            Self::GLL => "GLL - Fix data",
+            Self::GNS => "GNS - GPS Range Residuals",
+            Self::GRS => "GRS - GPS Pseudorange Noise Statistics",
+            Self::GSA => "GSA - GPS DOP and active satellites",
+            Self::GST => "GST - Satellites in viewR",
+            Self::GSV => "GSV - Recommended Minimum Navigation Information",
+            Self::RMC => "RMC - Track made good and Ground speed",
+            Self::Txt => "TXT - Time & Date - UTC, day, month, year and local time zone",
+            Self::VTG => "VTG - ",
+            Self::ZDA => "ZDA - ",
         };
         write!(f, "{}", s)
     }
@@ -132,12 +143,12 @@ impl FromStr for Talker {
 impl Display for Talker {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            Self::BD => "BD",
-            Self::GA => "GA",
-            Self::GL => "GL",
-            Self::GN => "GN",
-            Self::GP => "GP",
-            Self::PQ => "PQ",
+            Self::BD => "BD - BeiDou (China)",
+            Self::GA => "GA - Galileo Positioning System",
+            Self::GL => "GL - GLONASS, according to IEIC 61162-1",
+            Self::GN => "GN - Combination of multiple satellite systems (NMEA 1083)",
+            Self::GP => "GP - Global Positioning System receiver",
+            Self::PQ => "PQ - QZSS (Quectel Quirk)",
         };
         write!(f, "{}", s)
     }
