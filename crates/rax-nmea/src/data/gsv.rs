@@ -237,4 +237,28 @@ mod test {
 
         Ok(())
     }
+    #[test]
+    fn test_new_gsv_3() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let s = "$GPGSV,1,1,3,02,35,291,,03,09,129,,05,14,305,*72";
+        let mut ctx = StrParserContext::new();
+        let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
+        println!("{:?}", gsv);
+        assert_eq!(gsv.talker, Talker::GP);
+        assert_eq!(gsv.satellites.len(), 3);
+        assert_eq!(gsv.satellites[0].id, Some(2));
+        assert_eq!(gsv.satellites[0].elevation_degrees, Some(35));
+        assert_eq!(gsv.satellites[0].azimuth_degree, Some(291));
+        assert!(gsv.satellites[0].snr.is_none());
+        assert_eq!(gsv.satellites[1].id, Some(3));
+        assert_eq!(gsv.satellites[1].elevation_degrees, Some(9));
+        assert_eq!(gsv.satellites[1].azimuth_degree, Some(129));
+        assert!(gsv.satellites[1].snr.is_none());
+        assert_eq!(gsv.satellites[2].id, Some(5));
+        assert_eq!(gsv.satellites[2].elevation_degrees, Some(14));
+        assert_eq!(gsv.satellites[2].azimuth_degree, Some(305));
+        assert!(gsv.satellites[2].snr.is_none());
+
+        Ok(())
+    }
 }
