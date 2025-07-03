@@ -43,8 +43,8 @@ mod tests {
 
     use std::str::FromStr;
 
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};

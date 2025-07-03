@@ -74,8 +74,8 @@ impl fmt::Debug for Dhv {
 #[cfg(test)]
 mod test {
 
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
     #[test]
