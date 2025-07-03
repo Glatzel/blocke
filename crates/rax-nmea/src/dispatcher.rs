@@ -138,8 +138,11 @@ where
                 match identifier {
                     // Single-line sentences
                     Identifier::DHV
+                    | Identifier::GBS
                     | Identifier::GGA
                     | Identifier::GLL
+                    | Identifier::GNS
+                    | Identifier::GRS
                     | Identifier::GSA
                     | Identifier::GST
                     | Identifier::RMC

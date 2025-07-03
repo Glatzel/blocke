@@ -4,7 +4,9 @@ use std::time::Duration;
 use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
-use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
+use rax_nmea::data::{
+    Dhv, Gbs, Gga, Gll, Gns, Grs, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
+};
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
     clerk::init_log_with_level(LevelFilter::WARN);
@@ -23,6 +25,11 @@ fn main() -> miette::Result<()> {
                 let nmea = Dhv::new(ctx, talker)?;
                 println!("{:?}", nmea)
             }
+            Identifier::GBS => {
+                let ctx = ctx.init(sentence);
+                let nmea = Gbs::new(ctx, talker)?;
+                println!("{:?}", nmea)
+            }
             Identifier::GGA => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gga::new(ctx, talker)?;
@@ -31,6 +38,16 @@ fn main() -> miette::Result<()> {
             Identifier::GLL => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gll::new(ctx, talker)?;
+                println!("{:?}", nmea)
+            }
+            Identifier::GNS => {
+                let ctx = ctx.init(sentence);
+                let nmea = Gns::new(ctx, talker)?;
+                println!("{:?}", nmea)
+            }
+            Identifier::GRS => {
+                let ctx = ctx.init(sentence);
+                let nmea = Grs::new(ctx, talker)?;
                 println!("{:?}", nmea)
             }
             Identifier::GSA => {

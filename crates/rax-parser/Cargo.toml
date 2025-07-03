@@ -9,6 +9,6 @@ miette = { workspace = true }
 
 [dev-dependencies]
 clerk = { workspace = true, features = ["log"] }
-
+serialport = { workspace = true }
 [features]
 log = ["clerk/log"]
