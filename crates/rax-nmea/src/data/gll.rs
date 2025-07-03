@@ -80,12 +80,13 @@ impl fmt::Debug for Gll {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
     #[test]
     fn test_new_ggl() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
         let mut ctx = StrParserContext::new();
         let gll = Gll::new(ctx.init(s.to_string()), Talker::GN)?;

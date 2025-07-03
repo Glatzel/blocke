@@ -103,12 +103,13 @@ impl fmt::Debug for Txt {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
     #[test]
     fn test_new_zda() -> miette::Result<()> {
-        init_log();
+      init_log_with_level(LevelFilter::TRACE);
         let s = "$GPTXT,03,01,02,MA=CASIC*25\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*70\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
         let mut ctx = StrParserContext::new();
         let txt = Txt::new(ctx.init(s.to_string()), Talker::GP)?;

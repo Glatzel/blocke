@@ -1,15 +1,16 @@
 use std::fs::File;
 use std::io;
 
+use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
 use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
-use test_utils::init_log;
+use test_utils::init_log_with_level;
 #[test]
 fn test_parse_nmea() -> miette::Result<()> {
-    init_log();
+    init_log_with_level(LevelFilter::WARN);
     for f in [
         "data/nmea1.log",
         "data/nmea2.log",

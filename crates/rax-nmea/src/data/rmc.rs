@@ -93,12 +93,13 @@ impl fmt::Debug for Rmc {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
     #[test]
     fn test_new_rmc() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A*45";
         let mut ctx = StrParserContext::new();
         let zda = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;

@@ -1,12 +1,13 @@
 use std::io::BufReader;
 use std::time::Duration;
 
+use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
-    test_utils::init_log();
+    test_utils::init_log_with_level(LevelFilter::WARN);
     let path = "COM3";
     let port = serialport::new(path, 9600)
         .timeout(Duration::from_millis(3000))

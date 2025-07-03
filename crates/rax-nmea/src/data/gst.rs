@@ -79,12 +79,14 @@ impl fmt::Debug for Gst {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
     #[test]
     fn test_new_gst() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPGST,182141.000,15.5,15.3,7.2,21.8,0.9,0.5,0.8*54";
         let mut ctx = StrParserContext::new();
         let vtg = Gst::new(ctx.init(s.to_string()), Talker::GN)?;

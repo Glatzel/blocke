@@ -122,13 +122,15 @@ impl fmt::Debug for Gsa {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
 
     #[test]
     fn test_new_gsa() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GN)?;

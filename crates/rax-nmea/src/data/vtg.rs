@@ -69,12 +69,12 @@ impl fmt::Debug for Vtg {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
-
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
     use super::*;
     #[test]
     fn test_new_vtg() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPVTG,220.86,T,,M,2.550,N,4.724,K,A*34";
         let mut ctx = StrParserContext::new();
         let vtg = Vtg::new(ctx.init(s.to_string()), Talker::GN)?;

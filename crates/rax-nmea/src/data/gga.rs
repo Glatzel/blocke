@@ -181,13 +181,15 @@ impl fmt::Debug for Gga {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
 
     use super::*;
 
     #[test]
     fn test_new_gga1() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
         let mut ctx = StrParserContext::new();
         let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
@@ -197,7 +199,7 @@ mod test {
     }
     #[test]
     fn test_new_gga2() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GNGGA,130301.000,,,,,0,00,25.5,,,,,,*7A";
         let mut ctx = StrParserContext::new();
         let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;

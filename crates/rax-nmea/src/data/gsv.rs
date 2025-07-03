@@ -110,12 +110,12 @@ impl fmt::Debug for Gsv {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
-
+    use clerk::tracing::level_filters::LevelFilter;
+    use test_utils::init_log_with_level;
     use super::*;
     #[test]
     fn test_new_gsv() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPGSV,3,1,10,25,68,053,47,21,59,306,49,29,56,161,49,31,36,265,49*79\r\n$GPGSV,3,2,10,12,29,048,49,05,22,123,49,18,13,000,49,01,00,000,49*72\r\n$GPGSV,3,3,10,14,00,000,03,16,00,000,27*7C";
         let mut ctx = StrParserContext::new();
         let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
