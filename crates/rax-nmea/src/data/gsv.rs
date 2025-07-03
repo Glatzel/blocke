@@ -1,6 +1,6 @@
 use std::fmt;
 
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax_parser::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
@@ -43,9 +43,10 @@ readonly_struct!(
 impl Gsv {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
+        for l in ctx.full_str().lines() {
+            NMEA_VALIDATE.apply(l)?;
+        }
 
-        ctx.global(&NMEA_VALIDATE)?;
-        
         // calculate counts
         let line_count = ctx.full_str().lines().count();
         let satellite_count = ctx
@@ -64,22 +65,11 @@ impl Gsv {
         //first n-1 lines
         for _ in 0..line_count - 1 {
             for _ in 0..4 {
-                let id = ctx
-                    .skip_strict(&CHAR_COMMA)?
-                    .take(&UNTIL_COMMA)
-                    .parse_opt();
-                let elevation_degrees = ctx
-                    .skip_strict(&CHAR_COMMA)?
-                    .take(&UNTIL_COMMA)
-                    .parse_opt();
-                let azimuth_degree = ctx
-                    .skip_strict(&CHAR_COMMA)?
-                    .take(&UNTIL_COMMA)
-                    .parse_opt();
-                let snr = ctx
-                    .skip_strict(&CHAR_COMMA)?
-                    .take(&UNTIL_COMMA)
-                    .parse_opt();
+                let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let elevation_degrees =
+                    ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
                 satellites.push(Satellite {
                     id,
                     elevation_degrees,
@@ -87,28 +77,14 @@ impl Gsv {
                     snr,
                 });
             }
-            ctx.skip(&UNTIL_COMMA)
-                .skip(&UNTIL_COMMA)
-                .skip(&UNTIL_COMMA);
+            ctx.skip(&UNTIL_COMMA).skip(&UNTIL_COMMA).skip(&UNTIL_COMMA);
         }
         //middle line
         for _ in 0..last_line_satellite_count {
-            let id = ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt();
-            let elevation_degrees = ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt();
-            let azimuth_degree = ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt();
-            let snr = ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt();
+            let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             satellites.push(Satellite {
                 id,
                 elevation_degrees,

@@ -1,6 +1,6 @@
 use std::fmt::{self};
 
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax_parser::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
@@ -47,9 +47,11 @@ readonly_struct!(
 impl Txt {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
-        
-        ctx.global(&NMEA_VALIDATE)?;
-        
+
+        for l in ctx.full_str().lines() {
+            NMEA_VALIDATE.apply(l)?;
+        }
+
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
