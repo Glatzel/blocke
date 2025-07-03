@@ -66,3 +66,59 @@ impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaDate {
         (Some(dt), &input[first_comma_idx..])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use chrono::NaiveDate;
+    use rax_parser::str_parser::IStrFlowRule;
+
+    use super::*;
+
+    #[test]
+    fn test_nmea_date_valid() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("110324,foo,bar");
+        assert_eq!(date, Some(NaiveDate::from_ymd_opt(2024, 3, 11).unwrap()));
+        assert_eq!(rest, ",foo,bar");
+    }
+
+    #[test]
+    fn test_nmea_date_invalid_day() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("xx0324,foo,bar");
+        assert_eq!(date, None);
+        assert_eq!(rest, ",foo,bar");
+    }
+
+    #[test]
+    fn test_nmea_date_invalid_month() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("11xx24,foo,bar");
+        assert_eq!(date, None);
+        assert_eq!(rest, ",foo,bar");
+    }
+
+    #[test]
+    fn test_nmea_date_invalid_year() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("1103xx,foo,bar");
+        assert_eq!(date, None);
+        assert_eq!(rest, ",foo,bar");
+    }
+
+    #[test]
+    fn test_nmea_date_no_comma() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("110324");
+        assert_eq!(date, None);
+        assert_eq!(rest, "110324");
+    }
+
+    #[test]
+    fn test_nmea_date_invalid_date() {
+        let rule = NmeaDate();
+        let (date, rest) = rule.apply("320224,foo,bar"); // 32nd day is invalid
+        assert_eq!(date, None);
+        assert_eq!(rest, ",foo,bar");
+    }
+}

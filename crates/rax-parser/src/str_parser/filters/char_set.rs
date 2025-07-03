@@ -79,3 +79,72 @@ pub const ASCII_LETTERS_DIGITS: CharSetFilter<62> = CharSetFilter::new([
     'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
     'v', 'w', 'x', 'y', 'z',
 ]);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_digits_contains() {
+        for c in '0'..='9' {
+            assert!(super::DIGITS.contains(c), "DIGITS should contain '{}'", c);
+        }
+        assert!(!super::DIGITS.contains('a'));
+        assert!(!super::DIGITS.contains(' '));
+    }
+
+    #[test]
+    fn test_ascii_letters_contains() {
+        for c in 'A'..='Z' {
+            assert!(
+                super::ASCII_LETTERS.contains(c),
+                "ASCII_LETTERS should contain '{}'",
+                c
+            );
+        }
+        for c in 'a'..='z' {
+            assert!(
+                super::ASCII_LETTERS.contains(c),
+                "ASCII_LETTERS should contain '{}'",
+                c
+            );
+        }
+        assert!(!super::ASCII_LETTERS.contains('0'));
+        assert!(!super::ASCII_LETTERS.contains(' '));
+    }
+
+    #[test]
+    fn test_ascii_letters_digits_contains() {
+        for c in 'A'..='Z' {
+            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
+        }
+        for c in 'a'..='z' {
+            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
+        }
+        for c in '0'..='9' {
+            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
+        }
+        assert!(!super::ASCII_LETTERS_DIGITS.contains(' '));
+        assert!(!super::ASCII_LETTERS_DIGITS.contains('-'));
+    }
+
+    #[test]
+    fn test_from_str_digits() {
+        let digits: CharSetFilter<10> = "0123456789".parse().unwrap();
+        for c in '0'..='9' {
+            assert!(digits.contains(c));
+        }
+    }
+
+    #[test]
+    fn test_from_str_too_short() {
+        let result: Result<CharSetFilter<10>, _> = "01234567".parse();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_from_str_too_long() {
+        let result: Result<CharSetFilter<10>, _> = "01234567890".parse();
+        assert!(result.is_err());
+    }
+}

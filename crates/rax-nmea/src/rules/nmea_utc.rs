@@ -118,3 +118,79 @@ impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaUtc {
         (Some(dt.and_utc()), &input[first_comma_idx..])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use chrono::{Timelike, Utc};
+    use rax_parser::str_parser::IStrFlowRule;
+
+    use super::*;
+
+    #[test]
+    fn test_nmea_utc_valid() {
+        let rule = NmeaUtc();
+        let today = Utc::now().date_naive();
+        let (dt, rest) = rule.apply("123456.789,foo,bar");
+        let dt = dt.expect("Should parse valid UTC time");
+        assert_eq!(dt.hour(), 12);
+        assert_eq!(dt.minute(), 34);
+        assert_eq!(dt.second(), 56);
+        assert_eq!(dt.nanosecond(), 789_000_000);
+        assert_eq!(dt.date_naive(), today);
+        assert_eq!(rest, ",foo,bar");
+    }
+
+    #[test]
+    fn test_nmea_utc_no_fraction() {
+        let rule = NmeaUtc();
+        let today = Utc::now().date_naive();
+        let (dt, rest) = rule.apply("235959,rest");
+        let dt = dt.expect("Should parse valid UTC time");
+        assert_eq!(dt.hour(), 23);
+        assert_eq!(dt.minute(), 59);
+        assert_eq!(dt.second(), 59);
+        assert_eq!(dt.nanosecond(), 0);
+        assert_eq!(dt.date_naive(), today);
+        assert_eq!(rest, ",rest");
+    }
+
+    #[test]
+    fn test_nmea_utc_invalid_hour() {
+        let rule = NmeaUtc();
+        let (dt, rest) = rule.apply("xx3456,foo");
+        assert!(dt.is_none());
+        assert_eq!(rest, ",foo");
+    }
+
+    #[test]
+    fn test_nmea_utc_invalid_minute() {
+        let rule = NmeaUtc();
+        let (dt, rest) = rule.apply("12xx56,foo");
+        assert!(dt.is_none());
+        assert_eq!(rest, ",foo");
+    }
+
+    #[test]
+    fn test_nmea_utc_invalid_second() {
+        let rule = NmeaUtc();
+        let (dt, rest) = rule.apply("1234xx,foo");
+        assert!(dt.is_none());
+        assert_eq!(rest, ",foo");
+    }
+
+    #[test]
+    fn test_nmea_utc_empty() {
+        let rule = NmeaUtc();
+        let (dt, rest) = rule.apply(",foo");
+        assert!(dt.is_none());
+        assert_eq!(rest, ",foo");
+    }
+
+    #[test]
+    fn test_nmea_utc_no_comma() {
+        let rule = NmeaUtc();
+        let (dt, rest) = rule.apply("123456");
+        assert!(dt.is_none());
+        assert_eq!(rest, "123456");
+    }
+}
