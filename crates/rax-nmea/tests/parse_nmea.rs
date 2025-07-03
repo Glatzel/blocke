@@ -5,7 +5,9 @@ use clerk::init_log_with_level;
 use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
-use rax_nmea::data::{Dhv, Gbs, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
+use rax_nmea::data::{
+    Dhv, Gbs, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
+};
 use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
 #[test]
