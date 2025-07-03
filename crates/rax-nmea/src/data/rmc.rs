@@ -24,34 +24,19 @@ readonly_struct!(
 impl Rmc {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
-        
+
         let utc_time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
-        let status = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
-            .parse_opt();
+        let status = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let latitude = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
         let longitude = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
-        let speed_over_ground = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
-            .parse_opt();
-        let track_made_good = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
-            .parse_opt();
+        let speed_over_ground = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let track_made_good = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let date = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DATE);
-        let magnetic_variation = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
-            .parse_opt();
-        let faa_mode = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_STAR)
-            .parse_opt();
+        let magnetic_variation = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let faa_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
         Ok(Rmc {
             talker,
             utc_time,
