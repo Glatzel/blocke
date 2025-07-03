@@ -81,3 +81,68 @@ impl<'a> rax_parser::str_parser::IStrGlobalRule<'a> for NmeaValidate {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use rax_parser::str_parser::IStrGlobalRule;
+
+    use super::*;
+
+    #[test]
+    fn test_valid_sentence() {
+        let rule = NmeaValidate();
+        // Example: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+        let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        assert!(rule.apply(input).is_ok());
+    }
+
+    #[test]
+    fn test_invalid_checksum() {
+        let rule = NmeaValidate();
+        let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*00";
+        let result = rule.apply(input);
+        assert!(result.is_err());
+        let msg = format!("{:?}", result);
+        assert!(msg.contains("Checksum mismatch"));
+    }
+
+    #[test]
+    fn test_missing_dollar() {
+        let rule = NmeaValidate();
+        let input = "GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        let result = rule.apply(input);
+        assert!(result.is_err());
+        let msg = format!("{:?}", result);
+        assert!(msg.contains("doesn't start with"));
+    }
+
+    #[test]
+    fn test_missing_star() {
+        let rule = NmeaValidate();
+        let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,47";
+        let result = rule.apply(input);
+        assert!(result.is_err());
+        let msg = format!("{:?}", result);
+        assert!(msg.contains("Missing checksum delimiter"));
+    }
+
+    #[test]
+    fn test_invalid_hex_checksum() {
+        let rule = NmeaValidate();
+        let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*ZZ";
+        let result = rule.apply(input);
+        assert!(result.is_err());
+        let msg = format!("{:?}", result);
+        assert!(msg.contains("Invalid hex checksum"));
+    }
+
+    #[test]
+    fn test_short_checksum() {
+        let rule = NmeaValidate();
+        let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*4";
+        let result = rule.apply(input);
+        assert!(result.is_err());
+        let msg = format!("{:?}", result);
+        assert!(msg.contains("require checksum_str length 2"));
+    }
+}
