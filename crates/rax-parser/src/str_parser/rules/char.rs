@@ -42,13 +42,15 @@ impl<'a, const C: char> IStrFlowRule<'a> for Char<C> {
 
 #[cfg(test)]
 mod tests {
-    use test_utils::init_log;
+
+    use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
 
     #[test]
     fn test_char_match() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Char::<'a'>();
         let input = "a123";
         let (matched, rest) = rule.apply(input);
@@ -58,7 +60,7 @@ mod tests {
 
     #[test]
     fn test_char_no_match() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Char::<'d'>();
         let input = "abc";
         let (matched, rest) = rule.apply(input);
@@ -68,7 +70,7 @@ mod tests {
 
     #[test]
     fn test_char_empty_input() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Char::<'a'>();
         let input = "";
         let (matched, rest) = rule.apply(input);
@@ -78,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Char::<'你'>();
         let input = "你好";
         let (matched, rest) = rule.apply(input);

@@ -8,7 +8,7 @@ use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum GgaQualityIndicator {
     Invalid = 0,
     GpsFix = 1,
@@ -40,19 +40,21 @@ impl FromStr for GgaQualityIndicator {
 
 readonly_struct!(
     Gga ,
-    "Gga",
+    "Global Positioning System Fix Data."
+    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver.",
+
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {lat: Option<f64>},
-    {lon: Option<f64>},
-    {quality: Option<GgaQualityIndicator>},
-    {satellite_count: Option<u8>},
-    {hdop: Option<f64>},
-    {altitude: Option<f64>},
-    {geoid_separation: Option<f64>},
-    {age_of_differential_gps_data: Option<f64>},
-    {differential_reference_station_id: Option<u16>}
+    {utc_time: Option<chrono::DateTime<chrono::Utc>>,"UTC of this position report, hh is hours, mm is minutes, ss.ss is seconds."},
+    {lat: Option<f64>,"Latitude, dd is degrees, mm.mm is minutes"},
+    {lon: Option<f64>,"Longitude, dd is degrees, mm.mm is minutes"},
+    {quality: Option<GgaQualityIndicator>,"GPS Quality Indicator"},
+    {satellite_count: Option<u8>,"Number of satellites in use, 00 - 12"},
+    {hdop: Option<f64>,"Horizontal Dilution of precision (meters)"},
+    {altitude: Option<f64>,"Antenna Altitude above/below mean-sea-level (geoid) (in meters)"},
+    {geoid_separation: Option<f64>,"Geoidal separation, the difference between the WGS-84 earth ellipsoid and mean-sea-level (geoid), `-` means mean-sea-level below ellipsoid"},
+    {age_of_differential_gps_data: Option<f64>,"Age of differential GPS data, time in seconds since last SC104 type 1 or 9 update, null field when DGPS is not used"},
+    {differential_reference_station_id: Option<u16>,"Differential reference station ID, 0000-1023"}
 );
 impl INmeaData for Gga {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
@@ -157,10 +159,10 @@ impl fmt::Debug for Gga {
             ds.field("hdop", &hdop);
         }
         if let Some(altitude) = self.altitude {
-            ds.field("altitude", &altitude);
+            ds.field("altitude", &format!("{} M", altitude));
         }
         if let Some(geoid_separation) = self.geoid_separation {
-            ds.field("geoid_separation", &geoid_separation);
+            ds.field("geoid_separation", &format!("{} M", geoid_separation));
         }
         if let Some(age_of_differential_gps_data) = self.age_of_differential_gps_data {
             ds.field(
@@ -181,28 +183,34 @@ impl fmt::Debug for Gga {
 
 #[cfg(test)]
 mod test {
-    use test_utils::init_log;
+
+    use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+    use float_cmp::assert_approx_eq;
 
     use super::*;
 
     #[test]
     fn test_new_gga1() -> miette::Result<()> {
-        init_log();
-        let s = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        init_log_with_level(LevelFilter::TRACE);
+        let s = "$GPGGA,110256,5505.676996,N,03856.028884,E,2,08,0.7,2135.0,M,14.0,M,,*7D";
         let mut ctx = StrParserContext::new();
         let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gga);
-
-        Ok(())
-    }
-    #[test]
-    fn test_new_gga2() -> miette::Result<()> {
-        init_log();
-        let s = "$GNGGA,130301.000,,,,,0,00,25.5,,,,,,*7A";
-        let mut ctx = StrParserContext::new();
-        let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gga);
-
+        assert_eq!(gga.talker, Talker::GN);
+        assert!(gga.utc_time.unwrap().to_string().contains("11:02:56"));
+        assert_approx_eq!(f64, gga.lat.unwrap(), 55.0946166);
+        assert_approx_eq!(f64, gga.lon.unwrap(), 38.93381473333333);
+        assert_eq!(
+            gga.quality.unwrap(),
+            GgaQualityIndicator::DifferentialGpsFix
+        );
+        assert_eq!(gga.satellite_count.unwrap(), 8);
+        assert_approx_eq!(f64, gga.hdop.unwrap(), 0.7);
+        assert_approx_eq!(f64, gga.altitude.unwrap(), 2135.0);
+        assert_approx_eq!(f64, gga.geoid_separation.unwrap(), 14.0);
+        assert!(gga.age_of_differential_gps_data.is_none());
+        assert!(gga.differential_reference_station_id.is_none());
         Ok(())
     }
 }

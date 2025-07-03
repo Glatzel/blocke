@@ -43,13 +43,15 @@ impl<'a> IStrFlowRule<'a> for Until {
 
 #[cfg(test)]
 mod tests {
-    use test_utils::init_log;
+
+    use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
 
     #[test]
     fn test_until_str_output() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Until(";");
         let input = "hello;world";
 
@@ -60,7 +62,7 @@ mod tests {
 
     #[test]
     fn test_until_parse_fail() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Until(",");
         let input = "abc rest";
         let (prefix, rest) = rule.apply(input);
@@ -70,7 +72,7 @@ mod tests {
 
     #[test]
     fn test_until_at_start() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Until("-");
         let input = "-start";
         let (prefix, rest) = rule.apply(input);
@@ -80,7 +82,7 @@ mod tests {
 
     #[test]
     fn test_until_empty_input() {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         let rule = Until(",");
         let input = "";
         let (prefix, rest) = rule.apply(input);

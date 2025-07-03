@@ -1,6 +1,9 @@
 mod dhv;
+mod gbs;
 mod gga;
 mod gll;
+mod gns;
+mod grs;
 mod gsa;
 mod gst;
 mod gsv;
@@ -12,8 +15,11 @@ use std::fmt::Display;
 use std::str::FromStr;
 
 pub use dhv::*;
+pub use gbs::*;
 pub use gga::*;
 pub use gll::*;
+pub use gns::*;
+pub use grs::*;
 pub use gsa::*;
 pub use gst::*;
 pub use gsv::*;
@@ -23,7 +29,6 @@ use serde::{Deserialize, Serialize};
 pub use txt::*;
 pub use vtg::*;
 pub use zda::*;
-
 pub trait INmeaData {
     fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self>
     where
@@ -32,14 +37,28 @@ pub trait INmeaData {
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum Identifier {
     DHV,
+    ///GPS Satellite Fault Detection
+    GBS,
+    ///Global Positioning System Fix Data
     GGA,
+    ///Geographic Position - Latitude/Longitude
     GLL,
+    ///Fix data
+    GNS,
+    ///GPS Range Residuals
+    GRS,
+    ///GPS Pseudorange Noise Statistics
     GSA,
+    ///GPS DOP and active satellites
     GST,
+    ///Satellites in viewR
     GSV,
+    ///Recommended Minimum Navigation Information
     RMC,
     Txt,
+    ///Track made good and Ground speed
     VTG,
+    ///Time & Date - UTC, day, month, year and local time zone
     ZDA,
 }
 impl FromStr for Identifier {
@@ -51,8 +70,11 @@ impl FromStr for Identifier {
         }
         let out = match &sentence[3..6] {
             "DHV" => Self::DHV,
+            "GBS" => Self::GBS,
             "GGA" => Self::GGA,
             "GLL" => Self::GLL,
+            "GNS" => Self::GNS,
+            "GRS" => Self::GRS,
             "GSA" => Self::GSA,
             "GST" => Self::GST,
             "GSV" => Self::GSV,
@@ -69,16 +91,19 @@ impl FromStr for Identifier {
 impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            Self::DHV => "DHV,",
-            Self::GGA => "GGA,",
-            Self::GLL => "GLL,",
-            Self::GSA => "GSA,",
-            Self::GST => "GST,",
-            Self::GSV => "GSV,",
-            Self::RMC => "RMC,",
+            Self::DHV => "DHV",
+            Self::GBS => "GBS",
+            Self::GGA => "GGA",
+            Self::GLL => "GLL",
+            Self::GNS => "GNS",
+            Self::GRS => "GRS",
+            Self::GSA => "GSA",
+            Self::GST => "GST",
+            Self::GSV => "GSV",
+            Self::RMC => "RMC",
             Self::Txt => "TXT",
-            Self::VTG => "VTG,",
-            Self::ZDA => "ZDA,",
+            Self::VTG => "VTG",
+            Self::ZDA => "ZDA",
         };
         write!(f, "{}", s)
     }
@@ -172,7 +197,7 @@ impl FromStr for SystemId {
         }
     }
 }
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum Status {
     Valid,
     Invalid,

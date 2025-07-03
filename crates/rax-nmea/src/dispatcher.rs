@@ -35,23 +35,23 @@ where
                 Ok(Some(sentence)) => {
                     let talker = match Talker::from_str(&sentence) {
                         Ok(t) => t,
-                        Err(e) => {
-                            clerk::warn!("{}", e);
+                        Err(_e) => {
+                            clerk::warn!("{}", _e);
                             continue;
                         }
                     };
                     let identifier = match Identifier::from_str(&sentence) {
                         Ok(i) => i,
-                        Err(e) => {
-                            clerk::warn!("{}", e);
+                        Err(_e) => {
+                            clerk::warn!("{}", _e);
                             continue;
                         }
                     };
                     return Some((talker, identifier, sentence));
                 }
                 Ok(None) => return None,
-                Err(e) => {
-                    clerk::warn!("{}", e);
+                Err(_e) => {
+                    clerk::warn!("{}", _e);
                     continue;
                 }
             }
@@ -88,12 +88,12 @@ where
                 None
             }
             // Newer first line arrived, replace old buffer
-            (true, false, Some(old)) => {
+            (true, false, Some(_old)) => {
                 clerk::warn!(
                     "A newer `{}{}` arrived, remove older one: {}",
                     talker,
                     identifier,
-                    old
+                    _old
                 );
                 self.buffer.insert((talker, identifier), sentence);
                 None
@@ -138,8 +138,11 @@ where
                 match identifier {
                     // Single-line sentences
                     Identifier::DHV
+                    | Identifier::GBS
                     | Identifier::GGA
                     | Identifier::GLL
+                    | Identifier::GNS
+                    | Identifier::GRS
                     | Identifier::GSA
                     | Identifier::GST
                     | Identifier::RMC
@@ -174,15 +177,16 @@ mod test {
     use std::fs::File;
     use std::io;
 
+    use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
     use miette::IntoDiagnostic;
     use rax_parser::io::RaxReader;
-    use test_utils::init_log;
 
     use crate::Dispatcher;
 
     #[test]
     fn test_dispatcher() -> miette::Result<()> {
-        init_log();
+        init_log_with_level(LevelFilter::TRACE);
         for f in [
             "data/nmea1.log",
             "data/nmea2.log",

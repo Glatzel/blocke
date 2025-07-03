@@ -11,9 +11,9 @@ rax-parser = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]
+clerk = { workspace = true, features = ["log"] }
 float-cmp = { workspace = true }
 serialport = { workspace = true }
-test-utils = { workspace = true }
 
 [features]
 log = ["clerk/log"]
