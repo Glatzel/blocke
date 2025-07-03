@@ -7,10 +7,10 @@ use std::sync::LazyLock;
 
 use rax_parser::str_parser::rules::{Char, Until};
 
-use crate::rules::nmea_coord::NmeaCoord;
-use crate::rules::nmea_date::NmeaDate;
-use crate::rules::nmea_utc::NmeaUtc;
-use crate::rules::nmea_validate::NmeaValidate;
+pub use crate::rules::nmea_coord::NmeaCoord;
+pub use crate::rules::nmea_date::NmeaDate;
+pub use crate::rules::nmea_utc::NmeaUtc;
+pub use crate::rules::nmea_validate::NmeaValidate;
 
 pub static CHAR_COMMA: LazyLock<Char> = LazyLock::new(|| Char(&','));
 pub static CHAR_NEW_LINE: LazyLock<Char> = LazyLock::new(|| Char(&'\n'));

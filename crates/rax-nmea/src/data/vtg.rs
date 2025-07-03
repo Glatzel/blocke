@@ -17,6 +17,8 @@ readonly_struct!(
 );
 impl INmeaData for Vtg {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        
         let course_over_ground_true = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .take(&*UNTIL_COMMA)

@@ -47,6 +47,9 @@ readonly_struct!(
 impl Txt {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
+        
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
