@@ -5,6 +5,8 @@ mod parse_opt;
 pub use parse_opt::*;
 pub use rules::{IRule, IStrFlowRule, IStrGlobalRule};
 
+use crate::str_parser::rules::IStrFlowRule;
+
 pub struct StrParserContext {
     full: String,
     rest: *const str,
@@ -32,9 +34,9 @@ impl StrParserContext {
 }
 
 impl<'a> StrParserContext {
-    pub fn take<R, O>(&mut self, rule: &R) -> Option<O>
+    pub fn take<R>(&mut self, rule: &R) -> Option<R::Output>
     where
-        R: rules::IStrFlowRule<'a, O>,
+        R: IStrFlowRule<'a>,
     {
         match rule.apply(unsafe { &*self.rest }) {
             (Some(result), rest) => {
@@ -47,9 +49,9 @@ impl<'a> StrParserContext {
             }
         }
     }
-    pub fn take_strict<R, O>(&mut self, rule: &R) -> miette::Result<O>
+    pub fn take_strict<R>(&mut self, rule: &R) -> miette::Result<R::Output>
     where
-        R: rules::IStrFlowRule<'a, O>,
+        R: IStrFlowRule<'a>,
     {
         match self.take(rule) {
             Some(s) => Ok(s),
@@ -59,25 +61,25 @@ impl<'a> StrParserContext {
 }
 
 impl<'a> StrParserContext {
-    pub fn skip<R, O>(&mut self, rule: &R) -> &mut Self
+    pub fn skip<R>(&mut self, rule: &R) -> &mut Self
     where
-        R: rules::IStrFlowRule<'a, O>,
+        R: IStrFlowRule<'a>,
     {
         self.take(rule);
         self
     }
     pub fn skip_strict<R, O>(&mut self, rule: &R) -> miette::Result<&mut Self>
     where
-        R: rules::IStrFlowRule<'a, O>,
+        R: IStrFlowRule<'a>,
     {
         self.take_strict(rule)?;
         Ok(self)
     }
 }
 impl<'a> StrParserContext {
-    pub fn global<R, O>(&'a mut self, rule: &R) -> O
+    pub fn global<R>(&'a mut self, rule: &R) -> R::Output
     where
-        R: IStrGlobalRule<'a, O>,
+        R: IStrGlobalRule<'a>,
     {
         rule.apply(&self.full)
     }
