@@ -46,13 +46,13 @@ impl<R: BufRead> IRaxReader for RaxReader<R> {
     /// Stops early if EOF is reached.
     fn read_lines_by_count(&mut self, count: usize) -> miette::Result<Vec<String>> {
         let mut lines = Vec::with_capacity(count);
-        for i in 0..count {
+        for _i in 0..count {
             match self.read_line()? {
                 Some(line) => {
                     // Log each line read (for debugging)
                     clerk::debug!(
                         "[RaxReader] read_lines_by_count: line {} = {:?}",
-                        i + 1,
+                        _i + 1,
                         line
                     );
                     lines.push(line)
