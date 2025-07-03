@@ -101,11 +101,25 @@ impl Gsv {
                 .skip(&UNTIL_COMMA);
         }
         //last line
-        for _ in 0..last_line_satellite_count  {
+        if last_line_satellite_count != 0 {
+            for _ in 0..(last_line_satellite_count - 1) {
+                let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let elevation_degrees =
+                    ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                satellites.push(Satellite {
+                    id,
+                    elevation_degrees,
+                    azimuth_degree,
+                    snr,
+                });
+            }
+            // fourth satellite in the line
             let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-            let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
             satellites.push(Satellite {
                 id,
                 elevation_degrees,
@@ -113,7 +127,7 @@ impl Gsv {
                 snr,
             });
         }
-       
+
         Ok(Self { talker, satellites })
     }
 }
