@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [windows-latest,ubuntu-latest]
+        machine: [windows-latest,ubuntu-latest,macos-latest]
     runs-on: ${{matrix.machine}}
     steps:
       - uses: actions/checkout@v4
