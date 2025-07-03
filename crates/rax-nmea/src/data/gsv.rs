@@ -62,6 +62,11 @@ impl Gsv {
             .expect("Can not get the count of satellites.");
         clerk::trace!("Gsv::new: satellite_count={satellite_count}");
         let last_line_satellite_count = satellite_count % 4;
+        let last_line_satellite_count = if last_line_satellite_count == 0 && line_count == 1 {
+            4
+        } else {
+            last_line_satellite_count
+        };
         clerk::trace!("Gsv::new: last_line_satellite_count={last_line_satellite_count}");
 
         ctx.rest_str();
@@ -93,11 +98,11 @@ impl Gsv {
                 snr,
             });
             ctx.skip(&UNTIL_COMMA)
-                .skip_strict(&CHAR_COMMA)?
+                .skip(&CHAR_COMMA)
                 .skip(&UNTIL_COMMA)
-                .skip_strict(&CHAR_COMMA)?
+                .skip(&CHAR_COMMA)
                 .skip(&UNTIL_COMMA)
-                .skip_strict(&CHAR_COMMA)?
+                .skip(&CHAR_COMMA)
                 .skip(&UNTIL_COMMA);
         }
         //last line
@@ -201,6 +206,34 @@ mod test {
         assert_eq!(gsv.satellites[9].elevation_degrees, Some(0));
         assert_eq!(gsv.satellites[9].azimuth_degree, Some(0));
         assert_eq!(gsv.satellites[9].snr, Some(27));
+
+        Ok(())
+    }
+    #[test]
+    fn test_new_gsv_one_line() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let s = "$GPGSV,1,1,4,02,35,291,,03,09,129,,05,14,305,,06,38,226,*4E";
+        let mut ctx = StrParserContext::new();
+        let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
+        println!("{:?}", gsv);
+        assert_eq!(gsv.talker, Talker::GP);
+        assert_eq!(gsv.satellites.len(), 4);
+        assert_eq!(gsv.satellites[0].id, Some(2));
+        assert_eq!(gsv.satellites[0].elevation_degrees, Some(35));
+        assert_eq!(gsv.satellites[0].azimuth_degree, Some(291));
+        assert!(gsv.satellites[0].snr.is_none());
+        assert_eq!(gsv.satellites[1].id, Some(3));
+        assert_eq!(gsv.satellites[1].elevation_degrees, Some(9));
+        assert_eq!(gsv.satellites[1].azimuth_degree, Some(129));
+        assert!(gsv.satellites[1].snr.is_none());
+        assert_eq!(gsv.satellites[2].id, Some(5));
+        assert_eq!(gsv.satellites[2].elevation_degrees, Some(14));
+        assert_eq!(gsv.satellites[2].azimuth_degree, Some(305));
+        assert!(gsv.satellites[2].snr.is_none());
+        assert_eq!(gsv.satellites[3].id, Some(6));
+        assert_eq!(gsv.satellites[3].elevation_degrees, Some(38));
+        assert_eq!(gsv.satellites[3].azimuth_degree, Some(226));
+        assert!(gsv.satellites[3].snr.is_none());
 
         Ok(())
     }
