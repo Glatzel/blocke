@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::str_parser::filters::IFilter;
 
 /// A fixed, sorted list of characters.
@@ -34,8 +36,10 @@ impl<const N: usize> IFilter<&char> for CharSetFilter<N> {
     fn name(&self) -> &str { "Char Set (array)" }
     fn filter(&self, input: &char) -> bool { self.contains(*input) }
 }
-impl<const N: usize> CharSetFilter<N> {
-    pub fn from_str(s: &str) -> Self {
+impl<const N: usize> FromStr for CharSetFilter<N> {
+    type Err = miette::Report;
+
+    fn from_str(s: &str) -> miette::Result<Self> {
         let mut chars = [0 as char; N];
         let mut i = 0;
         for c in s.chars() {
@@ -43,18 +47,20 @@ impl<const N: usize> CharSetFilter<N> {
                 chars[i] = c;
                 i += 1;
             } else {
-                panic!("String too long for CharSet, expected {} but got {}", N, i);
+                miette::bail!("String too long for CharSet, expected {} but got {}", N, i);
             }
         }
         if i != N {
-            panic!(
+            miette::bail!(
                 "String length does not match CharSet size, expected {} but got {}",
-                N, i
+                N,
+                i
             );
         }
-        Self::new(chars)
+        Ok(Self::new(chars))
     }
 }
+
 /// Digits (10 items) – lookup is ~3 comparisons.
 pub const DIGITS: CharSetFilter<10> =
     CharSetFilter::new(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);

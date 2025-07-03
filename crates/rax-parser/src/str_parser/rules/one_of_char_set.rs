@@ -41,6 +41,8 @@ impl<'a, const N: usize> IStrFlowRule<'a> for OneOfCharSet<'a, N> {
 #[cfg(test)]
 mod tests {
 
+    use std::str::FromStr;
+
     use test_utils::init_log;
 
     use super::*;
@@ -77,13 +79,14 @@ mod tests {
     }
 
     #[test]
-    fn test_char_unicode() {
+    fn test_char_unicode() -> miette::Result<()> {
         init_log();
-        let filter: CharSetFilter<1> = CharSetFilter::from_str("你");
+        let filter: CharSetFilter<1> = CharSetFilter::from_str("你")?;
         let rule = OneOfCharSet(&filter);
         let input = "你好";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some('你'));
         assert_eq!(rest, "好");
+        Ok(())
     }
 }
