@@ -35,23 +35,23 @@ where
                 Ok(Some(sentence)) => {
                     let talker = match Talker::from_str(&sentence) {
                         Ok(t) => t,
-                        Err(e) => {
-                            clerk::warn!("{}", e);
+                        Err(_e) => {
+                            clerk::warn!("{}", _e);
                             continue;
                         }
                     };
                     let identifier = match Identifier::from_str(&sentence) {
                         Ok(i) => i,
-                        Err(e) => {
-                            clerk::warn!("{}", e);
+                        Err(_e) => {
+                            clerk::warn!("{}", _e);
                             continue;
                         }
                     };
                     return Some((talker, identifier, sentence));
                 }
                 Ok(None) => return None,
-                Err(e) => {
-                    clerk::warn!("{}", e);
+                Err(_e) => {
+                    clerk::warn!("{}", _e);
                     continue;
                 }
             }
@@ -88,12 +88,12 @@ where
                 None
             }
             // Newer first line arrived, replace old buffer
-            (true, false, Some(old)) => {
+            (true, false, Some(_old)) => {
                 clerk::warn!(
                     "A newer `{}{}` arrived, remove older one: {}",
                     talker,
                     identifier,
-                    old
+                    _old
                 );
                 self.buffer.insert((talker, identifier), sentence);
                 None
