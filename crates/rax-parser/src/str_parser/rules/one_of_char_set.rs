@@ -44,12 +44,12 @@ mod tests {
     use test_utils::init_log;
 
     use super::*;
-    use crate::str_parser::filters::{ASCII_ALL, DIGITS};
+    use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
 
     #[test]
     fn test_char_match() {
         init_log();
-        let rule = OneOfCharSet(&ASCII_ALL);
+        let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "a123";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some('a'));
@@ -69,7 +69,7 @@ mod tests {
     #[test]
     fn test_char_empty_input() {
         init_log();
-        let rule = OneOfCharSet(&ASCII_ALL);
+        let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn test_char_unicode() {
         init_log();
-        let filter: CharSetFilter<2> = CharSetFilter::from_str("你");
+        let filter: CharSetFilter<1> = CharSetFilter::from_str("你");
         let rule = OneOfCharSet(&filter);
         let input = "你好";
         let (matched, rest) = rule.apply(input);
