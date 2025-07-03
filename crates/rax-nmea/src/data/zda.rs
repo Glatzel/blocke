@@ -19,32 +19,18 @@ readonly_struct!(
 
 impl Zda {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        ctx.global(&NMEA_VALIDATE)?;
 
         let utc_time = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*NMEA_UTC);
-        let day = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let month = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let year = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let local_zone_description = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let local_zone_minutes_description = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_STAR)
-            .parse_opt();
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .take(&NMEA_UTC);
+        let day = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let month = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let year = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let local_zone_description = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let local_zone_minutes_description =
+            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Zda {
             talker,

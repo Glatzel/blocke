@@ -18,36 +18,18 @@ readonly_struct!(
 );
 impl INmeaData for Gst {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
-        
+        ctx.global(&NMEA_VALIDATE)?;
+
         let utc_time = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*NMEA_UTC);
-        let rms = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let std_dev_semi_major = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let std_dev_semi_minor = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let std_dev_semi_latitude = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let std_dev_semi_longitude = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let std_dev_semi_altitude = ctx
-            .skip_strict(&*UNTIL_STAR)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .take(&NMEA_UTC);
+        let rms = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_major = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_minor = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_latitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_longitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_altitude = ctx.skip_strict(&UNTIL_STAR)?.take(&UNTIL_COMMA).parse_opt();
 
         Ok(Gst {
             talker,

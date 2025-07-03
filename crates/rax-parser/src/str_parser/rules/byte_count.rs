@@ -4,31 +4,32 @@ use crate::str_parser::rules::IRule;
 /// Rule to extract a fixed number of bytes from the input string.
 /// Returns a tuple of (prefix, rest) if enough bytes are present and the split
 /// is on a valid UTF-8 boundary, otherwise returns None.
-pub struct ByteCount(pub usize);
+pub struct ByteCount<const N: usize>();
 
-impl IRule for ByteCount {
+impl<const N: usize> IRule for ByteCount<N> {
     fn name(&self) -> &str { "byte count" }
 }
 
-impl<'a> IStrFlowRule<'a, &'a str> for ByteCount {
+impl<'a, const N: usize> IStrFlowRule<'a> for ByteCount<N> {
+    type Output = &'a str;
     /// Applies the ByteCount rule to the input string.
     /// If the input contains at least `self.0` bytes and the split is on a
     /// valid UTF-8 boundary, returns the first `self.0` bytes and the rest
     /// of the string. Otherwise, returns None.
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // Log the input and the requested byte count at trace level.
-        clerk::trace!("ByteCount rule: input='{}', byte_count={}", input, self.0);
+        clerk::trace!("ByteCount rule: input='{}', byte_count={}", input, N);
 
-        match input.get(..self.0) {
+        match input.get(..N) {
             Some(out) => {
-                let rest = &input[self.0..];
+                let rest = &input[N..];
                 clerk::debug!("ByteCount: matched prefix='{}', rest='{}'", out, rest);
                 (Some(out), rest)
             }
             None => {
                 clerk::debug!(
                     "ByteCount: not enough bytes or invalid UTF-8 boundary for count {} in '{}'",
-                    self.0,
+                    N,
                     input
                 );
                 (None, input)
@@ -46,7 +47,7 @@ mod tests {
     #[test]
     fn test_count_exact_length() {
         init_log();
-        let rule = ByteCount(4);
+        let rule = ByteCount::<4>();
         let input = "test";
         let result = rule.apply(input);
         assert_eq!(result, (Some("test"), ""));
@@ -55,7 +56,7 @@ mod tests {
     #[test]
     fn test_count_less_than_length() {
         init_log();
-        let rule = ByteCount(2);
+        let rule = ByteCount::<2>();
         let input = "hello";
         let result = rule.apply(input);
         assert_eq!(result, (Some("he"), "llo"));
@@ -64,7 +65,7 @@ mod tests {
     #[test]
     fn test_count_more_than_length() {
         init_log();
-        let rule = ByteCount(10);
+        let rule = ByteCount::<10>();
         let input = "short";
         let result = rule.apply(input);
         assert_eq!(result, (None, "short"));
@@ -73,7 +74,7 @@ mod tests {
     #[test]
     fn test_count_zero() {
         init_log();
-        let rule = ByteCount(0);
+        let rule = ByteCount::<0>();
         let input = "abc";
         let result = rule.apply(input);
         assert_eq!(result, (Some(""), "abc"));
@@ -81,7 +82,7 @@ mod tests {
 
     #[test]
     fn test_count_empty_input() {
-        let rule = ByteCount(0);
+        let rule = ByteCount::<0>();
         let input = "";
         let result = rule.apply(input);
         assert_eq!(result, (Some(""), ""));
@@ -89,7 +90,7 @@ mod tests {
 
     #[test]
     fn test_count_non_ascii() {
-        let rule = ByteCount(2);
+        let rule = ByteCount::<2>();
         let input = "你好世界";
 
         // Each Chinese character is 3 bytes, but .get(..n) is by byte index, not char

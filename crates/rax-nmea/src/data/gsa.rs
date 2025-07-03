@@ -55,41 +55,26 @@ readonly_struct!(
 );
 impl INmeaData for Gsa {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
-        
+        ctx.global(&NMEA_VALIDATE)?;
+
         let selection_mode = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .take(&*UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA)?
+            .take(&UNTIL_COMMA)
             .parse_opt();
-        let mode = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
+        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let satellite_ids = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA)
             .map(|sats| {
                 sats.split(',')
                     .filter_map(|id| id.trim().parse::<u8>().ok())
                     .collect::<Vec<u8>>()
             })
             .unwrap_or_default();
-        let pdop = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let hdop = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let vdop = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let system_id = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_STAR)
-            .parse_opt();
+        let pdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let vdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let system_id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Gsa {
             talker,

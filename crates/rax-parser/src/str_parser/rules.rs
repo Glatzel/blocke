@@ -12,9 +12,11 @@ pub use self::char::*;
 pub trait IRule {
     fn name(&self) -> &str;
 }
-pub trait IStrFlowRule<'a, O>: IRule {
-    fn apply(&self, input: &'a str) -> (Option<O>, &'a str);
+pub trait IStrFlowRule<'a>: IRule {
+    type Output;
+    fn apply(&self, input: &'a str) -> (Option<Self::Output>, &'a str);
 }
-pub trait IStrGlobalRule<'a, O>: IRule {
-    fn apply(&self, input: &'a str) -> O;
+pub trait IStrGlobalRule<'a>: IRule {
+    type Output;
+    fn apply(&self, input: &'a str) -> Self::Output;
 }

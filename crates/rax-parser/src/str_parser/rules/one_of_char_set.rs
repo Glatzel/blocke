@@ -1,17 +1,18 @@
 use super::IStrFlowRule;
 use crate::str_parser::IRule;
-use crate::str_parser::filters::IFilter;
+use crate::str_parser::filters::{CharSetFilter, IFilter};
 
 /// Rule to match if the first character of the input is in a given character
 /// set. If the first character is in the set, returns a tuple of (matched_char,
 /// rest_of_input). Otherwise, returns None.
-pub struct OneOfCharSet<'a>(&'a crate::str_parser::filters::FilterCharSet<'a>);
+pub struct OneOfCharSet<'a, const N: usize>(&'a CharSetFilter<N>);
 
-impl<'a> IRule for OneOfCharSet<'a> {
+impl<'a, const N: usize> IRule for OneOfCharSet<'a, N> {
     fn name(&self) -> &str { "OneOfCharSet" }
 }
 
-impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
+impl<'a, const N: usize> IStrFlowRule<'a> for OneOfCharSet<'a, N> {
+    type Output = char;
     /// Applies the OneOfCharSet rule to the input string.
     /// If the first character is in the set, returns the character and the rest
     /// of the string. Otherwise, returns None.
@@ -37,19 +38,20 @@ impl<'a> IStrFlowRule<'a, char> for OneOfCharSet<'a> {
         }
     }
 }
-
 #[cfg(test)]
 mod tests {
+
+    use std::str::FromStr;
+
     use test_utils::init_log;
 
     use super::*;
-    use crate::str_parser::filters::FilterCharSet;
+    use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
 
     #[test]
     fn test_char_match() {
         init_log();
-        let filter = FilterCharSet::ascii();
-        let rule = OneOfCharSet(&filter);
+        let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "a123";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some('a'));
@@ -59,8 +61,7 @@ mod tests {
     #[test]
     fn test_char_no_match() {
         init_log();
-        let filter = FilterCharSet::digits();
-        let rule = OneOfCharSet(&filter);
+        let rule = OneOfCharSet(&DIGITS);
         let input = "abc";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -70,8 +71,7 @@ mod tests {
     #[test]
     fn test_char_empty_input() {
         init_log();
-        let filter = FilterCharSet::ascii();
-        let rule = OneOfCharSet(&filter);
+        let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -79,13 +79,14 @@ mod tests {
     }
 
     #[test]
-    fn test_char_unicode() {
+    fn test_char_unicode() -> miette::Result<()> {
         init_log();
-        let filter = FilterCharSet::from_string("你");
+        let filter: CharSetFilter<1> = CharSetFilter::from_str("你")?;
         let rule = OneOfCharSet(&filter);
         let input = "你好";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some('你'));
         assert_eq!(rest, "好");
+        Ok(())
     }
 }

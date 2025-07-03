@@ -8,7 +8,8 @@ impl IRule for NmeaValidate {
     fn name(&self) -> &str { "NmeaValidate" }
 }
 
-impl<'a> rax_parser::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
+impl<'a> rax_parser::str_parser::IStrGlobalRule<'a> for NmeaValidate {
+    type Output = miette::Result<()>;
     /// Applies the NmeaValidate rule to the input string.
     /// Checks that the sentence starts with '$', contains a checksum delimiter
     /// '*', and that the calculated checksum matches the provided checksum.
@@ -16,6 +17,7 @@ impl<'a> rax_parser::str_parser::IStrGlobalRule<'a, miette::Result<()>> for Nmea
     fn apply(&self, input: &'a str) -> miette::Result<()> {
         // Log the input at trace level.
         clerk::trace!("NmeaValidate rule: input='{}'", input);
+        let input = input.trim_end();
 
         // Check if the sentence starts with '$'.
         if !input.starts_with('$') {
@@ -75,7 +77,7 @@ impl<'a> rax_parser::str_parser::IStrGlobalRule<'a, miette::Result<()>> for Nmea
                 expected
             );
         }
-        clerk::info!("NmeaValidate: sentence is valid.");
+        clerk::info!("NmeaValidate: sentence is valid: {input}");
         Ok(())
     }
 }

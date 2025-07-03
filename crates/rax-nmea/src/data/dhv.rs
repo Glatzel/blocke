@@ -18,31 +18,16 @@ readonly_struct!(
 );
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        ctx.global(&NMEA_VALIDATE)?;
         let utc_time = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*NMEA_UTC);
-        let speed3d = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let speed_x = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let speed_y = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let speed_z = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let gdspd = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_STAR)
-            .parse_opt();
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .take(&NMEA_UTC);
+        let speed3d = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let speed_x = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let speed_y = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let speed_z = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let gdspd = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Dhv {
             talker,

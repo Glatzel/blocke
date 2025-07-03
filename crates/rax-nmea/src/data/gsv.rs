@@ -1,6 +1,6 @@
 use std::fmt;
 
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax_parser::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
@@ -43,19 +43,20 @@ readonly_struct!(
 impl Gsv {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
+        for l in ctx.full_str().lines() {
+            NMEA_VALIDATE.apply(l)?;
+        }
 
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
-        
         // calculate counts
         let line_count = ctx.full_str().lines().count();
         let satellite_count = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .skip_strict(&*UNTIL_COMMA)?
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA)
             .parse_opt::<usize>()
             .expect("Can not get the count of satellites.");
         let last_line_satellite_count = satellite_count % line_count;
@@ -64,22 +65,11 @@ impl Gsv {
         //first n-1 lines
         for _ in 0..line_count - 1 {
             for _ in 0..4 {
-                let id = ctx
-                    .skip_strict(&*CHAR_COMMA)?
-                    .take(&*UNTIL_COMMA)
-                    .parse_opt();
-                let elevation_degrees = ctx
-                    .skip_strict(&*CHAR_COMMA)?
-                    .take(&*UNTIL_COMMA)
-                    .parse_opt();
-                let azimuth_degree = ctx
-                    .skip_strict(&*CHAR_COMMA)?
-                    .take(&*UNTIL_COMMA)
-                    .parse_opt();
-                let snr = ctx
-                    .skip_strict(&*CHAR_COMMA)?
-                    .take(&*UNTIL_COMMA)
-                    .parse_opt();
+                let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let elevation_degrees =
+                    ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+                let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
                 satellites.push(Satellite {
                     id,
                     elevation_degrees,
@@ -87,28 +77,14 @@ impl Gsv {
                     snr,
                 });
             }
-            ctx.skip(&*UNTIL_COMMA)
-                .skip(&*UNTIL_COMMA)
-                .skip(&*UNTIL_COMMA);
+            ctx.skip(&UNTIL_COMMA).skip(&UNTIL_COMMA).skip(&UNTIL_COMMA);
         }
         //middle line
         for _ in 0..last_line_satellite_count {
-            let id = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
-                .parse_opt();
-            let elevation_degrees = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
-                .parse_opt();
-            let azimuth_degree = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
-                .parse_opt();
-            let snr = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
-                .parse_opt();
+            let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             satellites.push(Satellite {
                 id,
                 elevation_degrees,
@@ -140,7 +116,7 @@ mod test {
     #[test]
     fn test_new_gsv() -> miette::Result<()> {
         init_log();
-        let s = "$GPGSV,3,1,10,25,68,053,47,21,59,306,49,29,56,161,49,31,36,265,49*79\r\n $GPGSV,3,2,10,12,29,048,49,05,22,123,49,18,13,000,49,01,00,000,49*72\r\n$GPGSV,3,3,10,14,00,000,03,16,00,000,27*7C";
+        let s = "$GPGSV,3,1,10,25,68,053,47,21,59,306,49,29,56,161,49,31,36,265,49*79\r\n$GPGSV,3,2,10,12,29,048,49,05,22,123,49,18,13,000,49,01,00,000,49*72\r\n$GPGSV,3,3,10,14,00,000,03,16,00,000,27*7C";
         let mut ctx = StrParserContext::new();
         let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{:?}", gsv);

@@ -17,28 +17,17 @@ readonly_struct!(
 );
 impl INmeaData for Vtg {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
-        
+        ctx.global(&NMEA_VALIDATE)?;
+
         let course_over_ground_true = ctx
-            .skip_strict(&*UNTIL_COMMA)?
-            .take(&*UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA)?
+            .take(&UNTIL_COMMA)
             .parse_opt();
-        let course_over_ground_magnetic = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let speed_over_ground_knots = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let speed_over_ground_kph = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_COMMA)
-            .parse_opt();
-        let mode = ctx
-            .skip_strict(&*CHAR_COMMA)?
-            .take(&*UNTIL_STAR)
-            .parse_opt();
+        let course_over_ground_magnetic =
+            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let speed_over_ground_knots = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let speed_over_ground_kph = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Vtg {
             talker,

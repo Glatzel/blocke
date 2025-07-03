@@ -1,6 +1,6 @@
 use std::fmt::{self};
 
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax_parser::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
@@ -47,28 +47,30 @@ readonly_struct!(
 impl Txt {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
-        
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
-        
+
+        for l in ctx.full_str().lines() {
+            NMEA_VALIDATE.apply(l)?;
+        }
+
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .take(&UNTIL_COMMA)
                 .parse_opt::<u8>()
                 .map(TxtType::try_from)
                 .and_then(Result::ok);
             let info = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_STAR)
+                .skip_strict(&CHAR_COMMA)?
+                .take(&UNTIL_STAR)
                 .map(|f| f.to_string());
             infos.push((txt_type, info));
-            ctx.skip(&*UNTIL_NEW_LINE).skip(&*CHAR_NEW_LINE);
+            ctx.skip(&UNTIL_NEW_LINE).skip(&CHAR_NEW_LINE);
         }
 
         Ok(Self { talker, infos })
@@ -107,7 +109,7 @@ mod test {
     #[test]
     fn test_new_zda() -> miette::Result<()> {
         init_log();
-        let s = "$GPTXT,03,01,02,MA=CASIC*27\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*71\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
+        let s = "$GPTXT,03,01,02,MA=CASIC*25\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*70\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
         let mut ctx = StrParserContext::new();
         let txt = Txt::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{:?}", txt);
