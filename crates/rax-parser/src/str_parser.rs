@@ -75,7 +75,7 @@ impl<'a> StrParserContext {
     }
 }
 impl<'a> StrParserContext {
-    pub fn global<R, O>(&'a mut self, rule: R) -> O
+    pub fn global<R, O>(&'a mut self, rule: &R) -> O
     where
         R: IStrGlobalRule<'a, O>,
     {

@@ -55,6 +55,8 @@ readonly_struct!(
 );
 impl INmeaData for Gsa {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        
         let selection_mode = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .take(&*UNTIL_COMMA)

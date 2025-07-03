@@ -44,6 +44,8 @@ impl Gsv {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
 
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        
         // calculate counts
         let line_count = ctx.full_str().lines().count();
         let satellite_count = ctx

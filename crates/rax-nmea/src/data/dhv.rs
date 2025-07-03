@@ -18,6 +18,7 @@ readonly_struct!(
 );
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
         let utc_time = ctx
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?

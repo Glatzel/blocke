@@ -57,6 +57,8 @@ readonly_struct!(
 impl INmeaData for Gga {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
+        
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
         let utc_time = ctx

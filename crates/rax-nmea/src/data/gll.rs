@@ -19,6 +19,8 @@ impl INmeaData for Gll {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
+        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        
         clerk::debug!("Parsing lat...");
         let lat = ctx
             .skip_strict(&*UNTIL_COMMA)?
