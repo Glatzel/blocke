@@ -17,6 +17,7 @@ impl<'a> rax_parser::str_parser::IStrGlobalRule<'a> for NmeaValidate {
     fn apply(&self, input: &'a str) -> miette::Result<()> {
         // Log the input at trace level.
         clerk::trace!("NmeaValidate rule: input='{}'", input);
+        let input = input.trim_end();
 
         // Check if the sentence starts with '$'.
         if !input.starts_with('$') {
@@ -76,7 +77,7 @@ impl<'a> rax_parser::str_parser::IStrGlobalRule<'a> for NmeaValidate {
                 expected
             );
         }
-        clerk::info!("NmeaValidate: sentence is valid.");
+        clerk::info!("NmeaValidate: sentence is valid: {input}");
         Ok(())
     }
 }

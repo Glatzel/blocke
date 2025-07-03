@@ -30,6 +30,10 @@ impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaUtc {
         };
         let res = &input[..first_comma_idx];
         clerk::debug!("utc hhmmss: {}", res);
+        if res.is_empty() {
+            clerk::info!("NmeaUtc: got empty string.");
+            return (None, input);
+        }
 
         // Try to split the time into main part and fractional seconds.
         let (main, nanos) = match res.split_once('.') {
