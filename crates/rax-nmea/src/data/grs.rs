@@ -11,7 +11,7 @@ readonly_struct!(
 );
 
 impl Grs {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+    pub fn new(_ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         Ok(Grs { talker })
     }
 }
