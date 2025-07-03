@@ -12,7 +12,7 @@ impl<const N: usize> CharSetFilter<N> {
         let bytes = chars.as_bytes();
         let mut i = 0;
         while i < bytes.len() {
-            let idx = bytes[i] as usize;  
+            let idx = bytes[i] as usize;
             assert!(idx < N, "char outside table range");
             tbl[idx] = true;
             i += 1;
