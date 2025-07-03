@@ -24,17 +24,17 @@ impl INmeaData for Vtg {
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip_strict(&CHAR_T)?;
+        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_T);
 
         let course_over_ground_magnetic =
             ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip_strict(&CHAR_M)?;
+        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
 
         let speed_over_ground_knots = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip_strict(&CHAR_N)?;
+        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_N);
 
         let speed_over_ground_kph = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip_strict(&CHAR_K)?;
+        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_K);
 
         let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 

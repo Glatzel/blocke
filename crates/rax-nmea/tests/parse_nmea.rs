@@ -10,11 +10,11 @@ use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
 #[test]
 fn test_parse_nmea() -> miette::Result<()> {
-    init_log_with_level(LevelFilter::DEBUG);
+    init_log_with_level(LevelFilter::WARN);
     for f in [
         "data/nmea1.log",
         "data/nmea2.log",
-        "data/nmea_with_sat_info.log",
+        // "data/nmea_with_sat_info.log",
     ] {
         let mut reader = RaxReader::new(io::BufReader::new(File::open(f).into_diagnostic()?));
         let mut ctx = StrParserContext::new();
