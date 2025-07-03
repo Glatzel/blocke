@@ -48,27 +48,27 @@ impl Txt {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
         
-        ctx.global::<NmeaValidate, miette::Result<()>>(&*NMEA_VALIDATE)?;
+        ctx.global(&NMEA_VALIDATE)?;
         
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .skip_strict(&*UNTIL_COMMA)?
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_COMMA)
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .skip_strict(&UNTIL_COMMA)?
+                .skip_strict(&CHAR_COMMA)?
+                .take(&UNTIL_COMMA)
                 .parse_opt::<u8>()
                 .map(TxtType::try_from)
                 .and_then(Result::ok);
             let info = ctx
-                .skip_strict(&*CHAR_COMMA)?
-                .take(&*UNTIL_STAR)
+                .skip_strict(&CHAR_COMMA)?
+                .take(&UNTIL_STAR)
                 .map(|f| f.to_string());
             infos.push((txt_type, info));
-            ctx.skip(&*UNTIL_NEW_LINE).skip(&*CHAR_NEW_LINE);
+            ctx.skip(&UNTIL_NEW_LINE).skip(&CHAR_NEW_LINE);
         }
 
         Ok(Self { talker, infos })

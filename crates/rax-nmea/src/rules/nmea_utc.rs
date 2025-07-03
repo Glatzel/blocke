@@ -11,7 +11,8 @@ impl IRule for NmeaUtc {
     fn name(&self) -> &str { "NmeaUtc" }
 }
 
-impl<'a> rax_parser::str_parser::IStrFlowRule<'a, DateTime<Utc>> for NmeaUtc {
+impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaUtc {
+    type Output = DateTime<Utc>;
     /// Applies the NmeaUtc rule to the input string.
     /// Parses the UTC time, converts to `DateTime<Utc>` using today's date, and
     /// returns the result and the rest of the string. Logs each step for

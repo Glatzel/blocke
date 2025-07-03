@@ -10,7 +10,8 @@ impl IRule for NmeaCoord {
     fn name(&self) -> &str { "NmeaCoord" }
 }
 
-impl<'a> IStrFlowRule<'a, f64> for NmeaCoord {
+impl<'a> IStrFlowRule<'a> for NmeaCoord {
+    type Output = f64;
     /// Applies the NmeaCoord rule to the input string.
     /// Parses the coordinate and sign, converts to decimal degrees, and returns
     /// the result and the rest of the string. Logs each step for debugging.

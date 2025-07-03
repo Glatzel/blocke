@@ -66,7 +66,7 @@ impl<'a> StrParserContext {
         self.take(rule);
         self
     }
-    pub fn skip_strict<R, O>(&mut self, rule: &R) -> miette::Result<&mut Self>
+    pub fn skip_strict<R>(&mut self, rule: &R) -> miette::Result<&mut Self>
     where
         R: IStrFlowRule<'a>,
     {

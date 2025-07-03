@@ -8,7 +8,8 @@ impl IRule for NmeaValidate {
     fn name(&self) -> &str { "NmeaValidate" }
 }
 
-impl<'a> rax_parser::str_parser::IStrGlobalRule<'a, miette::Result<()>> for NmeaValidate {
+impl<'a> rax_parser::str_parser::IStrGlobalRule<'a> for NmeaValidate {
+    type Output = miette::Result<()>;
     /// Applies the NmeaValidate rule to the input string.
     /// Checks that the sentence starts with '$', contains a checksum delimiter
     /// '*', and that the calculated checksum matches the provided checksum.
