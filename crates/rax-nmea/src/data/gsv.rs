@@ -1,6 +1,5 @@
 use std::fmt;
 
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 

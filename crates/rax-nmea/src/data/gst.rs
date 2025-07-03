@@ -1,6 +1,4 @@
-
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
-
 
 use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
@@ -24,12 +22,30 @@ impl INmeaData for Gst {
             .skip_strict(&*UNTIL_COMMA)?
             .skip_strict(&*CHAR_COMMA)?
             .take(&*NMEA_UTC);
-        let rms = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let std_dev_semi_major = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let std_dev_semi_minor = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let std_dev_semi_latitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let std_dev_semi_longitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*UNTIL_COMMA).parse_opt();
-        let std_dev_semi_altitude = ctx.skip_strict(&*UNTIL_STAR)?.take(&*UNTIL_COMMA).parse_opt();
+        let rms = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let std_dev_semi_major = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let std_dev_semi_minor = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let std_dev_semi_latitude = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let std_dev_semi_longitude = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let std_dev_semi_altitude = ctx
+            .skip_strict(&*UNTIL_STAR)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
 
         Ok(Gst {
             talker,

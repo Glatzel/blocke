@@ -2,9 +2,10 @@ use std::fmt::{self};
 
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
-use crate::rules::*;
+
 use crate::data::Talker;
 use crate::macros::readonly_struct;
+use crate::rules::*;
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum TxtType {
     Error = 0,

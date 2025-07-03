@@ -20,7 +20,7 @@ pub static UNTIL_COMMA: LazyLock<Until> = LazyLock::new(|| Until(","));
 pub static UNTIL_STAR: LazyLock<Until> = LazyLock::new(|| Until("*"));
 pub static UNTIL_NEW_LINE: LazyLock<Until> = LazyLock::new(|| Until("\n"));
 
-pub static NMEA_COORD: LazyLock<NmeaCoord> = LazyLock::new(|| NmeaCoord());
-pub static NMEA_DATE: LazyLock<NmeaDate> = LazyLock::new(|| NmeaDate());
-pub static NMEA_UTC: LazyLock<NmeaUtc> = LazyLock::new(|| NmeaUtc());
-pub static NMEA_VALIDATE: LazyLock<NmeaValidate> = LazyLock::new(|| NmeaValidate());
+pub static NMEA_COORD: LazyLock<NmeaCoord> = LazyLock::new(NmeaCoord);
+pub static NMEA_DATE: LazyLock<NmeaDate> = LazyLock::new(NmeaDate);
+pub static NMEA_UTC: LazyLock<NmeaUtc> = LazyLock::new(NmeaUtc);
+pub static NMEA_VALIDATE: LazyLock<NmeaValidate> = LazyLock::new(NmeaValidate);

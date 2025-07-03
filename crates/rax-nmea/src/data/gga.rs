@@ -8,7 +8,6 @@ use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
-
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GgaQualityIndicator {
     Invalid = 0,
