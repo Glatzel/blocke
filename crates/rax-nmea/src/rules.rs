@@ -7,9 +7,9 @@ use rax_parser::str_parser::rules::{Char, Until};
 
 use crate::rules::nmea_coord::NmeaCoord;
 use crate::rules::nmea_date::NmeaDate;
+use crate::rules::nmea_degree::NmeaDegree;
 use crate::rules::nmea_utc::NmeaUtc;
 use crate::rules::nmea_validate::NmeaValidate;
-use crate::rules::nmea_degree::NmeaDegree;
 
 pub const CHAR_COMMA: Char<','> = Char();
 pub const CHAR_NEW_LINE: Char<'\n'> = Char();
