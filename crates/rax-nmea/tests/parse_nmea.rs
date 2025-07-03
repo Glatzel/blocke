@@ -8,7 +8,7 @@ use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
 use test_utils::init_log;
 #[test]
-fn test_parse() -> miette::Result<()> {
+fn test_parse_nmea() -> miette::Result<()> {
     init_log();
     for f in [
         "data/nmea1.log",
