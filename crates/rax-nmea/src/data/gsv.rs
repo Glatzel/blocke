@@ -49,6 +49,7 @@ impl Gsv {
 
         // calculate counts
         let line_count = ctx.full_str().lines().count();
+        clerk::trace!("Gsv::new: line_count={line_count}");
         let satellite_count = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
@@ -59,12 +60,15 @@ impl Gsv {
             .take(&UNTIL_COMMA)
             .parse_opt::<usize>()
             .expect("Can not get the count of satellites.");
-        let last_line_satellite_count = satellite_count % line_count;
+        clerk::trace!("Gsv::new: satellite_count={satellite_count}");
+        let last_line_satellite_count = satellite_count % 4;
+        clerk::trace!("Gsv::new: last_line_satellite_count={last_line_satellite_count}");
 
+        ctx.rest_str();
         let mut satellites = Vec::with_capacity(satellite_count);
         //first n-1 lines
         for _ in 0..line_count - 1 {
-            for _ in 0..4 {
+            for _ in 0..3 {
                 let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
                 let elevation_degrees =
                     ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
@@ -77,10 +81,27 @@ impl Gsv {
                     snr,
                 });
             }
-            ctx.skip(&UNTIL_COMMA).skip(&UNTIL_COMMA).skip(&UNTIL_COMMA);
+            // fourth satellite in the line
+            let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+            let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+            satellites.push(Satellite {
+                id,
+                elevation_degrees,
+                azimuth_degree,
+                snr,
+            });
+            ctx.skip(&UNTIL_COMMA)
+                .skip_strict(&CHAR_COMMA)?
+                .skip(&UNTIL_COMMA)
+                .skip_strict(&CHAR_COMMA)?
+                .skip(&UNTIL_COMMA)
+                .skip_strict(&CHAR_COMMA)?
+                .skip(&UNTIL_COMMA);
         }
-        //middle line
-        for _ in 0..last_line_satellite_count {
+        //last line
+        for _ in 0..last_line_satellite_count - 1 {
             let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
             let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
@@ -92,8 +113,17 @@ impl Gsv {
                 snr,
             });
         }
-        // last line
-
+        // fourth satellite in the line
+        let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let snr = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        satellites.push(Satellite {
+            id,
+            elevation_degrees,
+            azimuth_degree,
+            snr,
+        });
         Ok(Self { talker, satellites })
     }
 }
@@ -102,6 +132,7 @@ impl fmt::Debug for Gsv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("GSV");
         ds.field("talker", &self.talker);
+        ds.field("count", &self.satellites.len());
         ds.field("satellites", &self.satellites);
 
         ds.finish()
@@ -123,6 +154,7 @@ mod test {
         println!("{:?}", gsv);
         assert_eq!(gsv.talker, Talker::GP);
         assert_eq!(gsv.satellites.len(), 10);
+        //line1
         assert_eq!(gsv.satellites[0].id, Some(25));
         assert_eq!(gsv.satellites[0].elevation_degrees, Some(68));
         assert_eq!(gsv.satellites[0].azimuth_degree, Some(53));
@@ -139,14 +171,33 @@ mod test {
         assert_eq!(gsv.satellites[3].elevation_degrees, Some(36));
         assert_eq!(gsv.satellites[3].azimuth_degree, Some(265));
         assert_eq!(gsv.satellites[3].snr, Some(49));
+        //line2
         assert_eq!(gsv.satellites[4].id, Some(12));
         assert_eq!(gsv.satellites[4].elevation_degrees, Some(29));
         assert_eq!(gsv.satellites[4].azimuth_degree, Some(48));
         assert_eq!(gsv.satellites[4].snr, Some(49));
         assert_eq!(gsv.satellites[5].id, Some(5));
-        assert_eq!(gsv.satellites[5].elevation_degrees, Some(0));
-        assert_eq!(gsv.satellites[5].azimuth_degree, Some(0));
-        assert_eq!(gsv.satellites[5].snr, Some(0));
+        assert_eq!(gsv.satellites[5].elevation_degrees, Some(22));
+        assert_eq!(gsv.satellites[5].azimuth_degree, Some(123));
+        assert_eq!(gsv.satellites[5].snr, Some(49));
+        assert_eq!(gsv.satellites[6].id, Some(18));
+        assert_eq!(gsv.satellites[6].elevation_degrees, Some(13));
+        assert_eq!(gsv.satellites[6].azimuth_degree, Some(0));
+        assert_eq!(gsv.satellites[6].snr, Some(49));
+        assert_eq!(gsv.satellites[7].id, Some(1));
+        assert_eq!(gsv.satellites[7].elevation_degrees, Some(0));
+        assert_eq!(gsv.satellites[7].azimuth_degree, Some(0));
+        assert_eq!(gsv.satellites[7].snr, Some(49));
+        //line3
+        assert_eq!(gsv.satellites[8].id, Some(14));
+        assert_eq!(gsv.satellites[8].elevation_degrees, Some(0));
+        assert_eq!(gsv.satellites[8].azimuth_degree, Some(0));
+        assert_eq!(gsv.satellites[8].snr, Some(3));
+        assert_eq!(gsv.satellites[9].id, Some(16));
+        assert_eq!(gsv.satellites[9].elevation_degrees, Some(0));
+        assert_eq!(gsv.satellites[9].azimuth_degree, Some(0));
+        assert_eq!(gsv.satellites[9].snr, Some(27));
+
         Ok(())
     }
 }

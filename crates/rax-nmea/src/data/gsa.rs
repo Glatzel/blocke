@@ -4,7 +4,7 @@ use std::str::FromStr;
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::{INmeaData, Satellite, SystemId, Talker};
+use crate::data::{INmeaData, SystemId, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
@@ -62,7 +62,10 @@ impl INmeaData for Gsa {
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .parse_opt();
+        clerk::trace!("Gsa::new: selection_mode={:?}", selection_mode);
         let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::trace!("Gsa::new: mode={:?}", mode);
+
         let mut satellite_ids = Vec::with_capacity(12);
         for _ in 0..12 {
             match ctx
@@ -74,11 +77,29 @@ impl INmeaData for Gsa {
                 None => continue,
             }
         }
+        clerk::trace!("Gsa::new: satellite_ids={:?}", satellite_ids);
 
         let pdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::trace!("Gsa::new: pdop={:?}", pdop);
+
         let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let vdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let system_id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        clerk::trace!("Gsa::new: hdop={:?}", hdop);
+
+        ctx.skip_strict(&CHAR_COMMA)?; // Skip the comma before vdop
+
+        let vdop = {
+            let vdop = ctx.take(&UNTIL_COMMA).parse_opt::<f64>();
+            if vdop.is_some() {
+                vdop
+            } else {
+                ctx.take(&UNTIL_STAR).parse_opt::<f64>()
+            }
+        };
+
+        clerk::trace!("Gsa::new: vdop={:?}", vdop);
+
+        let system_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+        clerk::trace!("Gsa::new: system_id={:?}", system_id);
 
         Ok(Gsa {
             talker,
@@ -134,7 +155,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_new_gsa() -> miette::Result<()> {
+    fn test_new_gsa_with_system_id() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GNGSA,A,3,05,07,13,14,15,17,19,23,24,,,,1.0,0.7,0.7,1*38";
         let mut ctx = StrParserContext::new();
@@ -147,6 +168,25 @@ mod test {
         assert_approx_eq!(f64, gsa.pdop.unwrap(), 1.0);
         assert_approx_eq!(f64, gsa.hdop.unwrap(), 0.7);
         assert_approx_eq!(f64, gsa.vdop.unwrap(), 0.7);
+        assert_eq!(gsa.system_id, Some(SystemId::GPS));
+
+        Ok(())
+    }
+    #[test]
+    fn test_new_gsa_without_system_id() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let s = "$GPGSA,A,3,05,07,08,10,15,17,18,19,30,,,,1.2,0.9,0.8*3B";
+        let mut ctx = StrParserContext::new();
+        let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GP)?;
+        println!("{:?}", gsa);
+        assert_eq!(gsa.talker, Talker::GP);
+        assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
+        assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
+        assert_eq!(gsa.satellite_ids, vec![5, 7, 8, 10, 15, 17, 18, 19, 30]);
+        assert_approx_eq!(f64, gsa.pdop.unwrap(), 1.2);
+        assert_approx_eq!(f64, gsa.hdop.unwrap(), 0.9);
+        assert_approx_eq!(f64, gsa.vdop.unwrap(), 0.8);
+        assert_eq!(gsa.system_id, None);
 
         Ok(())
     }

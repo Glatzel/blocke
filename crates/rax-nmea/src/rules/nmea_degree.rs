@@ -32,12 +32,12 @@ impl<'a> IStrFlowRule<'a> for NmeaDegree {
                 (Ok(v), "E" | "N") => (Some(v), &input[second_comma_idx..]),
                 (Ok(v), "W" | "S") => (Some(-v), &input[second_comma_idx..]),
                 _ => {
-                    clerk::error!("NmeaDegree: failed to parse coordinate '{}'", res);
-                    (None, input)
+                    clerk::info!("NmeaDegree: failed to parse coordinate '{}'", res);
+                    (None, &input[second_comma_idx..])
                 }
             }
         } else {
-            clerk::error!("NmeaDegree: no second comma found in input '{}'", input);
+            clerk::warn!("NmeaDegree: no second comma found in input '{}'", input);
             (None, input)
         }
     }
@@ -86,5 +86,14 @@ mod test {
         let (result, rest) = rule.apply(input);
         assert!(result.is_none());
         assert_eq!(rest, input);
+    }
+    #[test]
+    fn test_nmea_degree_null() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = NmeaDegree();
+        let input = ",,Nother_data";
+        let (result, rest) = rule.apply(input);
+        assert!(result.is_none());
+        assert_eq!(rest, ",Nother_data");
     }
 }

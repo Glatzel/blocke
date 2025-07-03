@@ -99,7 +99,7 @@ mod test {
 
     use super::*;
     #[test]
-    fn test_new_rmc() -> miette::Result<()> {
+    fn test_new_rmc1() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GPRMC,110125,A,5505.337580,N,03858.653666,E,148.8,84.6,310317,8.9,E,D*2E";
         let mut ctx = StrParserContext::new();
@@ -115,6 +115,25 @@ mod test {
         assert_eq!(rmc.date.unwrap().to_string(), "2017-03-31");
         assert_approx_eq!(f64, rmc.magnetic_variation.unwrap(), 8.9);
         assert_eq!(rmc.faa_mode.unwrap(), FaaMode::Differential);
+        Ok(())
+    }
+    #[test]
+    fn test_new_rmc2() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let s = "$GPRMC,,V,,,,,,,,,,N*53";
+        let mut ctx = StrParserContext::new();
+        let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
+        println!("{:?}", rmc);
+        assert_eq!(rmc.talker, Talker::GN);
+        assert!(rmc.utc_time.is_none());
+        assert_eq!(rmc.status, Some(Status::Invalid));
+        assert!(rmc.latitude.is_none());
+        assert!(rmc.longitude.is_none());
+        assert!(rmc.speed_over_ground.is_none());
+        assert!(rmc.track_made_good.is_none());
+        assert!(rmc.date.is_none());
+        assert!(rmc.magnetic_variation.is_none());
+        assert_eq!(rmc.faa_mode, Some(FaaMode::NotValid));
         Ok(())
     }
 }
