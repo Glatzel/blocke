@@ -35,7 +35,7 @@ impl Rmc {
         let speed_over_ground = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let track_made_good = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let date = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DATE);
-        let magnetic_variation = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let magnetic_variation = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
         let faa_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
         Ok(Rmc {
             talker,
@@ -93,17 +93,28 @@ impl fmt::Debug for Rmc {
 
 #[cfg(test)]
 mod test {
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+    use float_cmp::assert_approx_eq;
 
     use super::*;
     #[test]
     fn test_new_rmc() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
-        let s = "$GPRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A*45";
+        let s = "$GPRMC,110125,A,5505.337580,N,03858.653666,E,148.8,84.6,310317,8.9,E,D*2E";
         let mut ctx = StrParserContext::new();
-        let zda = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", zda);
+        let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
+        println!("{:?}", rmc);
+        assert_eq!(rmc.talker, Talker::GN);
+        assert!(rmc.utc_time.unwrap().to_string().contains("11:01:25"));
+        assert_eq!(rmc.status.unwrap(), Status::Valid);
+        assert_approx_eq!(f64, rmc.latitude.unwrap(), 55.088959666666675);
+        assert_approx_eq!(f64, rmc.longitude.unwrap(), 38.9775611);
+        assert_approx_eq!(f64, rmc.speed_over_ground.unwrap(), 148.8);
+        assert_approx_eq!(f64, rmc.track_made_good.unwrap(), 84.6);
+        assert_eq!(rmc.date.unwrap().to_string(), "2017-03-31");
+        assert_approx_eq!(f64, rmc.magnetic_variation.unwrap(), 8.9);
+        assert_eq!(rmc.faa_mode.unwrap(), FaaMode::Differential);
         Ok(())
     }
 }

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::data::Talker;
 use crate::macros::readonly_struct;
 use crate::rules::*;
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum TxtType {
     Error = 0,
     Warn = 1,
@@ -103,17 +103,25 @@ impl fmt::Debug for Txt {
 
 #[cfg(test)]
 mod test {
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
     #[test]
     fn test_new_zda() -> miette::Result<()> {
-      init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LevelFilter::TRACE);
         let s = "$GPTXT,03,01,02,MA=CASIC*25\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*70\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
         let mut ctx = StrParserContext::new();
         let txt = Txt::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{:?}", txt);
+        assert_eq!(txt.talker, Talker::GP);
+        assert_eq!(txt.infos.len(), 3);
+        assert_eq!(txt.infos[0].0, Some(TxtType::Info));
+        assert_eq!(txt.infos[0].1, Some("MA=CASIC".to_string()));
+        assert_eq!(txt.infos[1].0, Some(TxtType::Info));
+        assert_eq!(txt.infos[1].1, Some("IC=ATGB03+ATGR201".to_string()));
+        assert_eq!(txt.infos[2].0, Some(TxtType::Info));
+        assert_eq!(txt.infos[2].1, Some("SW=URANUS2,V2.2.1.0".to_string()));
         Ok(())
     }
 }

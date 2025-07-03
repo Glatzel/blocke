@@ -110,8 +110,9 @@ impl fmt::Debug for Gsv {
 
 #[cfg(test)]
 mod test {
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+
     use super::*;
     #[test]
     fn test_new_gsv() -> miette::Result<()> {
@@ -120,6 +121,32 @@ mod test {
         let mut ctx = StrParserContext::new();
         let gsv = Gsv::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{:?}", gsv);
+        assert_eq!(gsv.talker, Talker::GP);
+        assert_eq!(gsv.satellites.len(), 10);
+        assert_eq!(gsv.satellites[0].id, Some(25));
+        assert_eq!(gsv.satellites[0].elevation_degrees, Some(68));
+        assert_eq!(gsv.satellites[0].azimuth_degree, Some(53));
+        assert_eq!(gsv.satellites[0].snr, Some(47));
+        assert_eq!(gsv.satellites[1].id, Some(21));
+        assert_eq!(gsv.satellites[1].elevation_degrees, Some(59));
+        assert_eq!(gsv.satellites[1].azimuth_degree, Some(306));
+        assert_eq!(gsv.satellites[1].snr, Some(49));
+        assert_eq!(gsv.satellites[2].id, Some(29));
+        assert_eq!(gsv.satellites[2].elevation_degrees, Some(56));
+        assert_eq!(gsv.satellites[2].azimuth_degree, Some(161));
+        assert_eq!(gsv.satellites[2].snr, Some(49));
+        assert_eq!(gsv.satellites[3].id, Some(31));
+        assert_eq!(gsv.satellites[3].elevation_degrees, Some(36));
+        assert_eq!(gsv.satellites[3].azimuth_degree, Some(265));
+        assert_eq!(gsv.satellites[3].snr, Some(49));
+        assert_eq!(gsv.satellites[4].id, Some(12));
+        assert_eq!(gsv.satellites[4].elevation_degrees, Some(29));
+        assert_eq!(gsv.satellites[4].azimuth_degree, Some(48));
+        assert_eq!(gsv.satellites[4].snr, Some(49));
+        assert_eq!(gsv.satellites[5].id, Some(5));
+        assert_eq!(gsv.satellites[5].elevation_degrees, Some(0));
+        assert_eq!(gsv.satellites[5].azimuth_degree, Some(0));
+        assert_eq!(gsv.satellites[5].snr, Some(0));
         Ok(())
     }
 }

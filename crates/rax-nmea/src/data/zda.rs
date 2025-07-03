@@ -89,6 +89,12 @@ mod test {
         let mut ctx = StrParserContext::new();
         let zda = Zda::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", zda);
+        assert!(zda.utc_time.unwrap().to_string().contains("16:00:12.71"));
+        assert_eq!(zda.day.unwrap(), 11);
+        assert_eq!(zda.month.unwrap(), 3);
+        assert_eq!(zda.year.unwrap(), 2004);
+        assert_eq!(zda.local_zone_description.unwrap(), -1);
+        assert_eq!(zda.local_zone_minutes_description.unwrap(), 0);
         Ok(())
     }
 }

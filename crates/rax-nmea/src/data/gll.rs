@@ -80,8 +80,9 @@ impl fmt::Debug for Gll {
 
 #[cfg(test)]
 mod test {
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+    use float_cmp::assert_approx_eq;
 
     use super::*;
     #[test]
@@ -91,6 +92,12 @@ mod test {
         let mut ctx = StrParserContext::new();
         let gll = Gll::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gll);
+        assert_eq!(gll.talker, Talker::GN);
+        assert_approx_eq!(f64, gll.lat.unwrap(), -29.999874999999996);
+        assert_approx_eq!(f64, gll.lon.unwrap(), 120.00015);
+        assert!(gll.utc_time.unwrap().to_string().contains("23:53:16"));
+        assert_eq!(gll.data_valid.unwrap(), Status::Valid);
+        assert_eq!(gll.faa_mode.unwrap(), FaaMode::Autonomous);
         Ok(())
     }
 }

@@ -4,11 +4,11 @@ use std::str::FromStr;
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::{INmeaData, SystemId, Talker};
+use crate::data::{INmeaData, Satellite, SystemId, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum GsaSelectionMode {
     Manual,
     Automatic,
@@ -23,7 +23,7 @@ impl FromStr for GsaSelectionMode {
         }
     }
 }
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum GsaMode {
     NoFix,
     Fix2D,
@@ -59,18 +59,22 @@ impl INmeaData for Gsa {
 
         let selection_mode = ctx
             .skip_strict(&UNTIL_COMMA)?
+            .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .parse_opt();
         let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let satellite_ids = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
-            .map(|sats| {
-                sats.split(',')
-                    .filter_map(|id| id.trim().parse::<u8>().ok())
-                    .collect::<Vec<u8>>()
-            })
-            .unwrap_or_default();
+        let mut satellite_ids = Vec::with_capacity(12);
+        for _ in 0..12 {
+            match ctx
+                .skip_strict(&CHAR_COMMA)?
+                .take(&UNTIL_COMMA)
+                .parse_opt::<u8>()
+            {
+                Some(sat_id) => satellite_ids.push(sat_id),
+                None => continue,
+            }
+        }
+
         let pdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let vdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
@@ -123,18 +127,27 @@ impl fmt::Debug for Gsa {
 #[cfg(test)]
 mod test {
 
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+    use float_cmp::assert_approx_eq;
 
     use super::*;
 
     #[test]
     fn test_new_gsa() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
-        let s = "$GNGSA,A,3,80,71,73,79,69,,,,,,,,1.83,1.09,1.47*17";
+        let s = "$GNGSA,A,3,05,07,13,14,15,17,19,23,24,,,,1.0,0.7,0.7,1*38";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gsa);
+        assert_eq!(gsa.talker, Talker::GN);
+        assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
+        assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
+        assert_eq!(gsa.satellite_ids, vec![5, 7, 13, 14, 15, 17, 19, 23, 24]);
+        assert_approx_eq!(f64, gsa.pdop.unwrap(), 1.0);
+        assert_approx_eq!(f64, gsa.hdop.unwrap(), 0.7);
+        assert_approx_eq!(f64, gsa.vdop.unwrap(), 0.7);
+
         Ok(())
     }
 }

@@ -12,6 +12,7 @@ readonly_struct!(
     {rms  : Option<f64>},
     {std_dev_semi_major: Option<f64>},
     {std_dev_semi_minor: Option<f64>},
+    {orientation: Option<f64>},
     {std_dev_semi_latitude: Option<f64>},
     {std_dev_semi_longitude: Option<f64>},
     {std_dev_semi_altitude: Option<f64>}
@@ -27,9 +28,10 @@ impl INmeaData for Gst {
         let rms = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let std_dev_semi_major = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let std_dev_semi_minor = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let orientation = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let std_dev_semi_latitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let std_dev_semi_longitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_dev_semi_altitude = ctx.skip_strict(&UNTIL_STAR)?.take(&UNTIL_COMMA).parse_opt();
+        let std_dev_semi_altitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Gst {
             talker,
@@ -37,6 +39,7 @@ impl INmeaData for Gst {
             rms,
             std_dev_semi_major,
             std_dev_semi_minor,
+            orientation,
             std_dev_semi_latitude,
             std_dev_semi_longitude,
             std_dev_semi_altitude,
@@ -63,6 +66,9 @@ impl fmt::Debug for Gst {
         if let Some(std_dev_semi_minor) = self.std_dev_semi_minor {
             ds.field("std_dev_semi_minor", &std_dev_semi_minor);
         }
+        if let Some(orientation) = self.orientation {
+            ds.field("orientation", &orientation);
+        }
         if let Some(std_dev_semi_latitude) = self.std_dev_semi_latitude {
             ds.field("std_dev_semi_latitude", &std_dev_semi_latitude);
         }
@@ -80,8 +86,8 @@ impl fmt::Debug for Gst {
 #[cfg(test)]
 mod test {
 
-    use clerk::tracing::level_filters::LevelFilter;
     use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
     #[test]
@@ -91,6 +97,15 @@ mod test {
         let mut ctx = StrParserContext::new();
         let vtg = Gst::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", vtg);
+        assert_eq!(vtg.talker, Talker::GN);
+        assert!(vtg.utc_time.unwrap().to_string().contains("18:21:41"));
+        assert_eq!(vtg.rms.unwrap(), 15.5);
+        assert_eq!(vtg.std_dev_semi_major.unwrap(), 15.3);
+        assert_eq!(vtg.std_dev_semi_minor.unwrap(), 7.2);
+        assert_eq!(vtg.orientation.unwrap(), 21.8);
+        assert_eq!(vtg.std_dev_semi_latitude.unwrap(), 0.9);
+        assert_eq!(vtg.std_dev_semi_longitude.unwrap(), 0.5);
+        assert_eq!(vtg.std_dev_semi_altitude.unwrap(), 0.8);
 
         Ok(())
     }

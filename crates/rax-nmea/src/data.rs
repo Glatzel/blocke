@@ -197,7 +197,7 @@ impl FromStr for SystemId {
         }
     }
 }
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum Status {
     Valid,
     Invalid,
