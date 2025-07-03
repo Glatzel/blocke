@@ -13,7 +13,7 @@ serde = { workspace = true }
 [dev-dependencies]
 float-cmp = { workspace = true }
 serialport = { workspace = true }
-test-utils = { workspace = true }
+clerk = { workspace = true, features = ["log"] }
 
 [features]
 log = ["clerk/log"]

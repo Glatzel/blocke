@@ -69,7 +69,7 @@ mod tests {
     use std::io::Cursor;
 
     use clerk::tracing::level_filters::LevelFilter;
-    use test_utils::init_log_with_level;
+    use clerk::init_log_with_level;
 
     use super::*;
 

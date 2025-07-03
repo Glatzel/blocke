@@ -7,7 +7,7 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
 use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
-use test_utils::init_log_with_level;
+use clerk::init_log_with_level;
 #[test]
 fn test_parse_nmea() -> miette::Result<()> {
     init_log_with_level(LevelFilter::WARN);

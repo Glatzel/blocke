@@ -4,9 +4,12 @@ name = "rax-utils"
 version.workspace = true
 
 [dependencies]
-clerk = { workspace = true, features = ["log"] }
+clerk = { workspace = true }
 miette = { workspace = true }
 serialport = { workspace = true }
 
 [dev-dependencies]
-test-utils = { workspace = true }
+clerk = { workspace = true, features = ["log"] }
+
+[features]
+log = ["clerk/log"]

@@ -124,7 +124,7 @@ impl fmt::Debug for Gsa {
 mod test {
 
     use clerk::tracing::level_filters::LevelFilter;
-    use test_utils::init_log_with_level;
+    use clerk::init_log_with_level;
 
     use super::*;
 

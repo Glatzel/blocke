@@ -4,10 +4,11 @@ name = "rax-parser"
 version.workspace = true
 
 [dependencies]
-clerk = { workspace = true, features = ["log"] }
+clerk = { workspace = true }
 miette = { workspace = true }
 
 [dev-dependencies]
-rax-utils = { workspace = true }
-serialport = { workspace = true }
-test-utils = { workspace = true }
+clerk = { workspace = true, features = ["log"] }
+
+[features]
+log = ["clerk/log"]

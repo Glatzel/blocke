@@ -7,7 +7,7 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::{Dhv, Gga, Gll, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda};
 use rax_parser::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
-    test_utils::init_log_with_level(LevelFilter::WARN);
+    clerk::init_log_with_level(LevelFilter::WARN);
     let path = "COM3";
     let port = serialport::new(path, 9600)
         .timeout(Duration::from_millis(3000))

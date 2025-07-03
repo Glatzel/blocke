@@ -10,10 +10,9 @@ version = "0.0.26"
 rax-nmea = { path = "./crates/rax-nmea" }
 rax-parser = { path = "./crates/rax-parser" }
 rax-utils = { path = "./crates/rax-utils" }
-test-utils = { path = "./crates/test-utils/" }
 
 chrono = { version = "0.4.40", features = ["serde"] }
-clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.20" }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.21" }
 float-cmp = "0.10.0"
 miette = { version = "7.6.0", features = ["fancy"] }
 nom = "8.0.0"
