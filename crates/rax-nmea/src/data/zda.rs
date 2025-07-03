@@ -1,9 +1,8 @@
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::NmeaUtc;
 use crate::data::Talker;
 use crate::macros::readonly_struct;
+use crate::rules::*;
 
 readonly_struct!(
     Zda ,
@@ -20,20 +19,30 @@ readonly_struct!(
 
 impl Zda {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
-
         let utc_time = ctx
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
-            .take(&NmeaUtc());
-        let day = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let month = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let year = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let local_zone_description = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let local_zone_minutes_description =
-            ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*NMEA_UTC);
+        let day = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let month = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let year = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let local_zone_description = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let local_zone_minutes_description = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
 
         Ok(Zda {
             talker,

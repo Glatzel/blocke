@@ -1,11 +1,11 @@
 use std::fmt;
 
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;
+use crate::rules::*;
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Satellite {
     id: Option<u16>,
@@ -44,19 +44,16 @@ impl Gsv {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
 
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-
         // calculate counts
         let line_count = ctx.full_str().lines().count();
         let satellite_count = ctx
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
-            .take(&until_comma)
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
             .parse_opt::<usize>()
             .expect("Can not get the count of satellites.");
         let last_line_satellite_count = satellite_count % line_count;
@@ -65,11 +62,22 @@ impl Gsv {
         //first n-1 lines
         for _ in 0..line_count - 1 {
             for _ in 0..4 {
-                let id = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-                let elevation_degrees =
-                    ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-                let azimuth_degree = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-                let snr = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+                let id = ctx
+                    .skip_strict(&*CHAR_COMMA)?
+                    .take(&*UNTIL_COMMA)
+                    .parse_opt();
+                let elevation_degrees = ctx
+                    .skip_strict(&*CHAR_COMMA)?
+                    .take(&*UNTIL_COMMA)
+                    .parse_opt();
+                let azimuth_degree = ctx
+                    .skip_strict(&*CHAR_COMMA)?
+                    .take(&*UNTIL_COMMA)
+                    .parse_opt();
+                let snr = ctx
+                    .skip_strict(&*CHAR_COMMA)?
+                    .take(&*UNTIL_COMMA)
+                    .parse_opt();
                 satellites.push(Satellite {
                     id,
                     elevation_degrees,
@@ -77,14 +85,28 @@ impl Gsv {
                     snr,
                 });
             }
-            ctx.skip(&until_comma).skip(&until_comma).skip(&until_comma);
+            ctx.skip(&*UNTIL_COMMA)
+                .skip(&*UNTIL_COMMA)
+                .skip(&*UNTIL_COMMA);
         }
         //middle line
         for _ in 0..last_line_satellite_count {
-            let id = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-            let elevation_degrees = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-            let azimuth_degree = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-            let snr = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
+            let id = ctx
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_COMMA)
+                .parse_opt();
+            let elevation_degrees = ctx
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_COMMA)
+                .parse_opt();
+            let azimuth_degree = ctx
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_COMMA)
+                .parse_opt();
+            let snr = ctx
+                .skip_strict(&*CHAR_COMMA)?
+                .take(&*UNTIL_COMMA)
+                .parse_opt();
             satellites.push(Satellite {
                 id,
                 elevation_degrees,

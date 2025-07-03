@@ -1,8 +1,8 @@
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, INmeaData, Talker};
 use crate::macros::readonly_struct;
+use crate::rules::*;
 
 readonly_struct!(
     Vtg ,
@@ -17,19 +17,26 @@ readonly_struct!(
 );
 impl INmeaData for Vtg {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
-
         let course_over_ground_true = ctx
-            .skip_strict(&until_comma)?
-            .take(&until_comma)
+            .skip_strict(&*UNTIL_COMMA)?
+            .take(&*UNTIL_COMMA)
             .parse_opt();
-        let course_over_ground_magnetic =
-            ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let speed_over_ground_knots = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let speed_over_ground_kph = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+        let course_over_ground_magnetic = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let speed_over_ground_knots = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let speed_over_ground_kph = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let mode = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
 
         Ok(Vtg {
             talker,

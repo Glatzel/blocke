@@ -1,10 +1,9 @@
 use chrono::NaiveDate;
-use rax_parser::str_parser::rules::{Char, Until};
 use rax_parser::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, Status, Talker};
 use crate::macros::readonly_struct;
-use crate::{NmeaCoord, NmeaDate, NmeaUtc};
+use crate::rules::*;
 
 readonly_struct!(
     Rmc ,
@@ -24,22 +23,33 @@ readonly_struct!(
 
 impl Rmc {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let char_comma = Char(&',');
-        let until_comma = Until(",");
-        let until_star = Until("*");
-
         let utc_time = ctx
-            .skip_strict(&until_comma)?
-            .skip_strict(&char_comma)?
-            .take(&NmeaUtc());
-        let status = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let latitude = ctx.skip_strict(&char_comma)?.take(&NmeaCoord());
-        let longitude = ctx.skip_strict(&char_comma)?.take(&NmeaCoord());
-        let speed_over_ground = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let track_made_good = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let date = ctx.skip_strict(&char_comma)?.take(&NmeaDate());
-        let magnetic_variation = ctx.skip_strict(&char_comma)?.take(&until_comma).parse_opt();
-        let faa_mode = ctx.skip_strict(&char_comma)?.take(&until_star).parse_opt();
+            .skip_strict(&*UNTIL_COMMA)?
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*NMEA_UTC);
+        let status = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let latitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
+        let longitude = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_COORD);
+        let speed_over_ground = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let track_made_good = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let date = ctx.skip_strict(&*CHAR_COMMA)?.take(&*NMEA_DATE);
+        let magnetic_variation = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_COMMA)
+            .parse_opt();
+        let faa_mode = ctx
+            .skip_strict(&*CHAR_COMMA)?
+            .take(&*UNTIL_STAR)
+            .parse_opt();
         Ok(Rmc {
             talker,
             utc_time,
