@@ -6,13 +6,13 @@ use crate::str_parser::filters::{CharSetFilter, IFilter};
 /// the first occurrence of a specified delimiter substring.
 /// Returns a tuple of (prefix, rest) if the delimiter is found,
 /// otherwise returns None.
-pub struct UntilOneOfCharSet<'a, const N: usize>(pub &'a CharSetFilter<N>);
+pub struct UntilOneInCharSet<'a, const N: usize>(pub &'a CharSetFilter<N>);
 
-impl<'a, const N: usize> IRule for UntilOneOfCharSet<'a, N> {
+impl<'a, const N: usize> IRule for UntilOneInCharSet<'a, N> {
     fn name(&self) -> &str { "Until" }
 }
 
-impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneOfCharSet<'a, N> {
+impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
     type Output = &'a str;
     /// Applies the Until rule to the input string.
     /// If the delimiter is found, returns the substring before the delimiter
@@ -51,20 +51,20 @@ mod tests {
     #[test]
     fn test_until_one_of_char_set() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneOfCharSet(&ASCII_LETTERS_DIGITS);
+        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
         let input = "abc123";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some(""));
         assert_eq!(rest, "abc123");
 
-        let rule = UntilOneOfCharSet(&DIGITS);
+        let rule = UntilOneInCharSet(&DIGITS);
         let input = "abc123";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some("abc"));
         assert_eq!(rest, "123");
 
         let filter = CharSetFilter::<2>::from_str(",*")?;
-        let rule = UntilOneOfCharSet::<2>(&filter);
+        let rule = UntilOneInCharSet::<2>(&filter);
         let input = "0.7,1*38";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some("0.7"));
@@ -74,7 +74,7 @@ mod tests {
     #[test]
     fn test_until_one_of_char_set_no_match() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneOfCharSet(&ASCII_LETTERS_DIGITS);
+        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
         let input = "!@#$%^&*()";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -83,7 +83,7 @@ mod tests {
     #[test]
     fn test_until_one_of_char_set_empty_input() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneOfCharSet(&ASCII_LETTERS_DIGITS);
+        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
         let input = "";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -94,7 +94,7 @@ mod tests {
     fn test_until_one_of_char_set_unicode() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let filter: CharSetFilter<1> = CharSetFilter::from_str("好")?;
-        let rule = UntilOneOfCharSet(&filter);
+        let rule = UntilOneInCharSet(&filter);
         let input = "你好世界";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some("你"));
