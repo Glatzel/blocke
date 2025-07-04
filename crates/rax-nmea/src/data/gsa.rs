@@ -85,17 +85,10 @@ impl INmeaData for Gsa {
         let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::trace!("Gsa::new: hdop={:?}", hdop);
 
-        ctx.skip_strict(&CHAR_COMMA)?; // Skip the comma before vdop
-
-        let vdop = {
-            let vdop = ctx.take(&UNTIL_COMMA).parse_opt::<f64>();
-            if vdop.is_some() {
-                vdop
-            } else {
-                ctx.take(&UNTIL_STAR).parse_opt::<f64>()
-            }
-        };
-
+        let vdop = ctx
+            .skip(&CHAR_COMMA)
+            .take(&UNTIL_COMMA_OR_STAR)
+            .parse_opt::<f64>();
         clerk::trace!("Gsa::new: vdop={:?}", vdop);
 
         let system_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();

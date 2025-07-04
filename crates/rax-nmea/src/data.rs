@@ -158,8 +158,11 @@ pub enum FaaMode {
     Autonomous,
     Differential,
     Estimated,
+    RtkFloat,
     ManualInput,
     NotValid,
+    Precise,
+    RtkInteger,
     Simulator,
 }
 impl FromStr for FaaMode {
@@ -169,9 +172,13 @@ impl FromStr for FaaMode {
             "A" => Ok(Self::Autonomous),
             "D" => Ok(Self::Differential),
             "E" => Ok(Self::Estimated),
+            "F" => Ok(Self::RtkFloat),
             "M" => Ok(Self::ManualInput),
-            "S" => Ok(Self::Simulator),
             "N" => Ok(Self::NotValid),
+            "P" => Ok(Self::Precise),
+            "R" => Ok(Self::RtkInteger),
+            "S" => Ok(Self::Simulator),
+
             other => miette::bail!("Unknown GgaQualityIndicator {}", other),
         }
     }

@@ -12,29 +12,17 @@ pub struct CharSetFilter<const N: usize> {
 impl<const N: usize> CharSetFilter<N> {
     /// The caller promises `table` is sorted and unique.
     pub const fn new(table: [char; N]) -> Self { Self { table } }
-
-    /// Compile‑time binary search (O(log N)).
-    pub const fn contains(&self, target: char) -> bool {
-        let mut lo = 0;
-        let mut hi = N;
-        while lo < hi {
-            let mid = (lo + hi) / 2;
-            let mid_val = self.table[mid];
-            if target == mid_val {
-                return true;
-            }
-            if target < mid_val {
-                hi = mid;
-            } else {
-                lo = mid + 1;
-            }
-        }
-        false
-    }
 }
 impl<const N: usize> IFilter<&char> for CharSetFilter<N> {
     fn name(&self) -> &str { "Char Set (array)" }
-    fn filter(&self, input: &char) -> bool { self.contains(*input) }
+    fn filter(&self, input: &char) -> bool {
+        clerk::trace!(
+            "CharSetFilter: checking if '{}' is in the set {:?}",
+            input,
+            self.table
+        );
+        self.table.contains(input)
+    }
 }
 impl<const N: usize> FromStr for CharSetFilter<N> {
     type Err = miette::Report;
@@ -47,7 +35,11 @@ impl<const N: usize> FromStr for CharSetFilter<N> {
                 chars[i] = c;
                 i += 1;
             } else {
-                miette::bail!("String too long for CharSet, expected {} but got {}", N, i);
+                miette::bail!(
+                    "String too long for CharSet, expected {} but got {}",
+                    N,
+                    i + 1
+                );
             }
         }
         if i != N {
@@ -82,69 +74,137 @@ pub const ASCII_LETTERS_DIGITS: CharSetFilter<62> = CharSetFilter::new([
 
 #[cfg(test)]
 mod tests {
+    use clerk::init_log_with_level;
+    use clerk::tracing::level_filters::LevelFilter;
+
     use super::*;
-
     #[test]
-    fn test_digits_contains() {
-        for c in '0'..='9' {
-            assert!(super::DIGITS.contains(c), "DIGITS should contain '{}'", c);
-        }
-        assert!(!super::DIGITS.contains('a'));
-        assert!(!super::DIGITS.contains(' '));
+    fn test_char_set_filter() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let filter = CharSetFilter::<3>::from_str("abc")?;
+        assert!(filter.filter(&'a'));
+        assert!(filter.filter(&'b'));
+        assert!(filter.filter(&'c'));
+        assert!(!filter.filter(&'d'));
+        assert!(!filter.filter(&'1'));
+        Ok(())
     }
-
     #[test]
-    fn test_ascii_letters_contains() {
-        for c in 'A'..='Z' {
-            assert!(
-                super::ASCII_LETTERS.contains(c),
-                "ASCII_LETTERS should contain '{}'",
-                c
+    fn test_char_set_filter_from_str() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let filter: CharSetFilter<3> = CharSetFilter::from_str("abc")?;
+        assert!(filter.filter(&'a'));
+        assert!(filter.filter(&'b'));
+        assert!(filter.filter(&'c'));
+        assert!(!filter.filter(&'d'));
+        assert!(!filter.filter(&'1'));
+
+        let filter: CharSetFilter<2> = CharSetFilter::from_str(",*")?;
+        assert!(filter.filter(&','));
+        assert!(filter.filter(&'*'));
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_invalid_length() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("abcd");
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String too long for CharSet, expected 3 but got 4"
             );
         }
-        for c in 'a'..='z' {
-            assert!(
-                super::ASCII_LETTERS.contains(c),
-                "ASCII_LETTERS should contain '{}'",
-                c
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_too_short() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("ab");
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String length does not match CharSet size, expected 3 but got 2"
             );
         }
-        assert!(!super::ASCII_LETTERS.contains('0'));
-        assert!(!super::ASCII_LETTERS.contains(' '));
+        Ok(())
     }
-
     #[test]
-    fn test_ascii_letters_digits_contains() {
-        for c in 'A'..='Z' {
-            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
-        }
-        for c in 'a'..='z' {
-            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
-        }
-        for c in '0'..='9' {
-            assert!(super::ASCII_LETTERS_DIGITS.contains(c));
-        }
-        assert!(!super::ASCII_LETTERS_DIGITS.contains(' '));
-        assert!(!super::ASCII_LETTERS_DIGITS.contains('-'));
-    }
-
-    #[test]
-    fn test_from_str_digits() {
-        let digits: CharSetFilter<10> = "0123456789".parse().unwrap();
-        for c in '0'..='9' {
-            assert!(digits.contains(c));
-        }
-    }
-
-    #[test]
-    fn test_from_str_too_short() {
-        let result: Result<CharSetFilter<10>, _> = "01234567".parse();
+    fn test_char_set_filter_empty() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("");
         assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String length does not match CharSet size, expected 3 but got 0"
+            );
+        }
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_invalid_chars() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("abce");
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String too long for CharSet, expected 3 but got 4"
+            );
+        }
+        Ok(())
     }
 
     #[test]
-    fn test_from_str_too_long() {
-        let result: Result<CharSetFilter<10>, _> = "01234567890".parse();
+    fn test_char_set_filter_unicode() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let filter = CharSetFilter::<3>::from_str("あいう")?;
+        assert!(filter.filter(&'あ'));
+        assert!(filter.filter(&'い'));
+        assert!(filter.filter(&'う'));
+        assert!(!filter.filter(&'え'));
+        assert!(!filter.filter(&'1'));
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_unicode_invalid_length() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("あいうえ");
         assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String too long for CharSet, expected 3 but got 4"
+            );
+        }
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_unicode_too_short() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("あい");
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String length does not match CharSet size, expected 3 but got 2"
+            );
+        }
+        Ok(())
+    }
+    #[test]
+    fn test_char_set_filter_unicode_empty() -> miette::Result<()> {
+        init_log_with_level(LevelFilter::TRACE);
+        let result = CharSetFilter::<3>::from_str("");
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(
+                e.to_string(),
+                "String length does not match CharSet size, expected 3 but got 0"
+            );
+        }
+        Ok(())
     }
 }
