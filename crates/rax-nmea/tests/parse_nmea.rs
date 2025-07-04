@@ -6,7 +6,7 @@ use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::{
-    Dhv, Gbs, Gga, Gll, Gns, Grs, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
+    Dhv, Gbs, Gga, Gll, Gns, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
 };
 use rax_parser::io::RaxReader;
 use rax_parser::str_parser::StrParserContext;
@@ -50,7 +50,7 @@ fn test_parse_nmea() -> miette::Result<()> {
                 }
                 Identifier::GSA => {
                     let ctx = ctx.init(sentence);
-                    let _ = Grs::new(ctx, talker)?;
+                    let _ = Gsa::new(ctx, talker)?;
                 }
                 Identifier::GST => {
                     let ctx = ctx.init(sentence);
