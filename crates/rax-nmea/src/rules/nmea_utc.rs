@@ -52,21 +52,33 @@ impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaUtc {
         let hour = match main.get(0..2).and_then(|s| s.parse::<u32>().ok()) {
             Some(h) => h,
             None => {
-                clerk::warn!("NmeaUtc: failed to parse hour from '{}'", main);
+                clerk::warn!(
+                    "NmeaUtc: failed to parse hour from '{}',input='{}'",
+                    main,
+                    input
+                );
                 return (None, &input[first_comma_idx..]);
             }
         };
         let min = match main.get(2..4).and_then(|s| s.parse::<u32>().ok()) {
             Some(m) => m,
             None => {
-                clerk::warn!("NmeaUtc: failed to parse minute from '{}'", main);
+                clerk::warn!(
+                    "NmeaUtc: failed to parse minute from '{}',input='{}'",
+                    main,
+                    input
+                );
                 return (None, &input[first_comma_idx..]);
             }
         };
         let sec = match main.get(4..6).and_then(|s| s.parse::<u32>().ok()) {
             Some(s) => s,
             None => {
-                clerk::warn!("NmeaUtc: failed to parse second from '{}'", main);
+                clerk::warn!(
+                    "NmeaUtc: failed to parse second from '{}',input='{}'",
+                    main,
+                    input
+                );
                 return (None, &input[first_comma_idx..]);
             }
         };
