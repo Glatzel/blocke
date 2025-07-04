@@ -49,7 +49,7 @@ mod tests {
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
     #[test]
-    fn test_until_one_of_char_set() {
+    fn test_until_one_of_char_set() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let rule = UntilOneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "abc123";
@@ -69,6 +69,7 @@ mod tests {
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, Some("0.7"));
         assert_eq!(rest, ",1*38");
+        Ok(())
     }
     #[test]
     fn test_until_one_of_char_set_no_match() {

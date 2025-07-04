@@ -195,6 +195,7 @@ mod test {
         assert!(gns.goeidal_separation.is_none());
         assert!(gns.differential_data_age.is_none());
         assert!(gns.differential_reference_station_id.is_none());
+
         Ok(())
     }
     #[test]
