@@ -34,7 +34,14 @@ impl<const N: usize> CharSetFilter<N> {
 }
 impl<const N: usize> IFilter<&char> for CharSetFilter<N> {
     fn name(&self) -> &str { "Char Set (array)" }
-    fn filter(&self, input: &char) -> bool { self.contains(*input) }
+    fn filter(&self, input: &char) -> bool {
+        clerk::trace!(
+            "CharSetFilter: checking if '{}' is in the set {:?}",
+            input,
+            self.table
+        );
+        self.contains(*input)
+    }
 }
 impl<const N: usize> FromStr for CharSetFilter<N> {
     type Err = miette::Report;

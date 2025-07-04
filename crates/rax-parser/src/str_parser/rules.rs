@@ -8,6 +8,8 @@ mod one_of_char_set;
 pub use one_of_char_set::*;
 mod char;
 pub use self::char::*;
+mod until_one_of_char_set;
+pub use until_one_of_char_set::*;
 
 pub trait IRule {
     fn name(&self) -> &str;
