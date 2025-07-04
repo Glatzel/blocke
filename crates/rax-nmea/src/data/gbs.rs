@@ -11,14 +11,38 @@ readonly_struct!(
     "GPS Satellite Fault Detection",
    {talker: Talker},
 
-   {utc_time:  Option<chrono::DateTime<chrono::Utc>>},
-   {latitude_error:Option<f64>},
-   {longitude_error:Option<f64>},
-   {altitude_error:Option<f64>},
-   {likely_failed_satellite_id:Option<u16>},
-   {missed_detection_probability:Option<f64>},
-   {bias_estimate:Option<f64>},
-   {std_dev:Option<f64>}
+   {
+       utc_time:  Option<chrono::DateTime<chrono::Utc>>,
+       "UTC time of the GGA or GNS fix associated with this sentence."
+   },
+   {
+       latitude_error:Option<f64>,
+       "Expected 1-sigma error in latitude (meters)"
+   },
+   {
+       longitude_error:Option<f64>,
+       "Expected 1-sigma error in longitude (meters)"
+   },
+   {
+       altitude_error:Option<f64>,
+       "Expected 1-sigma error in altitude (meters)"
+   },
+   {
+       likely_failed_satellite_id:Option<u16>,
+       "ID of the satellite that is likely to have failed"
+   },
+   {
+       missed_detection_probability:Option<f64>,
+       "Probability of missed detection"
+   },
+   {
+       bias_estimate:Option<f64>,
+       "Estimated bias (meters)"
+   },
+   {
+       std_dev:Option<f64>,
+       "Standard deviation (meters)"
+   }
 );
 
 impl Gbs {

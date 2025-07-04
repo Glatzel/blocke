@@ -41,7 +41,10 @@ readonly_struct!(
     "TXT",
     {talker: Talker},
 
-    {infos : Vec<( Option<TxtType>,Option<String>)>}
+    {
+        infos : Vec<( Option<TxtType>,Option<String>)>,
+        "Text information"
+    }
 );
 
 impl Txt {

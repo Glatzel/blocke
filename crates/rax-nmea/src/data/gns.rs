@@ -32,17 +32,50 @@ readonly_struct!(
     "Gns",
     {talker: Talker},
 
-    {utc_time:Option<chrono::DateTime<chrono::Utc>>},
-    {latitude: Option<f64>},
-    {longitude: Option<f64>},
-    {mode: [FaaMode;2]},
-    {satellites :Option<u8>},
-    {hdop:Option<f64>},
-    {altitude:Option<f64>},
-    {goeidal_separation:Option<f64>},
-    {differential_data_age:Option<f64>},
-    {differential_reference_station_id:Option<u16>},
-    {navigational_status:Option<NavigationStatus> }
+    {
+        utc_time:Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        latitude: Option<f64>,
+        "Latitude, ddmm.mmmm, where dd is degrees and mm.mmmm is minutes. Positive values indicate North, negative values indicate South."
+    },
+    {
+        longitude: Option<f64>,
+        "Longitude, dddmm.mmmm, where ddd is degrees and mm.mmmm is minutes. Positive values indicate East, negative values indicate West."
+    },
+    {
+        mode: [FaaMode;2],
+        "FAA mode"
+    },
+    {
+        satellites :Option<u8>,
+        "Number of satellites in use"
+    },
+    {
+        hdop:Option<f64>,
+        "Horizontal dilution of precision"
+    },
+    {
+        altitude:Option<f64>,
+        "Altitude"
+    },
+    {
+        goeidal_separation:Option<f64>,
+        "Geoidal separation"
+    },
+    {
+        differential_data_age:Option<f64>,
+        "Differential data age"
+    },
+    {
+        differential_reference_station_id:Option<u16>,
+        "Differential reference station ID"
+    },
+    {
+        navigational_status:Option<NavigationStatus>,
+        "Navigational status"
+    }
 );
 
 impl Gns {

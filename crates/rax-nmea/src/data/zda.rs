@@ -9,12 +9,30 @@ readonly_struct!(
     "Zda",
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {day : Option<u8>},
-    {month: Option<u8>},
-    {year: Option<u16>},
-    {local_zone_description: Option<i8>},
-    {local_zone_minutes_description: Option<u8>}
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        day: Option<u8>,
+        "Day of the month"
+    },
+    {
+        month: Option<u8>,
+        "Month of the year"
+    },
+    {
+        year: Option<u16>,
+        "Year"
+    },
+    {
+        local_zone_description: Option<i8>,
+        "Local zone description"
+    },
+    {
+        local_zone_minutes_description: Option<u8>,
+        "Local zone minutes description"
+    }
 );
 
 impl Zda {

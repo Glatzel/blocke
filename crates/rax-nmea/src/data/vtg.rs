@@ -9,11 +9,26 @@ readonly_struct!(
     "Vtg",
     {talker: Talker},
 
-    {course_over_ground_true: Option<f64>},
-    {course_over_ground_magnetic : Option<f64>},
-    {speed_over_ground_knots: Option<f64>},
-    {speed_over_ground_kph: Option<f64>},
-    {mode: Option<FaaMode>}
+    {
+        course_over_ground_true: Option<f64>,
+        "Course over ground (true)"
+    },
+    {
+        course_over_ground_magnetic: Option<f64>,
+        "Course over ground (magnetic)"
+    },
+    {
+        speed_over_ground_knots: Option<f64>,
+        "Speed over ground (knots)"
+    },
+    {
+        speed_over_ground_kph: Option<f64>,
+        "Speed over ground (kph)"
+    },
+    {
+        mode: Option<FaaMode>,
+        "Mode"
+    }
 );
 impl INmeaData for Vtg {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

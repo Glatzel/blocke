@@ -28,11 +28,26 @@ readonly_struct!(
     "Gsa",
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {grs_residual_mode : Option<GrsResidualMode>},
-    {satellite_residuals:Vec<f64>},
-    {system_id: Option<SystemId>},
-    {signal_id: Option<u16>}
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        grs_residual_mode : Option<GrsResidualMode>,
+        "GRS residual mode"
+    },
+    {
+        satellite_residuals:Vec<f64>,
+        "Satellite residuals"
+    },
+    {
+        system_id: Option<SystemId>,
+        "System ID"
+    },
+    {
+        signal_id: Option<u16>,
+        "Signal ID"
+    }
 );
 impl INmeaData for Grs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

@@ -10,9 +10,13 @@ use crate::rules::*;
 /// Represents a single satellite's data in a GSV sentence.
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Satellite {
+    /// Satellite ID, typically a number from 1 to 32.
     id: Option<u16>,
+    /// Elevation in degrees.
     elevation_degrees: Option<u8>,
+    /// Azimuth in degrees.
     azimuth_degree: Option<u16>,
+    /// Signal-to-noise ratio.
     snr: Option<u8>,
 }
 
@@ -39,7 +43,10 @@ readonly_struct!(
     Gsv,
     "Gsv",
     {talker: Talker},
-    {satellites: Vec<Satellite>}
+    {
+        satellites: Vec<Satellite>,
+        "Satellite data"
+    }
 );
 
 impl Gsv {
