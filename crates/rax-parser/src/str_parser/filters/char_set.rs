@@ -112,7 +112,7 @@ mod tests {
         if let Err(e) = result {
             assert_eq!(
                 e.to_string(),
-                "String length does not match CharSet size, expected 3 but got 4"
+                "String too long for CharSet, expected 3 but got 4"
             );
         }
         Ok(())
