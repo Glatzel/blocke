@@ -1,20 +1,23 @@
-use miette::{IntoDiagnostic, Result};
+use std::io::Cursor;
+
+use miette::Result;
 use rax::io::{AsyncIRaxReader, AsyncRaxReader};
-use tokio::fs::File;
 use tokio::io::BufReader; // async API
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Open the file asynchronously
-    let file = File::open("input.txt").await.into_diagnostic()?;
-    let buf_reader = BufReader::new(file);
-
-    // Wrap it in AsyncRaxReader
+    // ---------- in‑memory text -----------------------------------------------
+    let data = "delta\necho\nfoxtrot";
+    let cursor = Cursor::new(data.as_bytes());
+    let buf_reader = BufReader::new(cursor);
     let mut reader = AsyncRaxReader::new(buf_reader);
 
-    // Drain the file line‑by‑line
+    // ---------- read everything ----------------------------------------------
+    let mut full_text = String::new();
     while let Some(line) = reader.read_line().await? {
-        print!("{}", line);
+        full_text.push_str(&line);
     }
+
+    print!("{full_text}");
     Ok(())
 }
