@@ -4,12 +4,12 @@ mod char_count;
 pub use char_count::*;
 mod until;
 pub use until::*;
-mod one_of_char_set;
-pub use one_of_char_set::*;
+mod one_in_char_set;
+pub use one_in_char_set::*;
 mod char;
 pub use self::char::*;
-mod until_one_of_char_set;
-pub use until_one_of_char_set::*;
+mod until_one_in_char_set;
+pub use until_one_in_char_set::*;
 
 pub trait IRule {
     fn name(&self) -> &str;

@@ -45,13 +45,34 @@ readonly_struct!(
     "Gsa",
     {talker: Talker},
 
-    {selection_mode: Option<GsaSelectionMode>},
-    {mode : Option<GsaMode>},
-    {satellite_ids:Vec<u8>},
-    {pdop: Option<f64>},
-    {hdop: Option<f64>},
-    {vdop: Option<f64>},
-    {system_id:Option<SystemId>}
+    {
+        selection_mode: Option<GsaSelectionMode>,
+        "Selection mode"
+    },
+    {
+        mode : Option<GsaMode>,
+        "Mode"
+    },
+    {
+        satellite_ids:Vec<u8>,
+        "Satellite IDs"
+    },
+    {
+        pdop: Option<f64>,
+        "Position dilution of precision"
+    },
+    {
+        hdop: Option<f64>,
+        "Horizontal dilution of precision"
+    },
+    {
+        vdop: Option<f64>,
+        "Vertical dilution of precision"
+    },
+    {
+        system_id:Option<SystemId>,
+        "System ID"
+    }
 );
 impl INmeaData for Gsa {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

@@ -9,11 +9,26 @@ readonly_struct!(
     "Gll",
     {talker: Talker},
 
-    {lat: Option<f64>},
-    {lon: Option<f64>},
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {data_valid: Option<Status>},
-    {faa_mode: Option<FaaMode>}
+    {
+        latitude: Option<f64>,
+        "Latitude, ddmm.mmmm, where dd is degrees and mm.mmmm is minutes. Positive values indicate North, negative values indicate South."
+    },
+    {
+        longitude: Option<f64>,
+        "Longitude, dddmm.mmmm, where ddd is degrees and mm.mmmm is minutes. Positive values indicate East, negative values indicate West."
+    },
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        data_valid: Option<Status>,
+        "Status of the data"
+    },
+    {
+        faa_mode: Option<FaaMode>,
+        "FAA mode"
+    }
 );
 impl INmeaData for Gll {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
@@ -42,8 +57,8 @@ impl INmeaData for Gll {
 
         Ok(Gll {
             talker,
-            lat,
-            lon,
+            latitude: lat,
+            longitude: lon,
             utc_time,
             data_valid,
             faa_mode,
@@ -58,10 +73,10 @@ impl fmt::Debug for Gll {
         let mut ds = f.debug_struct("GLL");
         ds.field("talker", &self.talker);
 
-        if let Some(lat) = self.lat {
+        if let Some(lat) = self.latitude {
             ds.field("lat", &lat);
         }
-        if let Some(lon) = self.lon {
+        if let Some(lon) = self.longitude {
             ds.field("lon", &lon);
         }
         if let Some(ref utc_time) = self.utc_time {
@@ -93,8 +108,8 @@ mod test {
         let gll = Gll::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{:?}", gll);
         assert_eq!(gll.talker, Talker::GN);
-        assert_approx_eq!(f64, gll.lat.unwrap(), -29.999874999999996);
-        assert_approx_eq!(f64, gll.lon.unwrap(), 120.00015);
+        assert_approx_eq!(f64, gll.latitude.unwrap(), -29.999874999999996);
+        assert_approx_eq!(f64, gll.longitude.unwrap(), 120.00015);
         assert!(gll.utc_time.unwrap().to_string().contains("23:53:16"));
         assert_eq!(gll.data_valid.unwrap(), Status::Valid);
         assert_eq!(gll.faa_mode.unwrap(), FaaMode::Autonomous);

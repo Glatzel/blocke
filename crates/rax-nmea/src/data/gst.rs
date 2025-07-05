@@ -8,14 +8,38 @@ readonly_struct!(
     "Gst",
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {rms  : Option<f64>},
-    {std_dev_semi_major: Option<f64>},
-    {std_dev_semi_minor: Option<f64>},
-    {orientation: Option<f64>},
-    {std_dev_semi_latitude: Option<f64>},
-    {std_dev_semi_longitude: Option<f64>},
-    {std_dev_semi_altitude: Option<f64>}
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        rms: Option<f64>,
+        "Root mean square"
+    },
+    {
+        std_dev_semi_major: Option<f64>,
+        "Standard deviation semi-major"
+    },
+    {
+        std_dev_semi_minor: Option<f64>,
+        "Standard deviation semi-minor"
+    },
+    {
+        orientation: Option<f64>,
+        "Orientation"
+    },
+    {
+        std_dev_semi_latitude: Option<f64>,
+        "Standard deviation semi-latitude"
+    },
+    {
+        std_dev_semi_longitude: Option<f64>,
+        "Standard deviation semi-longitude"
+    },
+    {
+        std_dev_semi_altitude: Option<f64>,
+        "Standard deviation semi-altitude"
+    }
 );
 impl INmeaData for Gst {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

@@ -9,12 +9,30 @@ readonly_struct!(
     "Dhv",
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {speed3d : Option<f64>},
-    {speed_x: Option<f64>},
-    {speed_y: Option<f64>},
-    {speed_z: Option<f64>},
-    {gdspd: Option<f64>}
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the DHV fix associated with this sentence."
+    },
+    {
+        speed3d : Option<f64>,
+        "3D speed (meters/second)"
+    },
+    {
+        speed_x: Option<f64>,
+        "Speed in X direction (meters/second)"
+    },
+    {
+        speed_y: Option<f64>,
+        "Speed in Y direction (meters/second)"
+    },
+    {
+        speed_z: Option<f64>,
+        "Speed in Z direction (meters/second)"
+    },
+    {
+        gdspd: Option<f64>,
+        "Ground speed (meters/second)"
+    }
 );
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {

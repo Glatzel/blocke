@@ -10,15 +10,42 @@ readonly_struct!(
     "Rmc",
     {talker: Talker},
 
-    {utc_time: Option<chrono::DateTime<chrono::Utc>>},
-    {status : Option<Status>},
-    {latitude: Option<f64>},
-    {longitude: Option<f64>},
-    {speed_over_ground: Option<f64>},
-    {track_made_good: Option<f64>},
-    {date:Option<NaiveDate>},
-    {magnetic_variation:Option<f64>},
-    {faa_mode: Option<FaaMode>}
+    {
+        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        "UTC time of the position fix"
+    },
+    {
+        status: Option<Status>,
+        "Status"
+    },
+    {
+        latitude: Option<f64>,
+        "Latitude"
+    },
+    {
+        longitude: Option<f64>,
+        "Longitude"
+    },
+    {
+        speed_over_ground: Option<f64>,
+        "Speed over ground"
+    },
+    {
+        track_made_good: Option<f64>,
+        "Track made good"
+    },
+    {
+        date: Option<NaiveDate>,
+        "Date"
+    },
+    {
+        magnetic_variation: Option<f64>,
+        "Magnetic variation"
+    },
+    {
+        faa_mode: Option<FaaMode>,
+        "FAA mode"
+    }
 );
 
 impl Rmc {
