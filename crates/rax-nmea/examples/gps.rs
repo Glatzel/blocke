@@ -3,11 +3,11 @@ use std::time::Duration;
 
 use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
+use rax::str_parser::StrParserContext;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::{
     Dhv, Gbs, Gga, Gll, Gns, Grs, Gsa, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
 };
-use rax::str_parser::StrParserContext;
 fn main() -> miette::Result<()> {
     clerk::init_log_with_level(LevelFilter::WARN);
     let path = "COM3";
