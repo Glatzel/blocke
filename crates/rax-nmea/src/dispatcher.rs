@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use rax_parser::io::IRaxReader;
+use rax::io::IRaxReader;
 
 use crate::data::{Identifier, Talker};
 
@@ -180,7 +180,7 @@ mod test {
     use clerk::init_log_with_level;
     use clerk::tracing::level_filters::LevelFilter;
     use miette::IntoDiagnostic;
-    use rax_parser::io::RaxReader;
+    use rax::io::RaxReader;
 
     use crate::Dispatcher;
 

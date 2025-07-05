@@ -1,4 +1,4 @@
-use rax_parser::str_parser::{IRule, IStrFlowRule};
+use rax::str_parser::{IRule, IStrFlowRule};
 
 /// Rule to parse an NMEA coordinate in the format "DDDMM.MMM,<sign>,...".
 /// Converts the coordinate to decimal degrees, applying the correct sign.

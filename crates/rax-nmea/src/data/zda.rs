@@ -1,4 +1,4 @@
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;

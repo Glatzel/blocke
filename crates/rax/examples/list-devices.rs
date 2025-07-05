@@ -1,5 +1,5 @@
 use clerk::tracing::level_filters::LevelFilter;
-use rax_utils::devices::{DeviceFilter, list_devices};
+use rax::device::{DeviceFilter, list_devices};
 
 fn main() -> miette::Result<()> {
     clerk::init_log_with_level(LevelFilter::TRACE);
