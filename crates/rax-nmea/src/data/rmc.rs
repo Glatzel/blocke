@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{FaaMode, Status, Talker};
 use crate::macros::readonly_struct;

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use rax_parser::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
+use rax::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::Talker;

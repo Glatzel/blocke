@@ -8,8 +8,8 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::{
     Dhv, Gbs, Gga, Gll, Gns, Grs, Gst, Gsv, INmeaData, Identifier, Rmc, Txt, Vtg, Zda,
 };
-use rax_parser::io::RaxReader;
-use rax_parser::str_parser::StrParserContext;
+use rax::io::RaxReader;
+use rax::str_parser::StrParserContext;
 #[test]
 fn test_parse_nmea() -> miette::Result<()> {
     init_log_with_level(LevelFilter::WARN);

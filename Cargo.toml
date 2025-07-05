@@ -8,8 +8,7 @@ version = "0.0.26"
 
 [workspace.dependencies]
 rax-nmea = { path = "./crates/rax-nmea" }
-rax-parser = { path = "./crates/rax-parser" }
-rax-utils = { path = "./crates/rax-utils" }
+rax = { path = "./crates/rax" }
 
 chrono = { version = "0.4.40", features = ["serde"] }
 clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.21" }
@@ -20,6 +19,8 @@ serde = { version = "1.0.219", features = ["derive"] }
 serialport = "4.7.2"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+async-trait = { version = "0.1"}
+tokio = { version = "1", default-features = false, features = ["io-util"] }
 
 [profile.release]
 codegen-units = 1

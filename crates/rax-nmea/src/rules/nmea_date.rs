@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use rax_parser::str_parser::IRule;
+use rax::str_parser::IRule;
 
 pub struct NmeaDate();
 
@@ -7,7 +7,7 @@ impl IRule for NmeaDate {
     fn name(&self) -> &str { "NmeaDate" }
 }
 
-impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaDate {
+impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaDate {
     type Output = NaiveDate;
     /// Applies the NmeaUtc rule to the input string.
     /// Parses the UTC time, converts to `DateTime<Utc>` using today's date, and
@@ -70,7 +70,7 @@ impl<'a> rax_parser::str_parser::IStrFlowRule<'a> for NmeaDate {
 #[cfg(test)]
 mod tests {
     use chrono::NaiveDate;
-    use rax_parser::str_parser::IStrFlowRule;
+    use rax::str_parser::IStrFlowRule;
 
     use super::*;
 

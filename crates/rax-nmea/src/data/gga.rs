@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str::FromStr;
 
-use rax_parser::str_parser::{ParseOptExt, StrParserContext};
+use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
 use crate::data::{INmeaData, Talker};

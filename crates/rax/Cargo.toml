@@ -1,0 +1,22 @@
+[package]
+edition.workspace = true
+name = "rax"
+version.workspace = true
+
+[dependencies]
+async-trait = { workspace = true, optional = true }
+clerk = { workspace = true }
+miette = { workspace = true }
+serialport = { workspace = true, optional = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+async-trait = { workspace = true }
+clerk = { workspace = true, features = ["log"] }
+serialport = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "fs"] }
+
+[features]
+async = ["tokio/io-util", "async-trait"]
+device = ["serialport"]
+log = ["clerk/log"]
