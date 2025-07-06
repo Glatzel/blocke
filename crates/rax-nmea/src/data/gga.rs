@@ -41,7 +41,9 @@ impl FromStr for GgaQualityIndicator {
 readonly_struct!(
     Gga ,
     "Global Positioning System Fix Data."
-    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver.",
+    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver."
+    "# References"
+    "* <https://gpsd.gitlab.io/gpsd/NMEA.html#_gga_global_positioning_system_fix_data>",
 
     {talker: Talker},
 

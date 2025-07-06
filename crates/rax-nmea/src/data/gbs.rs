@@ -8,7 +8,10 @@ use crate::{CHAR_COMMA, NMEA_UTC, UNTIL_COMMA, UNTIL_STAR};
 
 readonly_struct!(
     Gbs,
-    "GPS Satellite Fault Detection",
+    "GPS Satellite Fault Detection"
+    "# References"
+    "* <https://gpsd.gitlab.io/gpsd/NMEA.html#_gbs_gps_satellite_fault_detection>"
+    ,
    {talker: Talker},
 
    {
@@ -29,19 +32,19 @@ readonly_struct!(
    },
    {
        likely_failed_satellite_id:Option<u16>,
-       "ID of the satellite that is likely to have failed"
+       "ID of most likely failed satellite (1 to 138)"
    },
    {
        missed_detection_probability:Option<f64>,
-       "Probability of missed detection"
+       "Probability of missed detection for most likely failed satellite"
    },
    {
        bias_estimate:Option<f64>,
-       "Estimated bias (meters)"
+       "Estimate of bias in meters on most likely failed satellite"
    },
    {
        std_dev:Option<f64>,
-       "Standard deviation (meters)"
+       "Standard deviation of bias estimate"
    }
 );
 
