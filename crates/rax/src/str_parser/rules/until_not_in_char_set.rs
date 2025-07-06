@@ -2,10 +2,6 @@ use super::IStrFlowRule;
 use crate::str_parser::IRule;
 use crate::str_parser::filters::{CharSetFilter, IFilter};
 
-/// Rule to extract everything from the input string up to (but not including)
-/// the first occurrence of a specified delimiter substring.
-/// Returns a tuple of (prefix, rest) if the delimiter is found,
-/// otherwise returns None.
 pub struct UntilNotInCharSet<'a, const N: usize>(pub &'a CharSetFilter<N>);
 
 impl<'a, const N: usize> IRule for UntilNotInCharSet<'a, N> {
