@@ -107,7 +107,7 @@ mod test {
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
         let mut ctx = StrParserContext::new();
         let zda = Zda::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", zda);
+        println!("{zda:?}");
         assert!(zda.utc_time.unwrap().to_string().contains("16:00:12.71"));
         assert_eq!(zda.day.unwrap(), 11);
         assert_eq!(zda.month.unwrap(), 3);

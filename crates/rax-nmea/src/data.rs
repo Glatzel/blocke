@@ -105,7 +105,7 @@ impl Display for Identifier {
             Self::VTG => "VTG",
             Self::ZDA => "ZDA",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy, Hash, Eq)]
@@ -150,7 +150,7 @@ impl Display for Talker {
             Self::GP => "GP",
             Self::PQ => "PQ",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]

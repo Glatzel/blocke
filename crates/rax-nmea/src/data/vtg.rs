@@ -74,25 +74,25 @@ impl fmt::Debug for Vtg {
         if let Some(course_over_ground_true) = self.course_over_ground_true {
             ds.field(
                 "course_over_ground_true",
-                &format!("{} Degrees", course_over_ground_true),
+                &format!("{course_over_ground_true} Degrees"),
             );
         }
         if let Some(course_over_ground_magnetic) = self.course_over_ground_magnetic {
             ds.field(
                 "course_over_ground_magnetic",
-                &format!("{} Degrees", course_over_ground_magnetic),
+                &format!("{course_over_ground_magnetic} Degrees"),
             );
         }
         if let Some(speed_over_ground_knots) = self.speed_over_ground_knots {
             ds.field(
                 "speed_over_ground_knots",
-                &format!("{} Knots", speed_over_ground_knots),
+                &format!("{speed_over_ground_knots} Knots"),
             );
         }
         if let Some(speed_over_ground_kph) = self.speed_over_ground_kph {
             ds.field(
                 "speed_over_ground_kph",
-                &format!("{} Kph", speed_over_ground_kph),
+                &format!("{speed_over_ground_kph} Kph"),
             );
         }
         if let Some(ref mode) = self.mode {
@@ -116,7 +116,7 @@ mod test {
         let s = "$GPVTG,83.7,T,83.7,M,146.3,N,271.0,K,D*22";
         let mut ctx = StrParserContext::new();
         let vtg = Vtg::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", vtg);
+        println!("{vtg:?}");
         assert_eq!(vtg.talker, Talker::GN);
         assert_approx_eq!(f64, vtg.course_over_ground_true.unwrap(), 83.7);
         assert_approx_eq!(f64, vtg.course_over_ground_magnetic.unwrap(), 83.7);

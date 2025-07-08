@@ -126,7 +126,7 @@ mod tests {
         let s = "$GPGBS,125027,23.43,M,13.91,M,34.01,M*07";
         let mut ctx = StrParserContext::new();
         let gbs = Gbs::new(ctx.init(s.to_string()), Talker::GP).unwrap();
-        println!("{:?}", gbs);
+        println!("{gbs:?}");
         assert_eq!(gbs.talker, Talker::GP);
         assert!(gbs.utc_time.unwrap().to_string().contains("12:50:27"));
         assert_eq!(gbs.latitude_error.unwrap(), 23.43);

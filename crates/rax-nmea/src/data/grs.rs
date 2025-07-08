@@ -132,7 +132,7 @@ mod test {
         let input = "$GPGRS,220320.0,0,-0.8,-0.2,-0.1,-0.2,0.8,0.6,,,,,,,*55";
         let mut ctx = StrParserContext::new();
         let grs = Grs::new(ctx.init(input.to_string()), Talker::GP)?;
-        println!("{:?}", grs);
+        println!("{grs:?}");
 
         assert_eq!(grs.talker, Talker::GP);
         assert!(grs.utc_time.unwrap().to_string().contains("22:03:20"));

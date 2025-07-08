@@ -131,7 +131,7 @@ mod test {
         let s = "$GPRMC,110125,A,5505.337580,N,03858.653666,E,148.8,84.6,310317,8.9,E,D*2E";
         let mut ctx = StrParserContext::new();
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", rmc);
+        println!("{rmc:?}");
         assert_eq!(rmc.talker, Talker::GN);
         assert!(rmc.utc_time.unwrap().to_string().contains("11:01:25"));
         assert_eq!(rmc.status.unwrap(), Status::Valid);
@@ -150,7 +150,7 @@ mod test {
         let s = "$GPRMC,,V,,,,,,,,,,N*53";
         let mut ctx = StrParserContext::new();
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", rmc);
+        println!("{rmc:?}");
         assert_eq!(rmc.talker, Talker::GN);
         assert!(rmc.utc_time.is_none());
         assert_eq!(rmc.status, Some(Status::Invalid));
