@@ -66,8 +66,8 @@ impl fmt::Debug for Dhv {
         let mut ds = f.debug_struct("DHV");
         ds.field("talker", &self.talker);
 
-        if let Some(ref utc_time) = self.time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
         if let Some(speed3d) = self.speed3d {
             ds.field("speed3d", &speed3d);
