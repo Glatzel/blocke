@@ -179,7 +179,26 @@ impl FromStr for FaaMode {
             "R" => Ok(Self::RtkInteger),
             "S" => Ok(Self::Simulator),
 
-            other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+            other => miette::bail!("Unknown FaaMode: {}", other),
+        }
+    }
+}
+impl TryFrom<&char> for FaaMode {
+    type Error = miette::Report;
+
+    fn try_from(value: &char) -> Result<Self, Self::Error> {
+        match value {
+            'A' => Ok(Self::Autonomous),
+            'D' => Ok(Self::Differential),
+            'E' => Ok(Self::Estimated),
+            'F' => Ok(Self::RtkFloat),
+            'M' => Ok(Self::ManualInput),
+            'N' => Ok(Self::NotValid),
+            'P' => Ok(Self::Precise),
+            'R' => Ok(Self::RtkInteger),
+            'S' => Ok(Self::Simulator),
+
+            other => miette::bail!("Unknown FaaMode: {}", other),
         }
     }
 }

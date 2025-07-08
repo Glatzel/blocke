@@ -9,11 +9,11 @@ use crate::macros::readonly_struct;
 use crate::rules::*;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
-pub enum GsaSelectionMode {
+pub enum GsaOperationMode {
     Manual,
     Automatic,
 }
-impl FromStr for GsaSelectionMode {
+impl FromStr for GsaOperationMode {
     type Err = miette::Report;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -24,12 +24,12 @@ impl FromStr for GsaSelectionMode {
     }
 }
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
-pub enum GsaMode {
+pub enum GsaNavigationMode {
     NoFix,
     Fix2D,
     Fix3D,
 }
-impl FromStr for GsaMode {
+impl FromStr for GsaNavigationMode {
     type Err = miette::Report;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -46,15 +46,15 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        selection_mode: Option<GsaSelectionMode>,
-        "Selection mode"
+        op_mode: Option<GsaOperationMode>,
+        "Operation mode"
     },
     {
-        mode : Option<GsaMode>,
-        "Mode"
+        nav_mode : Option<GsaNavigationMode>,
+        "Navigation Mode"
     },
     {
-        satellite_ids:Vec<u8>,
+        svid:Vec<u8>,
         "Satellite IDs"
     },
     {
@@ -78,27 +78,27 @@ impl INmeaData for Gsa {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let selection_mode = ctx
+        let op_mode = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .parse_opt();
-        clerk::trace!("Gsa::new: selection_mode={:?}", selection_mode);
-        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::trace!("Gsa::new: mode={:?}", mode);
+        clerk::trace!("Gsa::new: selection_mode={:?}", op_mode);
+        let nav_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::trace!("Gsa::new: mode={:?}", nav_mode);
 
-        let mut satellite_ids = Vec::with_capacity(12);
+        let mut svid = Vec::with_capacity(12);
         for _ in 0..12 {
             match ctx
                 .skip_strict(&CHAR_COMMA)?
                 .take(&UNTIL_COMMA)
                 .parse_opt::<u8>()
             {
-                Some(sat_id) => satellite_ids.push(sat_id),
+                Some(sat_id) => svid.push(sat_id),
                 None => continue,
             }
         }
-        clerk::trace!("Gsa::new: satellite_ids={:?}", satellite_ids);
+        clerk::trace!("Gsa::new: satellite_ids={:?}", svid);
 
         let pdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::trace!("Gsa::new: pdop={:?}", pdop);
@@ -117,9 +117,9 @@ impl INmeaData for Gsa {
 
         Ok(Gsa {
             talker,
-            selection_mode,
-            mode,
-            satellite_ids,
+            op_mode,
+            nav_mode,
+            svid,
             pdop,
             hdop,
             vdop,
@@ -133,17 +133,17 @@ impl fmt::Debug for Gsa {
         let mut ds = f.debug_struct("GSA");
         ds.field("talker", &self.talker);
 
-        if let Some(selection_mode) = self.selection_mode {
-            ds.field("selection_mode", &selection_mode);
+        if let Some(op_mode) = self.op_mode {
+            ds.field("op_mode", &op_mode);
         }
-        if let Some(mode) = self.mode {
-            ds.field("mode", &mode);
+        if let Some(nav_mode) = self.nav_mode {
+            ds.field("nav_mode", &nav_mode);
         }
-        if !self.satellite_ids.is_empty() {
-            ds.field("satellite_ids", &self.satellite_ids);
+        if !self.svid.is_empty() {
+            ds.field("svid", &self.svid);
         }
         if let Some(pdop) = self.pdop {
-            ds.field("pdop", &pdop);
+            ds.field("svid", &pdop);
         }
         if let Some(hdop) = self.hdop {
             ds.field("hdop", &hdop);
@@ -176,9 +176,9 @@ mod test {
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{gsa:?}");
         assert_eq!(gsa.talker, Talker::GN);
-        assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
-        assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
-        assert_eq!(gsa.satellite_ids, vec![5, 7, 13, 14, 15, 17, 19, 23, 24]);
+        assert_eq!(gsa.op_mode.unwrap(), GsaOperationMode::Automatic);
+        assert_eq!(gsa.nav_mode.unwrap(), GsaNavigationMode::Fix3D);
+        assert_eq!(gsa.svid, vec![5, 7, 13, 14, 15, 17, 19, 23, 24]);
         assert_approx_eq!(f64, gsa.pdop.unwrap(), 1.0);
         assert_approx_eq!(f64, gsa.hdop.unwrap(), 0.7);
         assert_approx_eq!(f64, gsa.vdop.unwrap(), 0.7);
@@ -194,9 +194,9 @@ mod test {
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{gsa:?}");
         assert_eq!(gsa.talker, Talker::GP);
-        assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
-        assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
-        assert_eq!(gsa.satellite_ids, vec![5, 7, 8, 10, 15, 17, 18, 19, 30]);
+        assert_eq!(gsa.op_mode.unwrap(), GsaOperationMode::Automatic);
+        assert_eq!(gsa.nav_mode.unwrap(), GsaNavigationMode::Fix3D);
+        assert_eq!(gsa.svid, vec![5, 7, 8, 10, 15, 17, 18, 19, 30]);
         assert_approx_eq!(f64, gsa.pdop.unwrap(), 1.2);
         assert_approx_eq!(f64, gsa.hdop.unwrap(), 0.9);
         assert_approx_eq!(f64, gsa.vdop.unwrap(), 0.8);

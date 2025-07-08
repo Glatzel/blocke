@@ -29,15 +29,15 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::DateTime<chrono::Utc>>,
         "UTC time of the position fix"
     },
     {
-        grs_residual_mode : Option<GrsResidualMode>,
+        mode : Option<GrsResidualMode>,
         "GRS residual mode"
     },
     {
-        satellite_residuals:Vec<f64>,
+        residual:Vec<f64>,
         "Satellite residuals"
     },
     {
@@ -53,38 +53,38 @@ impl INmeaData for Grs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
 
-        let grs_residual_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::debug!(
             "Grs::new: utc_time={:?}, grs_residual_mode={:?}",
-            utc_time,
-            grs_residual_mode
+            time,
+            mode
         );
 
-        let mut satellite_residuals = Vec::with_capacity(12);
+        let mut residual = Vec::with_capacity(12);
         for _ in 0..12 {
             match ctx
                 .skip_strict(&CHAR_COMMA)?
                 .take(&UNTIL_COMMA)
                 .parse_opt::<f64>()
             {
-                Some(residual) => satellite_residuals.push(residual),
+                Some(r) => residual.push(r),
                 None => continue,
             }
         }
-        clerk::debug!("Grs::new: satellite_residuals={:?}", satellite_residuals);
+        clerk::debug!("Grs::new: satellite_residuals={:?}", residual);
 
         let system_id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let signal_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
         Ok(Grs {
             talker,
-            utc_time,
-            grs_residual_mode,
-            satellite_residuals,
+            time,
+            mode,
+            residual,
             system_id,
             signal_id,
         })
@@ -96,15 +96,15 @@ impl fmt::Debug for Grs {
         let mut ds = f.debug_struct("GSA");
         ds.field("talker", &self.talker);
 
-        if let Some(utc_time) = self.utc_time {
-            ds.field("utc_time", &utc_time);
+        if let Some(time) = self.time {
+            ds.field("time", &time);
         }
 
-        if let Some(grs_residual_mode) = self.grs_residual_mode {
-            ds.field("grs_residual_mode", &grs_residual_mode);
+        if let Some(mode) = self.mode {
+            ds.field("mode", &mode);
         }
 
-        ds.field("satellite_residuals", &self.satellite_residuals);
+        ds.field("residual", &self.residual);
 
         if let Some(system_id) = self.system_id {
             ds.field("system_id", &system_id);
@@ -135,15 +135,15 @@ mod test {
         println!("{grs:?}");
 
         assert_eq!(grs.talker, Talker::GP);
-        assert!(grs.utc_time.unwrap().to_string().contains("22:03:20"));
-        assert_eq!(grs.grs_residual_mode.unwrap(), GrsResidualMode::UsedInGga);
-        assert_eq!(grs.satellite_residuals.len(), 6);
-        assert_approx_eq!(f64, grs.satellite_residuals[0], -0.8);
-        assert_approx_eq!(f64, grs.satellite_residuals[1], -0.2);
-        assert_approx_eq!(f64, grs.satellite_residuals[2], -0.1);
-        assert_approx_eq!(f64, grs.satellite_residuals[3], -0.2);
-        assert_approx_eq!(f64, grs.satellite_residuals[4], 0.8);
-        assert_approx_eq!(f64, grs.satellite_residuals[5], 0.6);
+        assert!(grs.time.unwrap().to_string().contains("22:03:20"));
+        assert_eq!(grs.mode.unwrap(), GrsResidualMode::UsedInGga);
+        assert_eq!(grs.residual.len(), 6);
+        assert_approx_eq!(f64, grs.residual[0], -0.8);
+        assert_approx_eq!(f64, grs.residual[1], -0.2);
+        assert_approx_eq!(f64, grs.residual[2], -0.1);
+        assert_approx_eq!(f64, grs.residual[3], -0.2);
+        assert_approx_eq!(f64, grs.residual[4], 0.8);
+        assert_approx_eq!(f64, grs.residual[5], 0.6);
         assert!(grs.system_id.is_none());
         assert!(grs.signal_id.is_none());
 

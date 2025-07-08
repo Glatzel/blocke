@@ -11,28 +11,28 @@ use crate::rules::*;
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Satellite {
     /// Satellite ID, typically a number from 1 to 32.
-    id: Option<u16>,
+    svid: Option<u16>,
     /// Elevation in degrees.
-    elevation_degrees: Option<u8>,
+    elv: Option<u8>,
     /// Azimuth in degrees.
-    azimuth_degree: Option<u16>,
+    az: Option<u16>,
     /// Signal-to-noise ratio.
-    snr: Option<u8>,
+    cno: Option<u8>,
 }
 
 impl fmt::Debug for Satellite {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("Satellite");
-        if let Some(ref id) = self.id {
+        if let Some(ref id) = self.svid {
             ds.field("id", id);
         }
-        if let Some(elevation_degrees) = self.elevation_degrees {
+        if let Some(elevation_degrees) = self.elv {
             ds.field("elevation_degrees", &elevation_degrees);
         }
-        if let Some(azimuth_degree) = self.azimuth_degree {
+        if let Some(azimuth_degree) = self.az {
             ds.field("azimuth_degree", &azimuth_degree);
         }
-        if let Some(snr) = self.snr {
+        if let Some(snr) = self.cno {
             ds.field("snr", &snr);
         }
         ds.finish()
@@ -46,6 +46,9 @@ readonly_struct!(
     {
         satellites: Vec<Satellite>,
         "Satellite data"
+    },
+    {
+        signal_id:Option<u16>
     }
 );
 
@@ -111,8 +114,13 @@ impl Gsv {
             }
             satellites.push(Self::parse_satellite(ctx, true)?);
         }
+        let signal_id = ctx.skip(&UNTIL_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
 
-        Ok(Self { talker, satellites })
+        Ok(Self {
+            talker,
+            satellites,
+            signal_id,
+        })
     }
 
     /// Helper to parse a single satellite entry.
@@ -127,10 +135,10 @@ impl Gsv {
             ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt()
         };
         Ok(Satellite {
-            id,
-            elevation_degrees,
-            azimuth_degree,
-            snr,
+            svid: id,
+            elv: elevation_degrees,
+            az: azimuth_degree,
+            cno: snr,
         })
     }
 }
@@ -162,48 +170,48 @@ mod test {
         assert_eq!(gsv.talker, Talker::GP);
         assert_eq!(gsv.satellites.len(), 10);
         // line 1
-        assert_eq!(gsv.satellites[0].id, Some(25));
-        assert_eq!(gsv.satellites[0].elevation_degrees, Some(68));
-        assert_eq!(gsv.satellites[0].azimuth_degree, Some(53));
-        assert_eq!(gsv.satellites[0].snr, Some(47));
-        assert_eq!(gsv.satellites[1].id, Some(21));
-        assert_eq!(gsv.satellites[1].elevation_degrees, Some(59));
-        assert_eq!(gsv.satellites[1].azimuth_degree, Some(306));
-        assert_eq!(gsv.satellites[1].snr, Some(49));
-        assert_eq!(gsv.satellites[2].id, Some(29));
-        assert_eq!(gsv.satellites[2].elevation_degrees, Some(56));
-        assert_eq!(gsv.satellites[2].azimuth_degree, Some(161));
-        assert_eq!(gsv.satellites[2].snr, Some(49));
-        assert_eq!(gsv.satellites[3].id, Some(31));
-        assert_eq!(gsv.satellites[3].elevation_degrees, Some(36));
-        assert_eq!(gsv.satellites[3].azimuth_degree, Some(265));
-        assert_eq!(gsv.satellites[3].snr, Some(49));
+        assert_eq!(gsv.satellites[0].svid, Some(25));
+        assert_eq!(gsv.satellites[0].elv, Some(68));
+        assert_eq!(gsv.satellites[0].az, Some(53));
+        assert_eq!(gsv.satellites[0].cno, Some(47));
+        assert_eq!(gsv.satellites[1].svid, Some(21));
+        assert_eq!(gsv.satellites[1].elv, Some(59));
+        assert_eq!(gsv.satellites[1].az, Some(306));
+        assert_eq!(gsv.satellites[1].cno, Some(49));
+        assert_eq!(gsv.satellites[2].svid, Some(29));
+        assert_eq!(gsv.satellites[2].elv, Some(56));
+        assert_eq!(gsv.satellites[2].az, Some(161));
+        assert_eq!(gsv.satellites[2].cno, Some(49));
+        assert_eq!(gsv.satellites[3].svid, Some(31));
+        assert_eq!(gsv.satellites[3].elv, Some(36));
+        assert_eq!(gsv.satellites[3].az, Some(265));
+        assert_eq!(gsv.satellites[3].cno, Some(49));
         // line 2
-        assert_eq!(gsv.satellites[4].id, Some(12));
-        assert_eq!(gsv.satellites[4].elevation_degrees, Some(29));
-        assert_eq!(gsv.satellites[4].azimuth_degree, Some(48));
-        assert_eq!(gsv.satellites[4].snr, Some(49));
-        assert_eq!(gsv.satellites[5].id, Some(5));
-        assert_eq!(gsv.satellites[5].elevation_degrees, Some(22));
-        assert_eq!(gsv.satellites[5].azimuth_degree, Some(123));
-        assert_eq!(gsv.satellites[5].snr, Some(49));
-        assert_eq!(gsv.satellites[6].id, Some(18));
-        assert_eq!(gsv.satellites[6].elevation_degrees, Some(13));
-        assert_eq!(gsv.satellites[6].azimuth_degree, Some(0));
-        assert_eq!(gsv.satellites[6].snr, Some(49));
-        assert_eq!(gsv.satellites[7].id, Some(1));
-        assert_eq!(gsv.satellites[7].elevation_degrees, Some(0));
-        assert_eq!(gsv.satellites[7].azimuth_degree, Some(0));
-        assert_eq!(gsv.satellites[7].snr, Some(49));
+        assert_eq!(gsv.satellites[4].svid, Some(12));
+        assert_eq!(gsv.satellites[4].elv, Some(29));
+        assert_eq!(gsv.satellites[4].az, Some(48));
+        assert_eq!(gsv.satellites[4].cno, Some(49));
+        assert_eq!(gsv.satellites[5].svid, Some(5));
+        assert_eq!(gsv.satellites[5].elv, Some(22));
+        assert_eq!(gsv.satellites[5].az, Some(123));
+        assert_eq!(gsv.satellites[5].cno, Some(49));
+        assert_eq!(gsv.satellites[6].svid, Some(18));
+        assert_eq!(gsv.satellites[6].elv, Some(13));
+        assert_eq!(gsv.satellites[6].az, Some(0));
+        assert_eq!(gsv.satellites[6].cno, Some(49));
+        assert_eq!(gsv.satellites[7].svid, Some(1));
+        assert_eq!(gsv.satellites[7].elv, Some(0));
+        assert_eq!(gsv.satellites[7].az, Some(0));
+        assert_eq!(gsv.satellites[7].cno, Some(49));
         // line 3
-        assert_eq!(gsv.satellites[8].id, Some(14));
-        assert_eq!(gsv.satellites[8].elevation_degrees, Some(0));
-        assert_eq!(gsv.satellites[8].azimuth_degree, Some(0));
-        assert_eq!(gsv.satellites[8].snr, Some(3));
-        assert_eq!(gsv.satellites[9].id, Some(16));
-        assert_eq!(gsv.satellites[9].elevation_degrees, Some(0));
-        assert_eq!(gsv.satellites[9].azimuth_degree, Some(0));
-        assert_eq!(gsv.satellites[9].snr, Some(27));
+        assert_eq!(gsv.satellites[8].svid, Some(14));
+        assert_eq!(gsv.satellites[8].elv, Some(0));
+        assert_eq!(gsv.satellites[8].az, Some(0));
+        assert_eq!(gsv.satellites[8].cno, Some(3));
+        assert_eq!(gsv.satellites[9].svid, Some(16));
+        assert_eq!(gsv.satellites[9].elv, Some(0));
+        assert_eq!(gsv.satellites[9].az, Some(0));
+        assert_eq!(gsv.satellites[9].cno, Some(27));
         Ok(())
     }
 
@@ -216,22 +224,22 @@ mod test {
         println!("{gsv:?}");
         assert_eq!(gsv.talker, Talker::GP);
         assert_eq!(gsv.satellites.len(), 4);
-        assert_eq!(gsv.satellites[0].id, Some(2));
-        assert_eq!(gsv.satellites[0].elevation_degrees, Some(35));
-        assert_eq!(gsv.satellites[0].azimuth_degree, Some(291));
-        assert!(gsv.satellites[0].snr.is_none());
-        assert_eq!(gsv.satellites[1].id, Some(3));
-        assert_eq!(gsv.satellites[1].elevation_degrees, Some(9));
-        assert_eq!(gsv.satellites[1].azimuth_degree, Some(129));
-        assert!(gsv.satellites[1].snr.is_none());
-        assert_eq!(gsv.satellites[2].id, Some(5));
-        assert_eq!(gsv.satellites[2].elevation_degrees, Some(14));
-        assert_eq!(gsv.satellites[2].azimuth_degree, Some(305));
-        assert!(gsv.satellites[2].snr.is_none());
-        assert_eq!(gsv.satellites[3].id, Some(6));
-        assert_eq!(gsv.satellites[3].elevation_degrees, Some(38));
-        assert_eq!(gsv.satellites[3].azimuth_degree, Some(226));
-        assert!(gsv.satellites[3].snr.is_none());
+        assert_eq!(gsv.satellites[0].svid, Some(2));
+        assert_eq!(gsv.satellites[0].elv, Some(35));
+        assert_eq!(gsv.satellites[0].az, Some(291));
+        assert!(gsv.satellites[0].cno.is_none());
+        assert_eq!(gsv.satellites[1].svid, Some(3));
+        assert_eq!(gsv.satellites[1].elv, Some(9));
+        assert_eq!(gsv.satellites[1].az, Some(129));
+        assert!(gsv.satellites[1].cno.is_none());
+        assert_eq!(gsv.satellites[2].svid, Some(5));
+        assert_eq!(gsv.satellites[2].elv, Some(14));
+        assert_eq!(gsv.satellites[2].az, Some(305));
+        assert!(gsv.satellites[2].cno.is_none());
+        assert_eq!(gsv.satellites[3].svid, Some(6));
+        assert_eq!(gsv.satellites[3].elv, Some(38));
+        assert_eq!(gsv.satellites[3].az, Some(226));
+        assert!(gsv.satellites[3].cno.is_none());
         Ok(())
     }
 
@@ -244,18 +252,18 @@ mod test {
         println!("{gsv:?}");
         assert_eq!(gsv.talker, Talker::GP);
         assert_eq!(gsv.satellites.len(), 3);
-        assert_eq!(gsv.satellites[0].id, Some(2));
-        assert_eq!(gsv.satellites[0].elevation_degrees, Some(35));
-        assert_eq!(gsv.satellites[0].azimuth_degree, Some(291));
-        assert!(gsv.satellites[0].snr.is_none());
-        assert_eq!(gsv.satellites[1].id, Some(3));
-        assert_eq!(gsv.satellites[1].elevation_degrees, Some(9));
-        assert_eq!(gsv.satellites[1].azimuth_degree, Some(129));
-        assert!(gsv.satellites[1].snr.is_none());
-        assert_eq!(gsv.satellites[2].id, Some(5));
-        assert_eq!(gsv.satellites[2].elevation_degrees, Some(14));
-        assert_eq!(gsv.satellites[2].azimuth_degree, Some(305));
-        assert!(gsv.satellites[2].snr.is_none());
+        assert_eq!(gsv.satellites[0].svid, Some(2));
+        assert_eq!(gsv.satellites[0].elv, Some(35));
+        assert_eq!(gsv.satellites[0].az, Some(291));
+        assert!(gsv.satellites[0].cno.is_none());
+        assert_eq!(gsv.satellites[1].svid, Some(3));
+        assert_eq!(gsv.satellites[1].elv, Some(9));
+        assert_eq!(gsv.satellites[1].az, Some(129));
+        assert!(gsv.satellites[1].cno.is_none());
+        assert_eq!(gsv.satellites[2].svid, Some(5));
+        assert_eq!(gsv.satellites[2].elv, Some(14));
+        assert_eq!(gsv.satellites[2].az, Some(305));
+        assert!(gsv.satellites[2].cno.is_none());
         Ok(())
     }
     #[test]
