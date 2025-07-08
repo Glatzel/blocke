@@ -38,7 +38,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaUtc {
         // Try to split the time into main part and fractional seconds.
         let (main, nanos) = match res.split_once('.') {
             Some((main, frac_sec_str)) => {
-                let nanos = format!("0.{}", frac_sec_str)
+                let nanos = format!("0.{frac_sec_str}")
                     .parse::<f64>()
                     .map(|f| (f * 1_000_000_000.0).round() as u32)
                     .unwrap_or(0);

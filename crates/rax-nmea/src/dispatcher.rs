@@ -101,7 +101,7 @@ where
             // Last line, combine with buffer and return
             (false, true, Some(v)) => {
                 clerk::debug!("`{}{}` is complete.", talker, identifier);
-                let combined = format!("{}{}", v, sentence);
+                let combined = format!("{v}{sentence}");
                 self.buffer.remove(&(talker, identifier));
                 Some((talker, identifier, combined))
             }

@@ -102,7 +102,7 @@ mod tests {
         let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*00";
         let result = rule.apply(input);
         assert!(result.is_err());
-        let msg = format!("{:?}", result);
+        let msg = format!("{result:?}");
         assert!(msg.contains("Checksum mismatch"));
     }
 
@@ -112,7 +112,7 @@ mod tests {
         let input = "GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
         let result = rule.apply(input);
         assert!(result.is_err());
-        let msg = format!("{:?}", result);
+        let msg = format!("{result:?}");
         assert!(msg.contains("doesn't start with"));
     }
 
@@ -122,7 +122,7 @@ mod tests {
         let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,47";
         let result = rule.apply(input);
         assert!(result.is_err());
-        let msg = format!("{:?}", result);
+        let msg = format!("{result:?}");
         assert!(msg.contains("Missing checksum delimiter"));
     }
 
@@ -132,7 +132,7 @@ mod tests {
         let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*ZZ";
         let result = rule.apply(input);
         assert!(result.is_err());
-        let msg = format!("{:?}", result);
+        let msg = format!("{result:?}");
         assert!(msg.contains("Invalid hex checksum"));
     }
 
@@ -142,7 +142,7 @@ mod tests {
         let input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*4";
         let result = rule.apply(input);
         assert!(result.is_err());
-        let msg = format!("{:?}", result);
+        let msg = format!("{result:?}");
         assert!(msg.contains("require checksum_str length 2"));
     }
 }

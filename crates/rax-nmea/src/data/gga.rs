@@ -41,7 +41,9 @@ impl FromStr for GgaQualityIndicator {
 readonly_struct!(
     Gga ,
     "Global Positioning System Fix Data."
-    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver.",
+    "This is one of the sentences commonly emitted by GPS units. Time, Position and fix related data for a GPS receiver."
+    "# References"
+    "* <https://gpsd.gitlab.io/gpsd/NMEA.html#_gga_global_positioning_system_fix_data>",
 
     {talker: Talker},
 
@@ -189,10 +191,10 @@ impl fmt::Debug for Gga {
             ds.field("hdop", &hdop);
         }
         if let Some(altitude) = self.altitude {
-            ds.field("altitude", &format!("{} M", altitude));
+            ds.field("altitude", &format!("{altitude} M"));
         }
         if let Some(geoid_separation) = self.geoid_separation {
-            ds.field("geoid_separation", &format!("{} M", geoid_separation));
+            ds.field("geoid_separation", &format!("{geoid_separation} M"));
         }
         if let Some(age_of_differential_gps_data) = self.age_of_differential_gps_data {
             ds.field(
@@ -226,7 +228,7 @@ mod test {
         let s = "$GPGGA,110256,5505.676996,N,03856.028884,E,2,08,0.7,2135.0,M,14.0,M,,*7D";
         let mut ctx = StrParserContext::new();
         let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gga);
+        println!("{gga:?}");
         assert_eq!(gga.talker, Talker::GN);
         assert!(gga.utc_time.unwrap().to_string().contains("11:02:56"));
         assert_approx_eq!(f64, gga.lat.unwrap(), 55.0946166);

@@ -8,7 +8,10 @@ use crate::{CHAR_COMMA, NMEA_UTC, UNTIL_COMMA, UNTIL_STAR};
 
 readonly_struct!(
     Gbs,
-    "GPS Satellite Fault Detection",
+    "GPS Satellite Fault Detection"
+    "# References"
+    "* <https://gpsd.gitlab.io/gpsd/NMEA.html#_gbs_gps_satellite_fault_detection>"
+    ,
    {talker: Talker},
 
    {
@@ -29,19 +32,19 @@ readonly_struct!(
    },
    {
        likely_failed_satellite_id:Option<u16>,
-       "ID of the satellite that is likely to have failed"
+       "ID of most likely failed satellite (1 to 138)"
    },
    {
        missed_detection_probability:Option<f64>,
-       "Probability of missed detection"
+       "Probability of missed detection for most likely failed satellite"
    },
    {
        bias_estimate:Option<f64>,
-       "Estimated bias (meters)"
+       "Estimate of bias in meters on most likely failed satellite"
    },
    {
        std_dev:Option<f64>,
-       "Standard deviation (meters)"
+       "Standard deviation of bias estimate"
    }
 );
 
@@ -123,7 +126,7 @@ mod tests {
         let s = "$GPGBS,125027,23.43,M,13.91,M,34.01,M*07";
         let mut ctx = StrParserContext::new();
         let gbs = Gbs::new(ctx.init(s.to_string()), Talker::GP).unwrap();
-        println!("{:?}", gbs);
+        println!("{gbs:?}");
         assert_eq!(gbs.talker, Talker::GP);
         assert!(gbs.utc_time.unwrap().to_string().contains("12:50:27"));
         assert_eq!(gbs.latitude_error.unwrap(), 23.43);

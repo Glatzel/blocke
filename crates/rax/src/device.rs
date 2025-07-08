@@ -146,3 +146,71 @@ impl DeviceFilter {
         matches!(info.port_type, SerialPortType::UsbPort { .. })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use serialport::{SerialPortInfo, SerialPortType};
+
+    use super::*;
+
+    // Helper to create a mock USB port with given name, vid, and pid.
+    fn mock_usb_port(name: &str, vid: u16, pid: u16) -> SerialPortInfo {
+        SerialPortInfo {
+            port_name: name.to_string(),
+            port_type: SerialPortType::UsbPort(serialport::UsbPortInfo {
+                vid,
+                pid,
+                serial_number: Some("SN123".to_string()),
+                manufacturer: Some("TestManu".to_string()),
+                product: Some("TestProd".to_string()),
+            }),
+        }
+    }
+
+    // Helper to create a mock PCI port with given name.
+    fn mock_pci_port(name: &str) -> SerialPortInfo {
+        SerialPortInfo {
+            port_name: name.to_string(),
+            port_type: SerialPortType::PciPort,
+        }
+    }
+
+    /// Test that DeviceFilter::all returns true for any port type.
+    #[test]
+    fn test_device_filter_all() {
+        let usb = mock_usb_port("COM3", 1234, 5678);
+        let pci = mock_pci_port("COM4");
+        assert!(DeviceFilter::all(&usb));
+        assert!(DeviceFilter::all(&pci));
+    }
+
+    /// Test that DeviceFilter::usb returns true only for USB ports.
+    #[test]
+    fn test_device_filter_usb() {
+        let usb = mock_usb_port("COM3", 1234, 5678);
+        let pci = mock_pci_port("COM4");
+        assert!(DeviceFilter::usb(&usb));
+        assert!(!DeviceFilter::usb(&pci));
+    }
+
+    /// Test DeviceInfo::new and all accessor methods.
+    #[test]
+    fn test_device_info_new_and_accessors() {
+        let info = DeviceInfo::new(
+            "COM5".to_string(),
+            DeviceType::Usb,
+            Some(1111),
+            Some(2222),
+            Some("SN".to_string()),
+            Some("Manu".to_string()),
+            Some("Prod".to_string()),
+        );
+        assert_eq!(info.name(), "COM5");
+        assert_eq!(info.device_type(), &DeviceType::Usb);
+        assert_eq!(info.vendor_id(), Some(1111));
+        assert_eq!(info.product_id(), Some(2222));
+        assert_eq!(info.serial_number(), Some("SN"));
+        assert_eq!(info.manufacturer(), Some("Manu"));
+        assert_eq!(info.product(), Some("Prod"));
+    }
+}

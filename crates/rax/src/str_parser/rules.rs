@@ -10,6 +10,12 @@ mod char;
 pub use self::char::*;
 mod until_one_in_char_set;
 pub use until_one_in_char_set::*;
+mod until_not_in_char_set;
+pub use until_not_in_char_set::*;
+mod until_n_in_char_set;
+pub use until_n_in_char_set::*;
+mod n_in_charset;
+pub use n_in_charset::*;
 
 pub trait IRule {
     fn name(&self) -> &str;

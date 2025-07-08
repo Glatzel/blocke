@@ -102,7 +102,7 @@ mod test {
         let s = "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65";
         let mut ctx = StrParserContext::new();
         let dhv = Dhv::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", dhv);
+        println!("{dhv:?}");
         assert_eq!(dhv.talker, Talker::GN);
         assert!(dhv.utc_time.unwrap().to_string().contains("02:11:50"));
         assert_eq!(dhv.speed3d.unwrap(), 0.03);

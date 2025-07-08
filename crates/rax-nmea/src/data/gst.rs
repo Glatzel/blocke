@@ -120,7 +120,7 @@ mod test {
         let s = "$GPGST,182141.000,15.5,15.3,7.2,21.8,0.9,0.5,0.8*54";
         let mut ctx = StrParserContext::new();
         let vtg = Gst::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", vtg);
+        println!("{vtg:?}");
         assert_eq!(vtg.talker, Talker::GN);
         assert!(vtg.utc_time.unwrap().to_string().contains("18:21:41"));
         assert_eq!(vtg.rms.unwrap(), 15.5);

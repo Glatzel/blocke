@@ -15,7 +15,7 @@ fn main() -> miette::Result<()> {
     loop {
         let message = reader.read_line()?;
         if let Some(m) = message {
-            println!("{}", m)
+            println!("{m}")
         }
     }
 }
