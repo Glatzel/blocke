@@ -216,7 +216,7 @@ mod test {
         let s = "$GPGNS,112257.00,3844.24011,N,00908.43828,W,AN,03,10.5,,*57";
         let mut ctx = StrParserContext::new();
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gns);
+        println!("{gns:?}");
         assert_eq!(gns.talker, Talker::GN);
         assert!(gns.utc_time.unwrap().to_string().contains("11:22:57"));
         assert_eq!(gns.latitude.unwrap(), 38.73733516666667);
@@ -237,7 +237,7 @@ mod test {
         let s = "$GNGNS,181604.00,,,,,NN,00,99.99,,,,*59";
         let mut ctx = StrParserContext::new();
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gns);
+        println!("{gns:?}");
         assert_eq!(gns.talker, Talker::GN);
         assert!(gns.utc_time.unwrap().to_string().contains("18:16:04"));
         assert!(gns.latitude.is_none());

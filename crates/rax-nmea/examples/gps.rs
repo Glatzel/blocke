@@ -21,67 +21,67 @@ fn main() -> miette::Result<()> {
             Identifier::DHV => {
                 let ctx = ctx.init(sentence);
                 let nmea = Dhv::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GBS => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gbs::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GGA => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gga::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GLL => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gll::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GNS => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gns::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GRS => {
                 let ctx = ctx.init(sentence);
                 let nmea = Grs::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GSA => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gsa::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GST => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gst::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::GSV => {
                 let ctx = ctx.init(sentence);
                 let nmea = Gsv::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::RMC => {
                 let ctx = ctx.init(sentence);
                 let nmea = Rmc::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::Txt => {
                 let ctx = ctx.init(sentence);
                 let nmea = Txt::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::VTG => {
                 let ctx = ctx.init(sentence);
                 let nmea = Vtg::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
             Identifier::ZDA => {
                 let ctx = ctx.init(sentence);
                 let nmea = Zda::new(ctx, talker)?;
-                println!("{:?}", nmea)
+                println!("{nmea:?}")
             }
         }
     }

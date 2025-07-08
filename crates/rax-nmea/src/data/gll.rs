@@ -106,7 +106,7 @@ mod test {
         let s = "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E";
         let mut ctx = StrParserContext::new();
         let gll = Gll::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gll);
+        println!("{gll:?}");
         assert_eq!(gll.talker, Talker::GN);
         assert_approx_eq!(f64, gll.latitude.unwrap(), -29.999874999999996);
         assert_approx_eq!(f64, gll.longitude.unwrap(), 120.00015);

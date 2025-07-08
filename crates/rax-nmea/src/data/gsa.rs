@@ -174,7 +174,7 @@ mod test {
         let s = "$GNGSA,A,3,05,07,13,14,15,17,19,23,24,,,,1.0,0.7,0.7,1*38";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GN)?;
-        println!("{:?}", gsa);
+        println!("{gsa:?}");
         assert_eq!(gsa.talker, Talker::GN);
         assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
         assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
@@ -192,7 +192,7 @@ mod test {
         let s = "$GPGSA,A,3,05,07,08,10,15,17,18,19,30,,,,1.2,0.9,0.8*3B";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GP)?;
-        println!("{:?}", gsa);
+        println!("{gsa:?}");
         assert_eq!(gsa.talker, Talker::GP);
         assert_eq!(gsa.selection_mode.unwrap(), GsaSelectionMode::Automatic);
         assert_eq!(gsa.mode.unwrap(), GsaMode::Fix3D);
