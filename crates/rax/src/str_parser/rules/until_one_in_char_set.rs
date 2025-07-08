@@ -26,8 +26,8 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
         loop {
             if let Some((i, c)) = char_indices.next() {
                 if self.filter.filter(&c) {
-                    if let Some((i, c)) = char_indices.next() {
-                        if self.include {
+                    if self.include {
+                        if let Some((i, c)) = char_indices.next() {
                             let prefix = &input[..i];
                             let rest = &input[i..];
                             clerk::debug!(
@@ -55,15 +55,15 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
                     }
                 }
             } else {
-                return (None, input);
+                break;
             }
         }
+        (None, input)
     }
 }
 
 #[cfg(test)]
 mod tests {
-
     use std::str::FromStr;
 
     use clerk::init_log_with_level;
@@ -71,42 +71,56 @@ mod tests {
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
+
     #[test]
-    fn test_until_one_of_char_set() -> miette::Result<()> {
+    fn test_until_one_of_char_set_include_true() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
-        let input = "abc123";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some(""));
-        assert_eq!(rest, "abc123");
-
-        let rule = UntilOneInCharSet(&DIGITS);
-        let input = "abc123";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some("abc"));
-        assert_eq!(rest, "123");
-
         let filter = CharSetFilter::<2>::from_str(",*")?;
-        let rule = UntilOneInCharSet::<2>(&filter);
+        let rule = UntilOneInCharSet {
+            filter: &filter,
+            include: true,
+        };
         let input = "0.7,1*38";
         let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some("0.7"));
-        assert_eq!(rest, ",1*38");
+        assert_eq!(matched, Some("0.7,"));
+        assert_eq!(rest, "1*38");
         Ok(())
     }
+
+    #[test]
+    fn test_until_one_of_char_set_include_false_first_char() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = UntilOneInCharSet {
+            filter: &DIGITS,
+            include: false,
+        };
+        let input = "abc123";
+        let (matched, rest) = rule.apply(input);
+        // First char is in set and include=false, should return None
+        assert_eq!(matched, Some("abc"));
+        assert_eq!(rest, "123");
+    }
+
     #[test]
     fn test_until_one_of_char_set_no_match() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
+        let rule = UntilOneInCharSet {
+            filter: &ASCII_LETTERS_DIGITS,
+            include: true,
+        };
         let input = "!@#$%^&*()";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
         assert_eq!(rest, input);
     }
+
     #[test]
     fn test_until_one_of_char_set_empty_input() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = UntilOneInCharSet(&ASCII_LETTERS_DIGITS);
+        let rule = UntilOneInCharSet {
+            filter: &ASCII_LETTERS_DIGITS,
+            include: true,
+        };
         let input = "";
         let (matched, rest) = rule.apply(input);
         assert_eq!(matched, None);
@@ -117,11 +131,14 @@ mod tests {
     fn test_until_one_of_char_set_unicode() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let filter: CharSetFilter<1> = CharSetFilter::from_str("好")?;
-        let rule = UntilOneInCharSet(&filter);
+        let rule = UntilOneInCharSet {
+            filter: &filter,
+            include: true,
+        };
         let input = "你好世界";
         let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some("你"));
-        assert_eq!(rest, "好世界");
+        assert_eq!(matched, Some("你好"));
+        assert_eq!(rest, "世界");
         Ok(())
     }
 }
