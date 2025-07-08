@@ -6,7 +6,10 @@ use crate::str_parser::filters::{CharSetFilter, IFilter};
 /// the first occurrence of a specified delimiter substring.
 /// Returns a tuple of (prefix, rest) if the delimiter is found,
 /// otherwise returns None.
-pub struct UntilOneInCharSet<'a, const N: usize>(pub &'a CharSetFilter<N>);
+pub struct UntilOneInCharSet<'a, const N: usize> {
+    pub filter: &'a CharSetFilter<N>,
+    pub include: bool,
+}
 
 impl<'a, const N: usize> IRule for UntilOneInCharSet<'a, N> {
     fn name(&self) -> &str { "Until" }
@@ -19,22 +22,42 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
     /// and the rest of the string (starting with the delimiter).
     /// Otherwise, returns None.
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
-        for (i, c) in input.char_indices() {
-            if self.0.filter(&c) {
-                // If the character is in the set, return the prefix and the rest of the string
-                let prefix = &input[..i];
-                let rest = &input[i..];
-                clerk::debug!(
-                    "UntilOneOfCharSet matched: prefix='{}', rest='{}, i={}, c='{}'",
-                    prefix,
-                    rest,
-                    i,
-                    c
-                );
-                return (Some(prefix), rest);
+        let mut char_indices = input.char_indices();
+        loop {
+            if let Some((i, c)) = char_indices.next() {
+                if self.filter.filter(&c) {
+                    if let Some((i, c)) = char_indices.next() {
+                        if self.include {
+                            let prefix = &input[..i];
+                            let rest = &input[i..];
+                            clerk::debug!(
+                                "UntilOneOfCharSet matched: prefix='{}', rest='{}, i={}, c='{}'",
+                                prefix,
+                                rest,
+                                i,
+                                c
+                            );
+                            return (Some(prefix), rest);
+                        } else {
+                            return (None, input);
+                        }
+                    } else {
+                        let prefix = &input[..i];
+                        let rest = &input[i..];
+                        clerk::debug!(
+                            "UntilOneOfCharSet matched: prefix='{}', rest='{}, i={}, c='{}'",
+                            prefix,
+                            rest,
+                            i,
+                            c
+                        );
+                        return (Some(prefix), rest);
+                    }
+                }
+            } else {
+                return (None, input);
             }
         }
-        (None, input)
     }
 }
 
