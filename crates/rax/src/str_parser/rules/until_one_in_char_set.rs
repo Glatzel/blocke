@@ -3,49 +3,61 @@ use crate::str_parser::IRule;
 use crate::str_parser::filters::{CharSetFilter, IFilter};
 
 /// Rule to extract everything from the input string up to (but not including)
-/// the first occurrence of a specified delimiter substring.
-/// Returns a tuple of (prefix, rest) if the delimiter is found,
-/// otherwise returns None.
+/// the first occurrence of any character in the provided character set.
+/// Returns a tuple of (prefix, rest) where `prefix` contains all characters
+/// up to the first character in the set, and `rest` is the remainder of the
+/// string starting from that character. If no character in the set is found,
+/// returns (None, input).
 pub struct UntilOneInCharSet<'a, const N: usize> {
     pub filter: &'a CharSetFilter<N>,
     pub include: bool,
 }
 
 impl<'a, const N: usize> IRule for UntilOneInCharSet<'a, N> {
-    fn name(&self) -> &str { "Until" }
+    fn name(&self) -> &str { "UntilOneInCharSet" }
 }
 
 impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
     type Output = &'a str;
-    /// Applies the Until rule to the input string.
-    /// If the delimiter is found, returns the substring before the delimiter
-    /// and the rest of the string (starting with the delimiter).
-    /// Otherwise, returns None.
+
+    /// Applies the UntilOneInCharSet rule to the input string.
+    /// If a character in the set is found, returns the substring before the
+    /// character and the rest of the string (starting with the character).
+    /// If `include` is true, the matched character is included in the prefix.
+    /// If `include` is false and the first character is in the set, returns
+    /// None. If no character in the set is found, returns None and the
+    /// original input.
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
-        let mut char_indices = input.char_indices();
-        loop {
-            if let Some((i, c)) = char_indices.next() {
-                if self.filter.filter(&c) {
-                    if self.include {
-                        if let Some((i, c)) = char_indices.next() {
-                            let prefix = &input[..i];
-                            let rest = &input[i..];
-                            clerk::debug!(
-                                "UntilOneOfCharSet matched: prefix='{}', rest='{}, i={}, c='{}'",
-                                prefix,
-                                rest,
-                                i,
-                                c
-                            );
-                            return (Some(prefix), rest);
-                        } else {
-                            return (None, input);
-                        }
-                    } else {
+        for (i, c) in input.char_indices() {
+            if self.filter.filter(&c) {
+                match (self.include, i == 0) {
+                    (true, _) => {
+                        // Include the matched character in the prefix
+                        let prefix = &input[..i + c.len_utf8()];
+                        let rest = &input[i + c.len_utf8()..];
+                        clerk::debug!(
+                            "UntilOneInCharSet(include): prefix='{}', rest='{}', i={}, c='{}'",
+                            prefix,
+                            rest,
+                            i,
+                            c
+                        );
+                        return (Some(prefix), rest);
+                    }
+                    (false, true) => {
+                        // Not include, and first char is in set
+                        clerk::debug!(
+                            "UntilOneInCharSet(not include): first char in set, returning None, input='{}'",
+                            input
+                        );
+                        return (None, input);
+                    }
+                    (false, false) => {
+                        // Not include, and not first char
                         let prefix = &input[..i];
                         let rest = &input[i..];
                         clerk::debug!(
-                            "UntilOneOfCharSet matched: prefix='{}', rest='{}, i={}, c='{}'",
+                            "UntilOneInCharSet(not include): prefix='{}', rest='{}', i={}, c='{}'",
                             prefix,
                             rest,
                             i,
@@ -54,10 +66,13 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
                         return (Some(prefix), rest);
                     }
                 }
-            } else {
-                break;
             }
         }
+        // No character in the set found
+        clerk::debug!(
+            "UntilOneInCharSet: no match found, returning None, input='{}'",
+            input
+        );
         (None, input)
     }
 }
@@ -94,9 +109,23 @@ mod tests {
             filter: &DIGITS,
             include: false,
         };
-        let input = "abc123";
+        let input = "1abc";
         let (matched, rest) = rule.apply(input);
         // First char is in set and include=false, should return None
+        assert_eq!(matched, None);
+        assert_eq!(rest, "1abc");
+    }
+
+    #[test]
+    fn test_until_one_of_char_set_include_false_middle() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = UntilOneInCharSet {
+            filter: &DIGITS,
+            include: false,
+        };
+        let input = "abc123";
+        let (matched, rest) = rule.apply(input);
+        // Should split before first digit
         assert_eq!(matched, Some("abc"));
         assert_eq!(rest, "123");
     }
