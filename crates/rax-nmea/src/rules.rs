@@ -29,5 +29,7 @@ pub const NMEA_UTC: NmeaUtc = NmeaUtc();
 pub const NMEA_VALIDATE: NmeaValidate = NmeaValidate();
 pub const NMEA_DEGREE: NmeaDegree = NmeaDegree();
 
-pub const UNTIL_COMMA_OR_STAR: UntilOneInCharSet<2> =
-    UntilOneInCharSet(&CharSetFilter::new([',', '*']));
+pub const UNTIL_COMMA_OR_STAR: UntilOneInCharSet<2> = UntilOneInCharSet {
+    filter: &CharSetFilter::new([',', '*']),
+    include: false,
+};
