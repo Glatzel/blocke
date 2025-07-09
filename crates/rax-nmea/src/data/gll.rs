@@ -1,6 +1,6 @@
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::data::{FaaMode, INmeaData, Status, Talker};
+use crate::data::{INmeaData, PosMode, Status, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
@@ -26,7 +26,7 @@ readonly_struct!(
         "Status of the data"
     },
     {
-        faa_mode: Option<FaaMode>,
+        pos_mode: Option<PosMode>,
         "FAA mode"
     }
 );
@@ -53,7 +53,7 @@ impl INmeaData for Gll {
 
         let status = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
 
-        let faa_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Gll {
             talker,
@@ -61,7 +61,7 @@ impl INmeaData for Gll {
             lon,
             time,
             status,
-            faa_mode,
+            pos_mode,
         })
     }
 }
@@ -85,8 +85,8 @@ impl fmt::Debug for Gll {
         if let Some(ref status) = self.status {
             ds.field("status", status);
         }
-        if let Some(ref faa_mode) = self.faa_mode {
-            ds.field("faa_mode", faa_mode);
+        if let Some(ref pos_mode) = self.pos_mode {
+            ds.field("pos_mode", pos_mode);
         }
 
         ds.finish()
@@ -112,7 +112,7 @@ mod test {
         assert_approx_eq!(f64, gll.lon.unwrap(), 120.00015);
         assert!(gll.time.unwrap().to_string().contains("23:53:16"));
         assert_eq!(gll.status.unwrap(), Status::Valid);
-        assert_eq!(gll.faa_mode.unwrap(), FaaMode::Autonomous);
+        assert_eq!(gll.pos_mode.unwrap(), PosMode::Autonomous);
         Ok(())
     }
 }

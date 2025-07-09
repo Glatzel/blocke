@@ -4,7 +4,7 @@ use std::str::FromStr;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::{FaaMode, Talker};
+use crate::data::{PosMode, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
@@ -45,7 +45,7 @@ readonly_struct!(
         "Longitude, dddmm.mmmm, where ddd is degrees and mm.mmmm is minutes. Positive values indicate East, negative values indicate West."
     },
     {
-        faa_mode: Vec<FaaMode>,
+        pos_mode: Vec<PosMode>,
         "FAA mode"
     },
     {
@@ -104,11 +104,11 @@ impl Gns {
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .expect("Mode string should not be empty.");
-        let faa_mode = mode_str
+        let pos_mode = mode_str
             .char_indices()
-            .filter_map(|(_, c)| FaaMode::try_from(&c).ok())
-            .collect::<Vec<FaaMode>>();
-        clerk::debug!("mode: {:?}", faa_mode);
+            .filter_map(|(_, c)| PosMode::try_from(&c).ok())
+            .collect::<Vec<PosMode>>();
+        clerk::debug!("mode: {:?}", pos_mode);
 
         clerk::debug!("Parsing satellites...");
         let num_sv = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
@@ -145,7 +145,7 @@ impl Gns {
             time,
             lat,
             lon,
-            faa_mode,
+            pos_mode,
             num_sv,
             hdop,
             alt,
@@ -169,7 +169,7 @@ impl Debug for Gns {
         if let Some(lon) = self.lon {
             ds.field("lon", &lon);
         }
-        ds.field("faa_mode", &self.faa_mode);
+        ds.field("pos_mode", &self.pos_mode);
         if let Some(num_sv) = self.num_sv {
             ds.field("num_sv", &num_sv);
         }
@@ -201,7 +201,7 @@ mod test {
     use float_cmp::assert_approx_eq;
 
     use super::*;
-    use crate::data::{FaaMode, Talker};
+    use crate::data::{PosMode, Talker};
 
     #[test]
     fn test_gns_parsing1() -> miette::Result<()> {
@@ -214,7 +214,7 @@ mod test {
         assert!(gns.time.unwrap().to_string().contains("11:22:57"));
         assert_eq!(gns.lat.unwrap(), 38.73733516666667);
         assert_eq!(gns.lon.unwrap(), -9.140638);
-        assert_eq!(gns.faa_mode, [FaaMode::Autonomous, FaaMode::NotValid]);
+        assert_eq!(gns.pos_mode, [PosMode::Autonomous, PosMode::NotValid]);
         assert_eq!(gns.num_sv.unwrap(), 3);
         assert_eq!(gns.hdop.unwrap(), 10.5);
         assert!(gns.alt.is_none());
@@ -235,7 +235,7 @@ mod test {
         assert!(gns.time.unwrap().to_string().contains("18:16:04"));
         assert!(gns.lat.is_none());
         assert!(gns.lon.is_none());
-        assert_eq!(gns.faa_mode, [FaaMode::NotValid, FaaMode::NotValid]);
+        assert_eq!(gns.pos_mode, [PosMode::NotValid, PosMode::NotValid]);
         assert_eq!(gns.num_sv.unwrap(), 0);
         assert_approx_eq!(f64, gns.hdop.unwrap(), 99.99);
         assert!(gns.alt.is_none());

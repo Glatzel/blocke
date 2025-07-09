@@ -154,7 +154,7 @@ impl Display for Talker {
     }
 }
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
-pub enum FaaMode {
+pub enum PosMode {
     Autonomous,
     Differential,
     Estimated,
@@ -165,7 +165,7 @@ pub enum FaaMode {
     RtkInteger,
     Simulator,
 }
-impl FromStr for FaaMode {
+impl FromStr for PosMode {
     type Err = miette::Report;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -183,7 +183,7 @@ impl FromStr for FaaMode {
         }
     }
 }
-impl TryFrom<&char> for FaaMode {
+impl TryFrom<&char> for PosMode {
     type Error = miette::Report;
 
     fn try_from(value: &char) -> Result<Self, Self::Error> {

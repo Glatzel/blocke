@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::data::{FaaMode, Status, Talker};
+use crate::data::{PosMode, Status, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
@@ -11,7 +11,7 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::DateTime<chrono::Utc>>,
         "UTC time of the position fix"
     },
     {
@@ -19,19 +19,19 @@ readonly_struct!(
         "Status"
     },
     {
-        latitude: Option<f64>,
+        lat: Option<f64>,
         "Latitude"
     },
     {
-        longitude: Option<f64>,
+        lon: Option<f64>,
         "Longitude"
     },
     {
-        speed_over_ground: Option<f64>,
+        spd: Option<f64>,
         "Speed over ground"
     },
     {
-        track_made_good: Option<f64>,
+        cog: Option<f64>,
         "Track made good"
     },
     {
@@ -39,11 +39,11 @@ readonly_struct!(
         "Date"
     },
     {
-        magnetic_variation: Option<f64>,
+        mv: Option<f64>,
         "Magnetic variation"
     },
     {
-        faa_mode: Option<FaaMode>,
+        pos_mode: Option<PosMode>,
         "FAA mode"
     }
 );
@@ -52,29 +52,29 @@ impl Rmc {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
         let status = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let latitude = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
-        let longitude = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
-        let speed_over_ground = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let track_made_good = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let spd = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let cog = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let date = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DATE);
-        let magnetic_variation = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
-        let faa_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let mv = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
+        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
         Ok(Rmc {
             talker,
-            utc_time,
+            time,
             status,
-            latitude,
-            longitude,
-            speed_over_ground,
-            track_made_good,
+            lat,
+            lon,
+            spd,
+            cog,
             date,
-            magnetic_variation,
-            faa_mode,
+            mv,
+            pos_mode,
         })
     }
 }
@@ -86,32 +86,32 @@ impl fmt::Debug for Rmc {
         let mut ds = f.debug_struct("RMC");
         ds.field("talker", &self.talker);
 
-        if let Some(ref utc_time) = self.utc_time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
         if let Some(ref status) = self.status {
             ds.field("status", status);
         }
-        if let Some(latitude) = self.latitude {
-            ds.field("latitude", &latitude);
+        if let Some(lat) = self.lat {
+            ds.field("lat", &lat);
         }
-        if let Some(longitude) = self.longitude {
-            ds.field("longitude", &longitude);
+        if let Some(lon) = self.lon {
+            ds.field("lon", &lon);
         }
-        if let Some(speed_over_ground) = self.speed_over_ground {
-            ds.field("speed_over_ground", &speed_over_ground);
+        if let Some(spd) = self.spd {
+            ds.field("spd", &spd);
         }
-        if let Some(track_made_good) = self.track_made_good {
-            ds.field("track_made_good", &track_made_good);
+        if let Some(cog) = self.cog {
+            ds.field("cog", &cog);
         }
         if let Some(ref date) = self.date {
             ds.field("date", date);
         }
-        if let Some(magnetic_variation) = self.magnetic_variation {
-            ds.field("magnetic_variation", &magnetic_variation);
+        if let Some(mv) = self.mv {
+            ds.field("mv", &mv);
         }
-        if let Some(ref faa_mode) = self.faa_mode {
-            ds.field("faa_mode", faa_mode);
+        if let Some(ref pos_mode) = self.pos_mode {
+            ds.field("pos_mode", pos_mode);
         }
 
         ds.finish()
@@ -133,15 +133,15 @@ mod test {
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{rmc:?}");
         assert_eq!(rmc.talker, Talker::GN);
-        assert!(rmc.utc_time.unwrap().to_string().contains("11:01:25"));
+        assert!(rmc.time.unwrap().to_string().contains("11:01:25"));
         assert_eq!(rmc.status.unwrap(), Status::Valid);
-        assert_approx_eq!(f64, rmc.latitude.unwrap(), 55.088959666666675);
-        assert_approx_eq!(f64, rmc.longitude.unwrap(), 38.9775611);
-        assert_approx_eq!(f64, rmc.speed_over_ground.unwrap(), 148.8);
-        assert_approx_eq!(f64, rmc.track_made_good.unwrap(), 84.6);
+        assert_approx_eq!(f64, rmc.lat.unwrap(), 55.088959666666675);
+        assert_approx_eq!(f64, rmc.lon.unwrap(), 38.9775611);
+        assert_approx_eq!(f64, rmc.spd.unwrap(), 148.8);
+        assert_approx_eq!(f64, rmc.cog.unwrap(), 84.6);
         assert_eq!(rmc.date.unwrap().to_string(), "2017-03-31");
-        assert_approx_eq!(f64, rmc.magnetic_variation.unwrap(), 8.9);
-        assert_eq!(rmc.faa_mode.unwrap(), FaaMode::Differential);
+        assert_approx_eq!(f64, rmc.mv.unwrap(), 8.9);
+        assert_eq!(rmc.pos_mode.unwrap(), PosMode::Differential);
         Ok(())
     }
     #[test]
@@ -152,15 +152,15 @@ mod test {
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{rmc:?}");
         assert_eq!(rmc.talker, Talker::GN);
-        assert!(rmc.utc_time.is_none());
+        assert!(rmc.time.is_none());
         assert_eq!(rmc.status, Some(Status::Invalid));
-        assert!(rmc.latitude.is_none());
-        assert!(rmc.longitude.is_none());
-        assert!(rmc.speed_over_ground.is_none());
-        assert!(rmc.track_made_good.is_none());
+        assert!(rmc.lat.is_none());
+        assert!(rmc.lon.is_none());
+        assert!(rmc.spd.is_none());
+        assert!(rmc.cog.is_none());
         assert!(rmc.date.is_none());
-        assert!(rmc.magnetic_variation.is_none());
-        assert_eq!(rmc.faa_mode, Some(FaaMode::NotValid));
+        assert!(rmc.mv.is_none());
+        assert_eq!(rmc.pos_mode, Some(PosMode::NotValid));
         Ok(())
     }
 }
