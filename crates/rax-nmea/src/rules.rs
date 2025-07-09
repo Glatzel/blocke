@@ -4,7 +4,7 @@ mod nmea_degree;
 mod nmea_utc;
 mod nmea_validate;
 use rax::str_parser::filters::CharSetFilter;
-use rax::str_parser::rules::{Char, Until, UntilMode, UntilOneInCharSet};
+use rax::str_parser::rules::{Char, UntilMode, UntilOneInCharSet, UntilStr};
 
 use crate::rules::nmea_coord::NmeaCoord;
 use crate::rules::nmea_date::NmeaDate;
@@ -14,16 +14,16 @@ use crate::rules::nmea_validate::NmeaValidate;
 
 pub const CHAR_COMMA: Char<','> = Char;
 
-pub const UNTIL_COMMA_DISCARD: Until = Until {
-    delimiter: ",",
+pub const UNTIL_COMMA_DISCARD: UntilStr = UntilStr {
+    pattern: ",",
     mode: UntilMode::Discard,
 };
-pub const UNTIL_STAR_DISCARD: Until = Until {
-    delimiter: "*",
+pub const UNTIL_STAR_DISCARD: UntilStr = UntilStr {
+    pattern: "*",
     mode: UntilMode::Discard,
 };
-pub const UNTIL_NEW_LINE_DISCARD: Until = Until {
-    delimiter: "\n",
+pub const UNTIL_NEW_LINE_DISCARD: UntilStr = UntilStr {
+    pattern: "\n",
     mode: UntilMode::Discard,
 };
 
