@@ -4,7 +4,7 @@ use crate::str_parser::rules::IRule;
 /// Rule to extract a fixed number of bytes from the input string.
 /// Returns a tuple of (prefix, rest) if enough bytes are present and the split
 /// is on a valid UTF-8 boundary, otherwise returns None.
-pub struct ByteCount<const N: usize>();
+pub struct ByteCount<const N: usize>;
 
 impl<const N: usize> IRule for ByteCount<N> {
     fn name(&self) -> &str { "byte count" }
@@ -49,7 +49,7 @@ mod tests {
     #[test]
     fn test_count_exact_length() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<4>();
+        let rule = ByteCount::<4>;
         let input = "test";
         let result = rule.apply(input);
         assert_eq!(result, (Some("test"), ""));
@@ -58,7 +58,7 @@ mod tests {
     #[test]
     fn test_count_less_than_length() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<2>();
+        let rule = ByteCount::<2>;
         let input = "hello";
         let result = rule.apply(input);
         assert_eq!(result, (Some("he"), "llo"));
@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn test_count_more_than_length() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<10>();
+        let rule = ByteCount::<10>;
         let input = "short";
         let result = rule.apply(input);
         assert_eq!(result, (None, "short"));
@@ -76,7 +76,7 @@ mod tests {
     #[test]
     fn test_count_zero() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<0>();
+        let rule = ByteCount::<0>;
         let input = "abc";
         let result = rule.apply(input);
         assert_eq!(result, (Some(""), "abc"));
@@ -85,7 +85,7 @@ mod tests {
     #[test]
     fn test_count_empty_input() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<0>();
+        let rule = ByteCount::<0>;
         let input = "";
         let result = rule.apply(input);
         assert_eq!(result, (Some(""), ""));
@@ -94,7 +94,7 @@ mod tests {
     #[test]
     fn test_count_non_ascii() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = ByteCount::<2>();
+        let rule = ByteCount::<2>;
         let input = "你好世界";
 
         // Each Chinese character is 3 bytes, but .get(..n) is by byte index, not char
