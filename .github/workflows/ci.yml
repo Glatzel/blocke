@@ -98,6 +98,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - if: ${{github.ref_name!='main'}}
+        uses: Swatinem/rust-cache@v2
+
       - run: cargo install cargo-codspeed --locked
       - run: ./scripts/setup.ps1
         shell: pwsh
