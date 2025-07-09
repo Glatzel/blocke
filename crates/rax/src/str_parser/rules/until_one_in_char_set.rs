@@ -87,7 +87,7 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
 #[cfg(test)]
 mod tests {
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS, DIGITS};
