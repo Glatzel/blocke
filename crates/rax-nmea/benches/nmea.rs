@@ -22,5 +22,58 @@ fn bench_dtm(c: &mut Criterion) {
         })
     });
 }
-criterion_group!(benches, bench_dhv, bench_dtm);
+fn bench_gbq(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$EIGBQ,RMC*28".to_string());
+    c.bench_function("gbq", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Gbq::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
+
+fn bench_gbs(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B".to_string());
+    c.bench_function("dhv", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Gbs::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
+fn bench_gga(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B".to_string());
+    c.bench_function("gga", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Gga::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
+fn bench_gll(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B".to_string());
+    c.bench_function("gll", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Gll::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
+fn bench_glq(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B".to_string());
+    c.bench_function("gll", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Glq::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
+criterion_group!(
+    benches, bench_dhv, bench_dtm, bench_gbq, bench_gbs, bench_gga, bench_gll, bench_glq
+);
 criterion_main!(benches);
