@@ -95,8 +95,8 @@ impl fmt::Debug for Gll {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use tracing::level_filters::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing::level_filters::LevelFilter;
 
     use super::*;
     #[test]
