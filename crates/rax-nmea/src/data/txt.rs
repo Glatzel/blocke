@@ -58,22 +58,16 @@ impl INmeaData for Txt {
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
+                .skip_strict(&UNTIL_COMMA_DISCARD)?
+                .skip_strict(&UNTIL_COMMA_DISCARD)?
+                .skip_strict(&UNTIL_COMMA_DISCARD)?
+                .take(&UNTIL_COMMA_DISCARD)
                 .parse_opt::<u8>()
                 .map(TxtType::try_from)
                 .and_then(Result::ok);
-            let info = ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_STAR)
-                .map(|f| f.to_string());
+            let info = ctx.take(&UNTIL_STAR_DISCARD).map(|f| f.to_string());
             infos.push((txt_type, info));
-            ctx.skip(&UNTIL_NEW_LINE).skip(&CHAR_NEW_LINE);
+            ctx.skip(&UNTIL_NEW_LINE_DISCARD);
         }
 
         Ok(Self {

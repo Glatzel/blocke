@@ -54,18 +54,24 @@ impl INmeaData for Rmc {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let status = ctx
             .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
-        let status = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
+        let lat = ctx.take(&NMEA_COORD);
         let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
-        let spd = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let cog = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let date = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DATE);
+        let spd = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
+        let cog = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let date = ctx.take(&NMEA_DATE);
         let mv = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
-        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let pos_mode = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_STAR_DISCARD)
+            .parse_opt();
         Ok(Rmc {
             talker,
             time,

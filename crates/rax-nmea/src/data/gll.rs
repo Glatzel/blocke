@@ -38,10 +38,7 @@ impl INmeaData for Gll {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing lat...");
-        let lat = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_COORD);
+        let lat = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
@@ -52,9 +49,12 @@ impl INmeaData for Gll {
         let time = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
-        let status = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let status = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
 
-        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let pos_mode = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
 
         Ok(Gll {
             talker,

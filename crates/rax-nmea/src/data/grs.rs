@@ -53,12 +53,12 @@ impl INmeaData for Grs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
 
-        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let mode = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
         clerk::debug!(
             "Grs::new: utc_time={:?}, grs_residual_mode={:?}",
             time,
@@ -67,19 +67,15 @@ impl INmeaData for Grs {
 
         let mut residual = Vec::with_capacity(12);
         for _ in 0..12 {
-            match ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt::<f64>()
-            {
+            match ctx.take(&UNTIL_COMMA_DISCARD).parse_opt::<f64>() {
                 Some(r) => residual.push(r),
                 None => continue,
             }
         }
         clerk::debug!("Grs::new: satellite_residuals={:?}", residual);
 
-        let system_id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let signal_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+        let system_id = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let signal_id = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
         Ok(Grs {
             talker,
             time,
@@ -122,8 +118,8 @@ impl fmt::Debug for Grs {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

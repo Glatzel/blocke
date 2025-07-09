@@ -32,13 +32,15 @@ impl INmeaData for Vlw {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
         let twd = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt();
-        let wd = ctx.skip_strict(&THREE_CHAR)?.take(&UNTIL_COMMA).parse_opt();
-        let tgd = ctx.skip_strict(&THREE_CHAR)?.take(&UNTIL_COMMA).parse_opt();
-        let gd = ctx.skip_strict(&THREE_CHAR)?.take(&UNTIL_COMMA).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
+        let wd = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
+        let tgd = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
+        let gd = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         Ok(Vlw {
             talker,
             twd,

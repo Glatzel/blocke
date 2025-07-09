@@ -1,5 +1,6 @@
 use super::IStrFlowRule;
 use crate::str_parser::IRule;
+use crate::str_parser::rules::UntilMode;
 
 /// Rule to extract everything from the input string up to (but not including)
 /// the first occurrence of a specified delimiter substring.
@@ -8,7 +9,7 @@ use crate::str_parser::IRule;
 /// If `include` is true, the delimiter is included in the prefix.
 pub struct Until {
     pub delimiter: &'static str,
-    pub include: bool,
+    pub mode: super::UntilMode,
 }
 
 impl IRule for Until {
@@ -25,14 +26,23 @@ impl<'a> IStrFlowRule<'a> for Until {
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // Log the input and delimiter at trace level.
         clerk::trace!(
-            "Until rule: input='{}', delimiter='{}', include={}",
+            "Until rule: input='{}', delimiter='{}', mode={}",
             input,
             self.delimiter,
-            self.include
+            self.mode
         );
         match input.find(self.delimiter) {
-            Some(idx) => {
-                if self.include {
+            Some(idx) => match self.mode {
+                UntilMode::Discard => {
+                    let end = idx + self.delimiter.len();
+                    clerk::debug!(
+                        "Until rule matched (include): prefix='{}', rest='{}'",
+                        &input[..end],
+                        &input[end..]
+                    );
+                    (Some(&input[..idx]), &input[end..])
+                }
+                UntilMode::KeepLeft => {
                     let end = idx + self.delimiter.len();
                     clerk::debug!(
                         "Until rule matched (include): prefix='{}', rest='{}'",
@@ -40,7 +50,8 @@ impl<'a> IStrFlowRule<'a> for Until {
                         &input[end..]
                     );
                     (Some(&input[..end]), &input[end..])
-                } else {
+                }
+                UntilMode::KeepRight => {
                     clerk::debug!(
                         "Until rule matched: prefix='{}', rest='{}'",
                         &input[..idx],
@@ -48,7 +59,7 @@ impl<'a> IStrFlowRule<'a> for Until {
                     );
                     (Some(&input[..idx]), &input[idx..])
                 }
-            }
+            },
             None => {
                 clerk::debug!(
                     "Until rule did not match: delimiter '{}' not found in '{}'",
@@ -63,85 +74,82 @@ impl<'a> IStrFlowRule<'a> for Until {
 
 #[cfg(test)]
 mod tests {
-
     use clerk::init_log_with_level;
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
     #[test]
-    fn test_until_str_output_not_include() {
+    fn test_until_basic_not_include() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = Until {
             delimiter: ";",
-            include: false,
+            mode: super::UntilMode::Discard,
         };
-        let input = "hello;world";
-
+        let input = "abc;def";
         let (prefix, rest) = rule.apply(input);
-        assert_eq!(prefix, Some("hello"));
-        assert_eq!(rest, ";world");
+        assert_eq!(prefix, Some("abc"));
+        assert_eq!(rest, "def");
     }
 
     #[test]
-    fn test_until_str_output_include() {
+    fn test_until_basic_include() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = Until {
             delimiter: ";",
-            include: true,
+            mode: super::UntilMode::KeepLeft,
         };
-        let input = "hello;world";
-
+        let input = "abc;def";
         let (prefix, rest) = rule.apply(input);
-        assert_eq!(prefix, Some("hello;"));
-        assert_eq!(rest, "world");
+        assert_eq!(prefix, Some("abc;"));
+        assert_eq!(rest, "def");
     }
 
     #[test]
-    fn test_until_parse_fail() {
+    fn test_until_keep_right() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = Until {
-            delimiter: ",",
-            include: false,
+            delimiter: ";",
+            mode: super::UntilMode::KeepRight,
         };
-        let input = "abc rest";
+        let input = "abc;def";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("abc"));
+        assert_eq!(rest, ";def");
+    }
+
+    #[test]
+    fn test_until_no_delimiter() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = Until {
+            delimiter: ";",
+            mode: super::UntilMode::Discard,
+        };
+        let input = "abcdef";
         let (prefix, rest) = rule.apply(input);
         assert_eq!(prefix, None);
-        assert_eq!(rest, "abc rest");
+        assert_eq!(rest, "abcdef");
     }
 
     #[test]
-    fn test_until_at_start_not_include() {
+    fn test_until_delimiter_at_start() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = Until {
-            delimiter: "-",
-            include: false,
+            delimiter: ";",
+            mode: super::UntilMode::KeepLeft,
         };
-        let input = "-start";
+        let input = ";abcdef";
         let (prefix, rest) = rule.apply(input);
-        assert_eq!(prefix, Some(""));
-        assert_eq!(rest, "-start");
-    }
-
-    #[test]
-    fn test_until_at_start_include() {
-        init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: "-",
-            include: true,
-        };
-        let input = "-start";
-        let (prefix, rest) = rule.apply(input);
-        assert_eq!(prefix, Some("-"));
-        assert_eq!(rest, "start");
+        assert_eq!(prefix, Some(";"));
+        assert_eq!(rest, "abcdef");
     }
 
     #[test]
     fn test_until_empty_input() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = Until {
-            delimiter: ",",
-            include: false,
+            delimiter: ";",
+            mode: super::UntilMode::Discard,
         };
         let input = "";
         let (prefix, rest) = rule.apply(input);

@@ -4,7 +4,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, SystemId, Talker};
 use crate::macros::readonly_struct;
-use crate::{CHAR_COMMA, NMEA_UTC, UNTIL_COMMA, UNTIL_COMMA_OR_STAR, UNTIL_STAR};
+use crate::rules::*;
 
 readonly_struct!(
     Gbs,
@@ -56,19 +56,25 @@ readonly_struct!(
 
 impl INmeaData for Gbs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let err_lat = ctx
             .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
-        let err_lat = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let err_lon = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let err_alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let svid = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let prob = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let bias = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_dev = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
-        let system_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
-        let signal_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
+        let err_lon = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let err_alt = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let svid = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let prob = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let bias = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let std_dev = ctx
+            .skip(&CHAR_COMMA)
+            .take(&UNTIL_COMMA_OR_STAR_DISCARD)
+            .parse_opt();
+        let system_id = ctx
+            .skip(&CHAR_COMMA)
+            .take(&UNTIL_COMMA_OR_STAR_DISCARD)
+            .parse_opt();
+        let signal_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR_DISCARD).parse_opt();
 
         Ok(Gbs {
             talker,

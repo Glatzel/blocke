@@ -95,10 +95,7 @@ impl INmeaData for Gga {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
@@ -110,37 +107,40 @@ impl INmeaData for Gga {
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing quality...");
-        let quality = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let quality = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
         clerk::debug!("quality: {:?}", quality);
 
         clerk::debug!("Parsing satellite_count...");
-        let num_sv = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let num_sv = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("satellite_count: {:?}", num_sv);
 
         clerk::debug!("Parsing hdop...");
-        let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let hdop = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("hdop: {:?}", hdop);
 
         clerk::debug!("Parsing altitude...");
-        let alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let alt = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("altitude: {:?}", alt);
 
         clerk::debug!("Skipping char_comma and char_m for altitude units...");
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
         clerk::debug!("Parsing geoid_separation...");
-        let geoid_separation = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::debug!("geoid_separation: {:?}", geoid_separation);
+        let sep = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        clerk::debug!("geoid_separation: {:?}", sep);
 
-        clerk::debug!("Skipping char_comma and char_m for geoid units...");
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
+        clerk::debug!("Skipping char_m for geoid units...");
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
         clerk::debug!("Parsing age_of_differential_gps_data...");
-        let diff_age = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let diff_age = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("age_of_differential_gps_data: {:?}", diff_age);
 
         clerk::debug!("Parsing differential_reference_station_id...");
-        let diff_station = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let diff_station = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
         clerk::debug!("differential_reference_station_id: {:?}", diff_station);
 
         Ok(Gga {
@@ -152,7 +152,7 @@ impl INmeaData for Gga {
             num_sv,
             hdop,
             alt,
-            sep: geoid_separation,
+            sep,
             diff_age,
             diff_station,
         })
@@ -203,8 +203,8 @@ impl fmt::Debug for Gga {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

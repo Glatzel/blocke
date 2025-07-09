@@ -55,14 +55,16 @@ impl INmeaData for Dtm {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
         let datum = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt();
-        let sub_datum = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
+        let sub_datum = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let lat = ctx.take(&NMEA_DEGREE);
         let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
-        let alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let alt = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
 
         Ok(Dtm {
             talker,

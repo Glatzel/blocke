@@ -36,22 +36,21 @@ impl INmeaData for Vtg {
         ctx.global(&NMEA_VALIDATE)?;
 
         let cogt = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_T);
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
-        let cogm = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
+        let cogm = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
-        let sogn = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_N);
+        let sogn = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
-        let sogk = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_K);
+        let sogk = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        ctx.skip_strict(&UNTIL_COMMA_DISCARD)?;
 
-        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let pos_mode = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
 
         Ok(Vtg {
             talker,
@@ -92,8 +91,8 @@ impl fmt::Debug for Vtg {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
