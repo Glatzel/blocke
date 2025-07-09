@@ -99,18 +99,15 @@ impl INmeaData for Gga {
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
-        let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lat = ctx.take(&NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lon = ctx.take(&NMEA_COORD);
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing quality...");
-        let quality = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let quality = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("quality: {:?}", quality);
 
         clerk::debug!("Parsing satellite_count...");
