@@ -2,7 +2,7 @@ use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use rax::str_parser::IStrFlowRule;
 use rax::str_parser::filters::{ASCII_LETTERS_DIGITS, CharSetFilter, DIGITS};
 use rax::str_parser::rules::{
-    ByteCount, Char, CharCount, NInCharSet, OneOfCharSet, Until, UntilNInCharSet,
+    ByteCount, Char, CharCount, NInCharSet, OneOfCharSet, Until, UntilMode, UntilNInCharSet,
     UntilNotInCharSet, UntilOneInCharSet,
 };
 
@@ -37,7 +37,7 @@ fn benches(c: &mut Criterion) {
         "until_n_in_char_set",
         UntilNInCharSet::<2, 10> {
             filter: &DIGITS,
-            include: false,
+            mode: UntilMode::Discard,
         },
         "a1b2c3",
     );
@@ -46,7 +46,7 @@ fn benches(c: &mut Criterion) {
         "until_not_in_char_set",
         UntilNotInCharSet {
             filter: &DIGITS,
-            include: false,
+            mode: UntilMode::Discard,
         },
         "123abc",
     );
@@ -56,7 +56,7 @@ fn benches(c: &mut Criterion) {
         "until_one_in_char_set",
         UntilOneInCharSet {
             filter: &FILTER,
-            include: true,
+            mode: UntilMode::Discard,
         },
         "0.7,1*38",
     );
@@ -65,7 +65,7 @@ fn benches(c: &mut Criterion) {
         "until",
         Until {
             delimiter: ";",
-            include: false,
+            mode: UntilMode::Discard,
         },
         "123abc",
     );

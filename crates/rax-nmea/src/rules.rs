@@ -15,7 +15,6 @@ use crate::rules::nmea_validate::NmeaValidate;
 pub const CHAR_COMMA: Char<','> = Char;
 pub const CHAR_NEW_LINE: Char<'\n'> = Char;
 pub const CHAR_M: Char<'M'> = Char;
-pub const CHAR_K: Char<'K'> = Char;
 pub const CHAR_T: Char<'T'> = Char;
 pub const CHAR_N: Char<'N'> = Char;
 
