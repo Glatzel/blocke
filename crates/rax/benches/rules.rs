@@ -2,7 +2,7 @@ use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use rax::str_parser::IStrFlowRule;
 use rax::str_parser::filters::{ASCII_LETTERS_DIGITS, CharSetFilter, DIGITS};
 use rax::str_parser::rules::{
-    ByteCount, Char, CharCount, NInCharSet, OneOfCharSet, UntilMode, UntilNInCharSet,
+    ByteCount, Char, CharCount, NInCharSet, OneOfCharSet, UntilChar, UntilMode, UntilNInCharSet,
     UntilNotInCharSet, UntilOneInCharSet, UntilStr,
 };
 
@@ -31,7 +31,14 @@ fn benches(c: &mut Criterion) {
         OneOfCharSet(&ASCII_LETTERS_DIGITS),
         "a123",
     );
-
+    bench_rule(
+        c,
+        "until_char",
+        UntilChar::<';'> {
+            mode: UntilMode::KeepRight,
+        },
+        "123;abc",
+    );
     bench_rule(
         c,
         "until_n_in_char_set",
@@ -67,7 +74,7 @@ fn benches(c: &mut Criterion) {
             pattern: ";",
             mode: UntilMode::KeepRight,
         },
-        "123abc",
+        "123;abc",
     );
 }
 
