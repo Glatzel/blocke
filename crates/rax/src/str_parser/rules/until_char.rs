@@ -28,12 +28,32 @@ impl<'a, const C: char> IStrFlowRule<'a> for UntilChar<C> {
         for (i, c) in input.char_indices() {
             if c == C {
                 match self.mode {
-                    UntilMode::Discard => return (Some(&input[..i]), &input[i + C.len_utf8()..]),
-                    UntilMode::KeepLeft => {
-                        let end_of_char = i + C.len_utf8();
-                        return (Some(&input[..end_of_char]), &input[end_of_char..]);
+                    UntilMode::Discard => {
+                        let end = i + C.len_utf8();
+                        clerk::debug!(
+                            "Until rule matched (include): prefix='{}', rest='{}'",
+                            &input[..i],
+                            &input[end..]
+                        );
+                        return (Some(&input[..i]), &input[end..]);
                     }
-                    UntilMode::KeepRight => return (Some(&input[..i]), &input[i..]),
+                    UntilMode::KeepLeft => {
+                        let end = i + C.len_utf8();
+                        clerk::debug!(
+                            "Until rule matched (include): prefix='{}', rest='{}'",
+                            &input[..end],
+                            &input[end..]
+                        );
+                        return (Some(&input[..end]), &input[end..]);
+                    }
+                    UntilMode::KeepRight => {
+                        clerk::debug!(
+                            "Until rule matched (include): prefix='{}', rest='{}'",
+                            &input[..i],
+                            &input[i..]
+                        );
+                        return (Some(&input[..i]), &input[i..]);
+                    }
                 }
             }
         }
