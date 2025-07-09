@@ -55,16 +55,16 @@ impl fmt::Debug for Vlw {
         ds.field("talker", &self.talker);
 
         if let Some(ref twd) = self.twd {
-            ds.field("twd", &format!("{} N", twd));
+            ds.field("twd", &format!("{twd} N"));
         }
         if let Some(ref wd) = self.wd {
-            ds.field("wd", &format!("{} N", wd));
+            ds.field("wd", &format!("{wd} N"));
         }
         if let Some(ref tgd) = self.tgd {
-            ds.field("twd", &format!("{} N", tgd));
+            ds.field("twd", &format!("{tgd} N"));
         }
         if let Some(ref gd) = self.gd {
-            ds.field("gd", &format!("{} N", gd));
+            ds.field("gd", &format!("{gd} N"));
         }
 
         ds.finish()
