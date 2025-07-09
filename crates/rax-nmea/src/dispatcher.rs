@@ -185,9 +185,9 @@ mod test {
     use std::io;
 
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
     use miette::IntoDiagnostic;
     use rax::io::RaxReader;
+    use tracing::level_filters::LevelFilter;
 
     use crate::Dispatcher;
 

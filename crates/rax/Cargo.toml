@@ -15,7 +15,7 @@ async-trait = { workspace = true }
 criterion = { workspace = true }
 serialport = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "fs"] }
-
+tracing = { workspace = true }
 [features]
 async = ["tokio/io-util", "async-trait"]
 device = ["serialport"]

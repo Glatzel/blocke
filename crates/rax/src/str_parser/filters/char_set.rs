@@ -75,7 +75,7 @@ pub const ASCII_LETTERS_DIGITS: CharSetFilter<62> = CharSetFilter::new([
 #[cfg(test)]
 mod tests {
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing::level_filters::LevelFilter;
 
     use super::*;
     #[test]

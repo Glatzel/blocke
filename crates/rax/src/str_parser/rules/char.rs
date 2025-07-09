@@ -44,7 +44,7 @@ impl<'a, const C: char> IStrFlowRule<'a> for Char<C> {
 mod tests {
 
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing::level_filters::LevelFilter;
 
     use super::*;
 
