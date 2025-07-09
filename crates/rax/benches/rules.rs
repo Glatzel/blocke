@@ -37,7 +37,7 @@ fn benches(c: &mut Criterion) {
         "until_n_in_char_set",
         UntilNInCharSet::<2, 10> {
             filter: &DIGITS,
-            mode: UntilMode::Discard,
+            mode: UntilMode::KeepRight,
         },
         "a1b2c3",
     );
@@ -46,7 +46,7 @@ fn benches(c: &mut Criterion) {
         "until_not_in_char_set",
         UntilNotInCharSet {
             filter: &DIGITS,
-            mode: UntilMode::Discard,
+            mode: UntilMode::KeepRight,
         },
         "123abc",
     );
@@ -56,7 +56,7 @@ fn benches(c: &mut Criterion) {
         "until_one_in_char_set",
         UntilOneInCharSet {
             filter: &FILTER,
-            mode: UntilMode::Discard,
+            mode: UntilMode::KeepRight,
         },
         "0.7,1*38",
     );
@@ -65,7 +65,7 @@ fn benches(c: &mut Criterion) {
         "until",
         Until {
             delimiter: ";",
-            mode: UntilMode::Discard,
+            mode: UntilMode::KeepRight,
         },
         "123abc",
     );
