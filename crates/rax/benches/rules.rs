@@ -1,4 +1,3 @@
-use std::str::FromStr;
 
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use rax::str_parser::IStrFlowRule;
