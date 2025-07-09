@@ -39,14 +39,13 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
                 count += 1;
                 if count == N {
                     // If include, split after the N-th matched character
+                    let end_of_char = i + c.len_utf8();
                     start_idx = Some(match self.mode {
-                        UntilMode::Discard => i,
-                        UntilMode::KeepLeft => i + c.len_utf8(),
-                        UntilMode::KeepRight => i,
+                        UntilMode::Discard | UntilMode::KeepRight => i,
+                        UntilMode::KeepLeft => end_of_char,
                     });
                     end_idx = Some(match self.mode {
-                        UntilMode::Discard => i + c.len_utf8(),
-                        UntilMode::KeepLeft => i + c.len_utf8(),
+                        UntilMode::Discard | UntilMode::KeepLeft => end_of_char,
                         UntilMode::KeepRight => i,
                     });
                     break;
