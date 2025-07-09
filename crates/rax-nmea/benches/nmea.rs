@@ -88,7 +88,6 @@ pub fn benches(c: &mut Criterion) {
         "$GPRMC,110125,A,5505.337580,N,03858.653666,E,148.8,84.6,310317,8.9,E,D*2E",
         rax_nmea::data::Rmc::new,
     );
-
     bench_nmea(c, "ths", "$GPTHS,77.52,E*34", rax_nmea::data::Ths::new);
     bench_nmea(
         c,
