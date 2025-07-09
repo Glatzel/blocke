@@ -47,8 +47,9 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
                     }
                     UntilMode::KeepLeft => {
                         // Include the matched character in the prefix
-                        let prefix = &input[..i + c.len_utf8()];
-                        let rest = &input[i + c.len_utf8()..];
+                        let end_of_char = i + c.len_utf8();
+                        let prefix = &input[..end_of_char];
+                        let rest = &input[end_of_char..];
                         clerk::debug!(
                             "UntilOneInCharSet(include): prefix='{}', rest='{}', i={}, c='{}'",
                             prefix,
