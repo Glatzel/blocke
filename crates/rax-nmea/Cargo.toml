@@ -22,4 +22,4 @@ log = ["clerk/log"]
 
 [[bench]]
 harness = false
-name = "dhv"
+name = "nmea"
