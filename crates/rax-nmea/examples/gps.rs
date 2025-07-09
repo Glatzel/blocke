@@ -68,7 +68,7 @@ fn main() -> miette::Result<()> {
                 let nmea = Rmc::new(ctx, talker)?;
                 println!("{nmea:?}")
             }
-            Identifier::Txt => {
+            Identifier::TXT => {
                 let ctx = ctx.init(sentence);
                 let nmea = Txt::new(ctx, talker)?;
                 println!("{nmea:?}")
@@ -81,6 +81,41 @@ fn main() -> miette::Result<()> {
             Identifier::ZDA => {
                 let ctx = ctx.init(sentence);
                 let nmea = Zda::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::DTM => {
+                let ctx = ctx.init(sentence);
+                let nmea = Dtm::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::GBQ => {
+                let ctx = ctx.init(sentence);
+                let nmea = Gbq::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::GLQ => {
+                let ctx = ctx.init(sentence);
+                let nmea = Glq::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::GNQ => {
+                let ctx = ctx.init(sentence);
+                let nmea = Gnq::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::GPQ => {
+                let ctx = ctx.init(sentence);
+                let nmea = Gpq::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::THS => {
+                let ctx = ctx.init(sentence);
+                let nmea = Ths::new(ctx, talker)?;
+                println!("{nmea:?}")
+            }
+            Identifier::VLW => {
+                let ctx = ctx.init(sentence);
+                let nmea = Vlw::new(ctx, talker)?;
                 println!("{nmea:?}")
             }
         }

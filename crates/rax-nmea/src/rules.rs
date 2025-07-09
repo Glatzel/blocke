@@ -4,7 +4,7 @@ mod nmea_degree;
 mod nmea_utc;
 mod nmea_validate;
 use rax::str_parser::filters::CharSetFilter;
-use rax::str_parser::rules::{Char, Until, UntilOneInCharSet};
+use rax::str_parser::rules::{Char, CharCount, Until, UntilOneInCharSet};
 
 use crate::rules::nmea_coord::NmeaCoord;
 use crate::rules::nmea_date::NmeaDate;
@@ -42,3 +42,5 @@ pub const UNTIL_COMMA_OR_STAR: UntilOneInCharSet<2> = UntilOneInCharSet {
     filter: &CharSetFilter::new([',', '*']),
     include: false,
 };
+
+pub const THREE_CHAR: CharCount<3> = CharCount;

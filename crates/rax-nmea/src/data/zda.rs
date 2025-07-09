@@ -1,16 +1,17 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;
 use crate::rules::*;
-
 readonly_struct!(
     Zda ,
-    "Zda",
+    "Time and date",
     {talker: Talker},
 
     {
-        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::DateTime<chrono::Utc>>,
         "UTC time of the position fix"
     },
     {
@@ -26,11 +27,11 @@ readonly_struct!(
         "Year"
     },
     {
-        local_zone_description: Option<i8>,
+        ltzh: Option<i8>,
         "Local zone description"
     },
     {
-        local_zone_minutes_description: Option<u8>,
+        ltzn: Option<u8>,
         "Local zone minutes description"
     }
 );
@@ -39,38 +40,35 @@ impl Zda {
     pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
         let day = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let month = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let year = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let local_zone_description = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let local_zone_minutes_description =
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let ltzh = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let ltzn = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Zda {
             talker,
-            utc_time,
+            time,
             day,
             month,
             year,
-            local_zone_description,
-            local_zone_minutes_description,
+            ltzh,
+            ltzn,
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Zda {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("ZDA");
         ds.field("talker", &self.talker);
 
-        if let Some(ref utc_time) = self.utc_time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
         if let Some(day) = self.day {
             ds.field("day", &day);
@@ -81,14 +79,11 @@ impl fmt::Debug for Zda {
         if let Some(year) = self.year {
             ds.field("year", &year);
         }
-        if let Some(local_zone_description) = self.local_zone_description {
-            ds.field("local_zone_description", &local_zone_description);
+        if let Some(ltzh) = self.ltzh {
+            ds.field("ltzh", &ltzh);
         }
-        if let Some(local_zone_minutes_description) = self.local_zone_minutes_description {
-            ds.field(
-                "local_zone_minutes_description",
-                &local_zone_minutes_description,
-            );
+        if let Some(ltzn) = self.ltzn {
+            ds.field("ltzn", &ltzn);
         }
 
         ds.finish()
@@ -108,12 +103,12 @@ mod test {
         let mut ctx = StrParserContext::new();
         let zda = Zda::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{zda:?}");
-        assert!(zda.utc_time.unwrap().to_string().contains("16:00:12.71"));
+        assert!(zda.time.unwrap().to_string().contains("16:00:12.71"));
         assert_eq!(zda.day.unwrap(), 11);
         assert_eq!(zda.month.unwrap(), 3);
         assert_eq!(zda.year.unwrap(), 2004);
-        assert_eq!(zda.local_zone_description.unwrap(), -1);
-        assert_eq!(zda.local_zone_minutes_description.unwrap(), 0);
+        assert_eq!(zda.ltzh.unwrap(), -1);
+        assert_eq!(zda.ltzn.unwrap(), 0);
         Ok(())
     }
 }

@@ -4,7 +4,7 @@ use std::str::FromStr;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::{FaaMode, Talker};
+use crate::data::{PosMode, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
@@ -29,27 +29,27 @@ impl FromStr for NavigationStatus {
 }
 readonly_struct!(
     Gns,
-    "Gns",
+    "GNSS fix data",
     {talker: Talker},
 
     {
-        utc_time:Option<chrono::DateTime<chrono::Utc>>,
+        time:Option<chrono::DateTime<chrono::Utc>>,
         "UTC time of the position fix"
     },
     {
-        latitude: Option<f64>,
+        lat: Option<f64>,
         "Latitude, ddmm.mmmm, where dd is degrees and mm.mmmm is minutes. Positive values indicate North, negative values indicate South."
     },
     {
-        longitude: Option<f64>,
+        lon: Option<f64>,
         "Longitude, dddmm.mmmm, where ddd is degrees and mm.mmmm is minutes. Positive values indicate East, negative values indicate West."
     },
     {
-        mode: [FaaMode;2],
+        pos_mode: Vec<PosMode>,
         "FAA mode"
     },
     {
-        satellites :Option<u8>,
+        num_sv :Option<u8>,
         "Number of satellites in use"
     },
     {
@@ -57,23 +57,23 @@ readonly_struct!(
         "Horizontal dilution of precision"
     },
     {
-        altitude:Option<f64>,
+        alt:Option<f64>,
         "Altitude"
     },
     {
-        goeidal_separation:Option<f64>,
+        sep:Option<f64>,
         "Geoidal separation"
     },
     {
-        differential_data_age:Option<f64>,
+        diff_age:Option<f64>,
         "Differential data age"
     },
     {
-        differential_reference_station_id:Option<u16>,
+        diff_station:Option<u16>,
         "Differential reference station ID"
     },
     {
-        navigational_status:Option<NavigationStatus>,
+        nav_status:Option<NavigationStatus>,
         "Navigational status"
     }
 );
@@ -85,11 +85,11 @@ impl Gns {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
-        clerk::debug!("utc_time: {:?}", utc_time);
+        clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
         let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
@@ -104,59 +104,55 @@ impl Gns {
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .expect("Mode string should not be empty.");
-        let mode = [
-            FaaMode::from_str(mode_str.get(0..1).unwrap())?,
-            FaaMode::from_str(mode_str.get(1..2).unwrap())?,
-        ];
-        clerk::debug!("mode: {:?}", mode);
+        let pos_mode = mode_str
+            .char_indices()
+            .filter_map(|(_, c)| PosMode::try_from(&c).ok())
+            .collect::<Vec<PosMode>>();
+        clerk::debug!("mode: {:?}", pos_mode);
 
         clerk::debug!("Parsing satellites...");
-        let satellites = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::debug!("satellites: {:?}", satellites);
+        let num_sv = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::debug!("satellites: {:?}", num_sv);
 
         clerk::debug!("Parsing hdop...");
         let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::debug!("hdop: {:?}", hdop);
 
         clerk::debug!("Parsing altitude...");
-        let altitude = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
-        clerk::debug!("altitude: {:?}", altitude);
+        let alt = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        clerk::debug!("altitude: {:?}", alt);
 
         clerk::debug!("Parsing goeidal_separation...");
-        let goeidal_separation = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
-        clerk::debug!("goeidal_separation: {:?}", goeidal_separation);
+        let sep = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        clerk::debug!("goeidal_separation: {:?}", sep);
 
         clerk::debug!("Parsing differential_data_age...");
-        let differential_data_age = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
-        clerk::debug!("differential_data_age: {:?}", differential_data_age);
+        let diff_age = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        clerk::debug!("differential_data_age: {:?}", diff_age);
 
         clerk::debug!("Parsing differential_reference_station_id...");
 
-        let differential_reference_station_id =
-            ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let diff_station = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
 
-        clerk::debug!(
-            "differential_reference_station_id: {:?}",
-            differential_reference_station_id
-        );
+        clerk::debug!("differential_reference_station_id: {:?}", diff_station);
 
         clerk::debug!("Parsing navigational_status...");
-        let navigational_status = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
-        clerk::debug!("navigational_status: {:?}", navigational_status);
+        let nav_status = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+        clerk::debug!("navigational_status: {:?}", nav_status);
 
         Ok(Gns {
             talker,
-            utc_time,
-            latitude: lat,
-            longitude: lon,
-            mode,
-            satellites,
+            time,
+            lat,
+            lon,
+            pos_mode,
+            num_sv,
             hdop,
-            altitude,
-            goeidal_separation,
-            differential_data_age,
-            differential_reference_station_id,
-            navigational_status,
+            alt,
+            sep,
+            diff_age,
+            diff_station,
+            nav_status,
         })
     }
 }
@@ -164,39 +160,36 @@ impl Debug for Gns {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut ds = f.debug_struct("GNS");
         ds.field("talker", &self.talker);
-        if let Some(ref utc_time) = self.utc_time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
-        if let Some(lat) = self.latitude {
-            ds.field("latitude", &lat);
+        if let Some(lat) = self.lat {
+            ds.field("lat", &lat);
         }
-        if let Some(lon) = self.longitude {
-            ds.field("longitude", &lon);
+        if let Some(lon) = self.lon {
+            ds.field("lon", &lon);
         }
-        ds.field("mode", &self.mode);
-        if let Some(satellites) = self.satellites {
-            ds.field("satellites", &satellites);
+        ds.field("pos_mode", &self.pos_mode);
+        if let Some(num_sv) = self.num_sv {
+            ds.field("num_sv", &num_sv);
         }
         if let Some(hdop) = self.hdop {
             ds.field("hdop", &hdop);
         }
-        if let Some(altitude) = self.altitude {
-            ds.field("altitude", &altitude);
+        if let Some(alt) = self.alt {
+            ds.field("alt", &alt);
         }
-        if let Some(goeidal_separation) = self.goeidal_separation {
-            ds.field("goeidal_separation", &goeidal_separation);
+        if let Some(sep) = self.sep {
+            ds.field("sep", &sep);
         }
-        if let Some(differential_data_age) = self.differential_data_age {
-            ds.field("differential_data_age", &differential_data_age);
+        if let Some(diff_age) = self.diff_age {
+            ds.field("diff_age", &diff_age);
         }
-        if let Some(differential_reference_station_id) = self.differential_reference_station_id {
-            ds.field(
-                "differential_reference_station_id",
-                &differential_reference_station_id,
-            );
+        if let Some(diff_station) = self.diff_station {
+            ds.field("diff_station", &diff_station);
         }
-        if let Some(navigational_status) = &self.navigational_status {
-            ds.field("navigational_status", navigational_status);
+        if let Some(nav_status) = &self.nav_status {
+            ds.field("nav_status", nav_status);
         }
         ds.finish()
     }
@@ -208,7 +201,7 @@ mod test {
     use float_cmp::assert_approx_eq;
 
     use super::*;
-    use crate::data::{FaaMode, Talker};
+    use crate::data::{PosMode, Talker};
 
     #[test]
     fn test_gns_parsing1() -> miette::Result<()> {
@@ -218,16 +211,16 @@ mod test {
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{gns:?}");
         assert_eq!(gns.talker, Talker::GN);
-        assert!(gns.utc_time.unwrap().to_string().contains("11:22:57"));
-        assert_eq!(gns.latitude.unwrap(), 38.73733516666667);
-        assert_eq!(gns.longitude.unwrap(), -9.140638);
-        assert_eq!(gns.mode, [FaaMode::Autonomous, FaaMode::NotValid]);
-        assert_eq!(gns.satellites.unwrap(), 3);
+        assert!(gns.time.unwrap().to_string().contains("11:22:57"));
+        assert_eq!(gns.lat.unwrap(), 38.73733516666667);
+        assert_eq!(gns.lon.unwrap(), -9.140638);
+        assert_eq!(gns.pos_mode, [PosMode::Autonomous, PosMode::NotValid]);
+        assert_eq!(gns.num_sv.unwrap(), 3);
         assert_eq!(gns.hdop.unwrap(), 10.5);
-        assert!(gns.altitude.is_none());
-        assert!(gns.goeidal_separation.is_none());
-        assert!(gns.differential_data_age.is_none());
-        assert!(gns.differential_reference_station_id.is_none());
+        assert!(gns.alt.is_none());
+        assert!(gns.sep.is_none());
+        assert!(gns.diff_age.is_none());
+        assert!(gns.diff_station.is_none());
 
         Ok(())
     }
@@ -239,17 +232,17 @@ mod test {
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{gns:?}");
         assert_eq!(gns.talker, Talker::GN);
-        assert!(gns.utc_time.unwrap().to_string().contains("18:16:04"));
-        assert!(gns.latitude.is_none());
-        assert!(gns.longitude.is_none());
-        assert_eq!(gns.mode, [FaaMode::NotValid, FaaMode::NotValid]);
-        assert_eq!(gns.satellites.unwrap(), 0);
+        assert!(gns.time.unwrap().to_string().contains("18:16:04"));
+        assert!(gns.lat.is_none());
+        assert!(gns.lon.is_none());
+        assert_eq!(gns.pos_mode, [PosMode::NotValid, PosMode::NotValid]);
+        assert_eq!(gns.num_sv.unwrap(), 0);
         assert_approx_eq!(f64, gns.hdop.unwrap(), 99.99);
-        assert!(gns.altitude.is_none());
-        assert!(gns.goeidal_separation.is_none());
-        assert!(gns.differential_data_age.is_none());
-        assert!(gns.differential_reference_station_id.is_none());
-        assert!(gns.navigational_status.is_none());
+        assert!(gns.alt.is_none());
+        assert!(gns.sep.is_none());
+        assert!(gns.diff_age.is_none());
+        assert!(gns.diff_station.is_none());
+        assert!(gns.nav_status.is_none());
         Ok(())
     }
 }

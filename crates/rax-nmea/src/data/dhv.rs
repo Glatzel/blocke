@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, Talker};
@@ -10,7 +12,7 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::DateTime<chrono::Utc>>,
         "UTC time of the DHV fix associated with this sentence."
     },
     {
@@ -37,7 +39,7 @@ readonly_struct!(
 impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
@@ -49,7 +51,7 @@ impl INmeaData for Dhv {
 
         Ok(Dhv {
             talker,
-            utc_time,
+            time,
             speed3d,
             speed_x,
             speed_y,
@@ -59,15 +61,13 @@ impl INmeaData for Dhv {
     }
 }
 
-use std::fmt;
-
 impl fmt::Debug for Dhv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("DHV");
         ds.field("talker", &self.talker);
 
-        if let Some(ref utc_time) = self.utc_time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
         if let Some(speed3d) = self.speed3d {
             ds.field("speed3d", &speed3d);
@@ -104,7 +104,7 @@ mod test {
         let dhv = Dhv::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{dhv:?}");
         assert_eq!(dhv.talker, Talker::GN);
-        assert!(dhv.utc_time.unwrap().to_string().contains("02:11:50"));
+        assert!(dhv.time.unwrap().to_string().contains("02:11:50"));
         assert_eq!(dhv.speed3d.unwrap(), 0.03);
         assert_eq!(dhv.speed_x.unwrap(), 0.006);
         assert_eq!(dhv.speed_y.unwrap(), -0.042);

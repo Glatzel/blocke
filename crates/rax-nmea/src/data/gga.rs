@@ -48,7 +48,7 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        utc_time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::DateTime<chrono::Utc>>,
         "UTC of this position report, hh is hours, mm is minutes, ss.ss is seconds."
     },
     {
@@ -61,30 +61,30 @@ readonly_struct!(
     },
     {
         quality: Option<GgaQualityIndicator>,
-        "GPS Quality Indicator"
+        " Quality indicator for position fix"
     },
     {
-        satellite_count: Option<u8>,
-        "Number of satellites in use, 00 - 12"
+        num_sv: Option<u8>,
+        "Number of satellites used (range: 0-12)"
     },
     {
         hdop: Option<f64>,
         "Horizontal Dilution of precision (meters)"
     },
     {
-        altitude: Option<f64>,
+        alt: Option<f64>,
         "Antenna Altitude above/below mean-sea-level (geoid) (in meters)"
     },
     {
-        geoid_separation: Option<f64>,
+        sep: Option<f64>,
         "Geoidal separation, the difference between the WGS-84 earth ellipsoid and mean-sea-level (geoid), `-` means mean-sea-level below ellipsoid"
     },
     {
-        age_of_differential_gps_data: Option<f64>,
+        diff_age: Option<f64>,
         "Age of differential GPS data, time in seconds since last SC104 type 1 or 9 update, null field when DGPS is not used"
     },
     {
-        differential_reference_station_id: Option<u16>,
+        diff_station: Option<u16>,
         "Differential reference station ID, 0000-1023"
     }
 );
@@ -95,11 +95,11 @@ impl INmeaData for Gga {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let utc_time = ctx
+        let time = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&NMEA_UTC);
-        clerk::debug!("utc_time: {:?}", utc_time);
+        clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
         let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
@@ -114,16 +114,16 @@ impl INmeaData for Gga {
         clerk::debug!("quality: {:?}", quality);
 
         clerk::debug!("Parsing satellite_count...");
-        let satellite_count = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::debug!("satellite_count: {:?}", satellite_count);
+        let num_sv = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::debug!("satellite_count: {:?}", num_sv);
 
         clerk::debug!("Parsing hdop...");
         let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::debug!("hdop: {:?}", hdop);
 
         clerk::debug!("Parsing altitude...");
-        let altitude = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::debug!("altitude: {:?}", altitude);
+        let alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::debug!("altitude: {:?}", alt);
 
         clerk::debug!("Skipping char_comma and char_m for altitude units...");
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
@@ -136,33 +136,25 @@ impl INmeaData for Gga {
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
 
         clerk::debug!("Parsing age_of_differential_gps_data...");
-        let age_of_differential_gps_data =
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        clerk::debug!(
-            "age_of_differential_gps_data: {:?}",
-            age_of_differential_gps_data
-        );
+        let diff_age = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        clerk::debug!("age_of_differential_gps_data: {:?}", diff_age);
 
         clerk::debug!("Parsing differential_reference_station_id...");
-        let differential_reference_station_id =
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
-        clerk::debug!(
-            "differential_reference_station_id: {:?}",
-            differential_reference_station_id
-        );
+        let diff_station = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        clerk::debug!("differential_reference_station_id: {:?}", diff_station);
 
         Ok(Gga {
             talker,
-            utc_time,
+            time,
             lat,
             lon,
             quality,
-            satellite_count,
+            num_sv,
             hdop,
-            altitude,
-            geoid_separation,
-            age_of_differential_gps_data,
-            differential_reference_station_id,
+            alt,
+            sep: geoid_separation,
+            diff_age,
+            diff_station,
         })
     }
 }
@@ -172,8 +164,8 @@ impl fmt::Debug for Gga {
         let mut ds = f.debug_struct("GGA");
         ds.field("talker", &self.talker);
 
-        if let Some(ref utc_time) = self.utc_time {
-            ds.field("utc_time", utc_time);
+        if let Some(ref time) = self.time {
+            ds.field("time", time);
         }
         if let Some(lat) = self.lat {
             ds.field("lat", &lat);
@@ -184,29 +176,23 @@ impl fmt::Debug for Gga {
         if let Some(ref quality) = self.quality {
             ds.field("quality", quality);
         }
-        if let Some(satellite_count) = self.satellite_count {
-            ds.field("satellite_count", &satellite_count);
+        if let Some(num_sv) = self.num_sv {
+            ds.field("num_sv", &num_sv);
         }
         if let Some(hdop) = self.hdop {
             ds.field("hdop", &hdop);
         }
-        if let Some(altitude) = self.altitude {
-            ds.field("altitude", &format!("{altitude} M"));
+        if let Some(alt) = self.alt {
+            ds.field("alt", &format!("{alt} M"));
         }
-        if let Some(geoid_separation) = self.geoid_separation {
-            ds.field("geoid_separation", &format!("{geoid_separation} M"));
+        if let Some(sep) = self.sep {
+            ds.field("sep", &format!("{sep} M"));
         }
-        if let Some(age_of_differential_gps_data) = self.age_of_differential_gps_data {
-            ds.field(
-                "age_of_differential_gps_data",
-                &age_of_differential_gps_data,
-            );
+        if let Some(diff_age) = self.diff_age {
+            ds.field("diff_age", &diff_age);
         }
-        if let Some(differential_reference_station_id) = self.differential_reference_station_id {
-            ds.field(
-                "differential_reference_station_id",
-                &differential_reference_station_id,
-            );
+        if let Some(diff_station) = self.diff_station {
+            ds.field("diff_station", &diff_station);
         }
 
         ds.finish()
@@ -230,19 +216,19 @@ mod test {
         let gga = Gga::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{gga:?}");
         assert_eq!(gga.talker, Talker::GN);
-        assert!(gga.utc_time.unwrap().to_string().contains("11:02:56"));
+        assert!(gga.time.unwrap().to_string().contains("11:02:56"));
         assert_approx_eq!(f64, gga.lat.unwrap(), 55.0946166);
         assert_approx_eq!(f64, gga.lon.unwrap(), 38.93381473333333);
         assert_eq!(
             gga.quality.unwrap(),
             GgaQualityIndicator::DifferentialGpsFix
         );
-        assert_eq!(gga.satellite_count.unwrap(), 8);
+        assert_eq!(gga.num_sv.unwrap(), 8);
         assert_approx_eq!(f64, gga.hdop.unwrap(), 0.7);
-        assert_approx_eq!(f64, gga.altitude.unwrap(), 2135.0);
-        assert_approx_eq!(f64, gga.geoid_separation.unwrap(), 14.0);
-        assert!(gga.age_of_differential_gps_data.is_none());
-        assert!(gga.differential_reference_station_id.is_none());
+        assert_approx_eq!(f64, gga.alt.unwrap(), 2135.0);
+        assert_approx_eq!(f64, gga.sep.unwrap(), 14.0);
+        assert!(gga.diff_age.is_none());
+        assert!(gga.diff_station.is_none());
         Ok(())
     }
 }

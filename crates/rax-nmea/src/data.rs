@@ -13,12 +13,24 @@ mod vtg;
 mod zda;
 use std::fmt::Display;
 use std::str::FromStr;
+mod dtm;
+mod gbq;
+mod glq;
+mod gnq;
+mod gpq;
+mod ths;
+mod vlw;
 
 pub use dhv::*;
+pub use dtm::*;
+pub use gbq::*;
 pub use gbs::*;
 pub use gga::*;
 pub use gll::*;
+pub use glq::*;
+pub use gnq::*;
 pub use gns::*;
+pub use gpq::*;
 pub use grs::*;
 pub use gsa::*;
 pub use gst::*;
@@ -26,7 +38,9 @@ pub use gsv::*;
 use rax::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
+pub use ths::*;
 pub use txt::*;
+pub use vlw::*;
 pub use vtg::*;
 pub use zda::*;
 pub trait INmeaData {
@@ -37,14 +51,24 @@ pub trait INmeaData {
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum Identifier {
     DHV,
+    ///Datum reference
+    DTM,
+    /// Poll a standard message
+    GBQ,
     ///GPS Satellite Fault Detection
     GBS,
     ///Global Positioning System Fix Data
     GGA,
     ///Geographic Position - Latitude/Longitude
     GLL,
+    /// Poll a standard message
+    GLQ,
+    /// Poll a standard message
+    GNQ,
     ///Fix data
     GNS,
+    ///Poll a standard message
+    GPQ,
     ///GPS Range Residuals
     GRS,
     ///GPS Pseudorange Noise Statistics
@@ -55,7 +79,12 @@ pub enum Identifier {
     GSV,
     ///Recommended Minimum Navigation Information
     RMC,
-    Txt,
+    ///True heading and status
+    THS,
+    ///Text transmission
+    TXT,
+    ///Dual ground/water distance
+    VLW,
     ///Track made good and Ground speed
     VTG,
     ///Time & Date - UTC, day, month, year and local time zone
@@ -70,16 +99,23 @@ impl FromStr for Identifier {
         }
         let out = match &sentence[3..6] {
             "DHV" => Self::DHV,
+            "DTM" => Self::DTM,
+            "GBQ" => Self::GBQ,
             "GBS" => Self::GBS,
             "GGA" => Self::GGA,
             "GLL" => Self::GLL,
+            "GLQ" => Self::GLQ,
+            "GNQ" => Self::GNQ,
             "GNS" => Self::GNS,
+            "GPQ" => Self::GPQ,
             "GRS" => Self::GRS,
             "GSA" => Self::GSA,
             "GST" => Self::GST,
             "GSV" => Self::GSV,
             "RMC" => Self::RMC,
-            "TXT" => Self::Txt,
+            "THS" => Self::THS,
+            "TXT" => Self::TXT,
+            "VLW" => Self::VLW,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
@@ -92,16 +128,23 @@ impl Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             Self::DHV => "DHV",
+            Self::DTM => "DTM",
+            Self::GBQ => "GBQ",
             Self::GBS => "GBS",
             Self::GGA => "GGA",
             Self::GLL => "GLL",
+            Self::GLQ => "GLQ",
+            Self::GNQ => "GNQ",
             Self::GNS => "GNS",
+            Self::GPQ => "GPQ",
             Self::GRS => "GRS",
             Self::GSA => "GSA",
             Self::GST => "GST",
             Self::GSV => "GSV",
             Self::RMC => "RMC",
-            Self::Txt => "TXT",
+            Self::THS => "THS",
+            Self::TXT => "TXT",
+            Self::VLW => "VLW",
             Self::VTG => "VTG",
             Self::ZDA => "ZDA",
         };
@@ -154,7 +197,7 @@ impl Display for Talker {
     }
 }
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
-pub enum FaaMode {
+pub enum PosMode {
     Autonomous,
     Differential,
     Estimated,
@@ -165,7 +208,7 @@ pub enum FaaMode {
     RtkInteger,
     Simulator,
 }
-impl FromStr for FaaMode {
+impl FromStr for PosMode {
     type Err = miette::Report;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -178,8 +221,29 @@ impl FromStr for FaaMode {
             "P" => Ok(Self::Precise),
             "R" => Ok(Self::RtkInteger),
             "S" => Ok(Self::Simulator),
+            "V" => Ok(Self::NotValid),
 
-            other => miette::bail!("Unknown GgaQualityIndicator {}", other),
+            other => miette::bail!("Unknown FaaMode: {}", other),
+        }
+    }
+}
+impl TryFrom<&char> for PosMode {
+    type Error = miette::Report;
+
+    fn try_from(value: &char) -> Result<Self, Self::Error> {
+        match value {
+            'A' => Ok(Self::Autonomous),
+            'D' => Ok(Self::Differential),
+            'E' => Ok(Self::Estimated),
+            'F' => Ok(Self::RtkFloat),
+            'M' => Ok(Self::ManualInput),
+            'N' => Ok(Self::NotValid),
+            'P' => Ok(Self::Precise),
+            'R' => Ok(Self::RtkInteger),
+            'S' => Ok(Self::Simulator),
+            'V' => Ok(Self::NotValid),
+
+            other => miette::bail!("Unknown FaaMode: {}", other),
         }
     }
 }
