@@ -29,6 +29,10 @@ impl StrParserContext {
 
     pub fn full_str(&self) -> &str { self.full.as_str() }
     pub fn rest_str(&self) -> &str { unsafe { &*self.rest } }
+    pub fn reset(&mut self) -> &mut Self {
+        self.rest = self.full.as_str();
+        self
+    }
 }
 
 impl<'a> StrParserContext {

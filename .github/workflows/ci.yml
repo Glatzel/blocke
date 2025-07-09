@@ -92,3 +92,21 @@ jobs:
             ./target/aarch64-unknown-linux-gnu/*/examples/list-devices
             ./target/aarch64-unknown-linux-gnu/*/examples/serial-reader
           if-no-files-found: error
+
+  cargo-bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo install cargo-codspeed --locked
+      - run: ./scripts/setup.ps1
+        shell: pwsh
+
+      - name: Build the benchmark target(s)
+        run: cargo codspeed build
+
+      - name: Run the benchmarks
+        uses: CodSpeedHQ/action@v3
+        with:
+          run: cargo codspeed run
+          token: ${{ secrets.CODSPEED_TOKEN }}

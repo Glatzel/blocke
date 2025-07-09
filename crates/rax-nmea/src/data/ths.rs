@@ -54,11 +54,11 @@ impl fmt::Debug for Ths {
 mod test {
 
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
-    fn test_new_dtm() -> miette::Result<()> {
+    fn test_parse() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GPTHS,77.52,E*34";
         let mut ctx = StrParserContext::new();

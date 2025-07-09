@@ -3,7 +3,7 @@ use std::fmt::{self};
 use rax::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::Talker;
+use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
@@ -47,8 +47,8 @@ readonly_struct!(
     }
 );
 
-impl Txt {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Txt {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
 
         for l in ctx.full_str().lines() {
@@ -110,11 +110,11 @@ impl fmt::Debug for Txt {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
-    fn test_new_zda() -> miette::Result<()> {
+    fn test_new_txt() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GPTXT,03,01,02,MA=CASIC*25\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*70\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D";
         let mut ctx = StrParserContext::new();

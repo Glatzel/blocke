@@ -5,7 +5,7 @@ use crate::str_parser::filters::{CharSetFilter, IFilter};
 /// Rule to match if the first character of the input is in a given character
 /// set. If the first character is in the set, returns a tuple of (matched_char,
 /// rest_of_input). Otherwise, returns None.
-pub struct OneOfCharSet<'a, const N: usize>(&'a CharSetFilter<N>);
+pub struct OneOfCharSet<'a, const N: usize>(pub &'a CharSetFilter<N>);
 
 impl<'a, const N: usize> IRule for OneOfCharSet<'a, N> {
     fn name(&self) -> &str { "OneOfCharSet" }
@@ -43,7 +43,7 @@ mod tests {
     use std::str::FromStr;
 
     use clerk::init_log_with_level;
-    use clerk::tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
