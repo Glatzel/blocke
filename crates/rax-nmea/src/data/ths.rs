@@ -58,7 +58,7 @@ mod test {
 
     use super::*;
     #[test]
-    fn test_new_ths() -> miette::Result<()> {
+    fn test_ths() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GPTHS,77.52,E*34";
         let mut ctx = StrParserContext::new();
