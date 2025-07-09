@@ -4,8 +4,8 @@ use std::fmt::Display;
 pub use byte_count::*;
 mod char_count;
 pub use char_count::*;
-mod until;
-pub use until::*;
+mod until_str;
+pub use until_str::*;
 mod one_in_char_set;
 pub use one_in_char_set::*;
 mod char;
@@ -18,6 +18,8 @@ mod until_n_in_char_set;
 pub use until_n_in_char_set::*;
 mod n_in_charset;
 pub use n_in_charset::*;
+mod until_char;
+pub use until_char::*;
 #[derive(Clone, Copy, Debug)]
 pub enum UntilMode {
     /// Drop the delimiter completely → ("a", "b")

@@ -7,16 +7,16 @@ use crate::str_parser::rules::UntilMode;
 /// Returns a tuple of (prefix, rest) if the delimiter is found,
 /// otherwise returns None.
 /// If `include` is true, the delimiter is included in the prefix.
-pub struct Until {
-    pub delimiter: &'static str,
+pub struct UntilStr {
+    pub pattern: &'static str,
     pub mode: super::UntilMode,
 }
 
-impl IRule for Until {
+impl IRule for UntilStr {
     fn name(&self) -> &str { "Until" }
 }
 
-impl<'a> IStrFlowRule<'a> for Until {
+impl<'a> IStrFlowRule<'a> for UntilStr {
     type Output = &'a str;
     /// Applies the Until rule to the input string.
     /// If the delimiter is found, returns the substring before the delimiter
@@ -28,22 +28,22 @@ impl<'a> IStrFlowRule<'a> for Until {
         clerk::trace!(
             "Until rule: input='{}', delimiter='{}', mode={}",
             input,
-            self.delimiter,
+            self.pattern,
             self.mode
         );
-        match input.find(self.delimiter) {
+        match input.find(self.pattern) {
             Some(idx) => match self.mode {
                 UntilMode::Discard => {
-                    let end = idx + self.delimiter.len();
+                    let end = idx + self.pattern.len();
                     clerk::debug!(
                         "Until rule matched (include): prefix='{}', rest='{}'",
-                        &input[..end],
+                        &input[..idx],
                         &input[end..]
                     );
                     (Some(&input[..idx]), &input[end..])
                 }
                 UntilMode::KeepLeft => {
-                    let end = idx + self.delimiter.len();
+                    let end = idx + self.pattern.len();
                     clerk::debug!(
                         "Until rule matched (include): prefix='{}', rest='{}'",
                         &input[..end],
@@ -63,7 +63,7 @@ impl<'a> IStrFlowRule<'a> for Until {
             None => {
                 clerk::debug!(
                     "Until rule did not match: delimiter '{}' not found in '{}'",
-                    self.delimiter,
+                    self.pattern,
                     input
                 );
                 (None, input)
@@ -82,8 +82,8 @@ mod tests {
     #[test]
     fn test_until_basic_not_include() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::Discard,
         };
         let input = "abc;def";
@@ -95,8 +95,8 @@ mod tests {
     #[test]
     fn test_until_basic_include() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::KeepLeft,
         };
         let input = "abc;def";
@@ -108,8 +108,8 @@ mod tests {
     #[test]
     fn test_until_keep_right() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::KeepRight,
         };
         let input = "abc;def";
@@ -121,8 +121,8 @@ mod tests {
     #[test]
     fn test_until_no_delimiter() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::Discard,
         };
         let input = "abcdef";
@@ -134,8 +134,8 @@ mod tests {
     #[test]
     fn test_until_delimiter_at_start() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::KeepLeft,
         };
         let input = ";abcdef";
@@ -147,8 +147,8 @@ mod tests {
     #[test]
     fn test_until_empty_input() {
         init_log_with_level(LevelFilter::TRACE);
-        let rule = Until {
-            delimiter: ";",
+        let rule = UntilStr {
+            pattern: ";",
             mode: super::UntilMode::Discard,
         };
         let input = "";
