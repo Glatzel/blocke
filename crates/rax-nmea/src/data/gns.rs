@@ -85,7 +85,7 @@ impl INmeaData for Gns {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
@@ -99,7 +99,7 @@ impl INmeaData for Gns {
         clerk::debug!("Parsing mode...");
         let mode_str = ctx
             .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA)
+            .take(&UNTIL_COMMA_DISCARD)
             .expect("Mode string should not be empty.");
         let pos_mode = mode_str
             .char_indices()
@@ -108,33 +108,33 @@ impl INmeaData for Gns {
         clerk::debug!("mode: {:?}", pos_mode);
 
         clerk::debug!("Parsing satellites...");
-        let num_sv = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let num_sv = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("satellites: {:?}", num_sv);
 
         clerk::debug!("Parsing hdop...");
-        let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let hdop = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!("hdop: {:?}", hdop);
 
         clerk::debug!("Parsing altitude...");
-        let alt = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let alt = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt();
         clerk::debug!("altitude: {:?}", alt);
 
         clerk::debug!("Parsing goeidal_separation...");
-        let sep = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let sep = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt();
         clerk::debug!("goeidal_separation: {:?}", sep);
 
         clerk::debug!("Parsing differential_data_age...");
-        let diff_age = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let diff_age = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt();
         clerk::debug!("differential_data_age: {:?}", diff_age);
 
         clerk::debug!("Parsing differential_reference_station_id...");
 
-        let diff_station = ctx.skip(&CHAR_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let diff_station = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt();
 
         clerk::debug!("differential_reference_station_id: {:?}", diff_station);
 
         clerk::debug!("Parsing navigational_status...");
-        let nav_status = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+        let nav_status = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
         clerk::debug!("navigational_status: {:?}", nav_status);
 
         Ok(Gns {

@@ -24,10 +24,10 @@ impl INmeaData for Ths {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
         let headt = ctx
-            .skip_strict(&UNTIL_COMMA_INCLUDE)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt();
-        let mi = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let mi = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
 
         Ok(Ths { talker, headt, mi })
     }

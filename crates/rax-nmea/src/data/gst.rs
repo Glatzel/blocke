@@ -47,14 +47,17 @@ impl INmeaData for Gst {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
-        let rms = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_major = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_minor = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let orient = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_lat = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_lon = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let std_alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let rms = ctx
+            .skip_strict(&CHAR_COMMA)?
+            .take(&UNTIL_COMMA_DISCARD)
+            .parse_opt();
+        let std_major = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let std_minor = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let orient = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let std_lat = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let std_lon = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let std_alt = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
 
         Ok(Gst {
             talker,

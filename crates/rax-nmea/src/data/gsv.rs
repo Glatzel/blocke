@@ -66,10 +66,10 @@ impl INmeaData for Gsv {
 
         // The first line contains the talker, number of lines, and number of satellites
         let satellite_count = ctx
-            .skip_strict(&UNTIL_COMMA_INCLUDE)?
-            .skip_strict(&UNTIL_COMMA_INCLUDE)?
-            .skip_strict(&UNTIL_COMMA_INCLUDE)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt::<usize>()
             .expect("Cannot get the count of satellites.");
         clerk::trace!("Gsv::new: satellite_count={satellite_count}");
@@ -94,13 +94,10 @@ impl INmeaData for Gsv {
             }
             satellites.push(Self::parse_satellite(ctx, true)?);
             // Skip any extra fields after the 4th satellite in the line
-            ctx.skip(&UNTIL_COMMA)
-                .skip(&CHAR_COMMA)
-                .skip(&UNTIL_COMMA)
-                .skip(&CHAR_COMMA)
-                .skip(&UNTIL_COMMA)
-                .skip(&CHAR_COMMA)
-                .skip(&UNTIL_COMMA);
+            ctx.skip(&UNTIL_COMMA_DISCARD)
+                .skip(&UNTIL_COMMA_DISCARD)
+                .skip(&UNTIL_COMMA_DISCARD)
+                .skip(&UNTIL_COMMA_DISCARD);
         }
 
         // Parse the last line (may have fewer than 4 satellites)
@@ -110,10 +107,7 @@ impl INmeaData for Gsv {
             }
             satellites.push(Self::parse_satellite(ctx, true)?);
         }
-        let signal_id = ctx
-            .skip(&UNTIL_COMMA)
-            .take(&UNTIL_COMMA_OR_STAR)
-            .parse_opt();
+        let signal_id = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt();
 
         Ok(Self {
             talker,
@@ -126,13 +120,13 @@ impl Gsv {
     /// Helper to parse a single satellite entry.
     /// If `last` is true, the SNR field is terminated by a star.
     fn parse_satellite(ctx: &mut StrParserContext, last: bool) -> miette::Result<Satellite> {
-        let id = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let elevation_degrees = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
-        let azimuth_degree = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let id = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let elevation_degrees = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
+        let azimuth_degree = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let snr = if last {
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt()
+            ctx.take(&UNTIL_STAR_DISCARD).parse_opt()
         } else {
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt()
+            ctx.take(&UNTIL_COMMA_DISCARD).parse_opt()
         };
         Ok(Satellite {
             svid: id,

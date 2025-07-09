@@ -1,6 +1,7 @@
 use super::IStrFlowRule;
 use crate::str_parser::IRule;
 use crate::str_parser::filters::{CharSetFilter, IFilter};
+use crate::str_parser::rules::UntilMode;
 
 /// Rule to extract everything from the input string up to (but not including)
 /// the first occurrence of any character in the provided character set.
@@ -10,7 +11,7 @@ use crate::str_parser::filters::{CharSetFilter, IFilter};
 /// returns (None, input).
 pub struct UntilOneInCharSet<'a, const N: usize> {
     pub filter: &'a CharSetFilter<N>,
-    pub include: bool,
+    pub mode: super::UntilMode,
 }
 
 impl<'a, const N: usize> IRule for UntilOneInCharSet<'a, N> {
@@ -30,8 +31,21 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         for (i, c) in input.char_indices() {
             if self.filter.filter(&c) {
-                match (self.include, i == 0) {
-                    (true, _) => {
+                match self.mode {
+                    UntilMode::Discard => {
+                        // Include the matched character in the prefix
+                        let prefix = &input[..i];
+                        let rest = &input[i + c.len_utf8()..];
+                        clerk::debug!(
+                            "UntilOneInCharSet(include): prefix='{}', rest='{}', i={}, c='{}'",
+                            prefix,
+                            rest,
+                            i,
+                            c
+                        );
+                        return (Some(prefix), rest);
+                    }
+                    UntilMode::KeepLeft => {
                         // Include the matched character in the prefix
                         let prefix = &input[..i + c.len_utf8()];
                         let rest = &input[i + c.len_utf8()..];
@@ -44,15 +58,8 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
                         );
                         return (Some(prefix), rest);
                     }
-                    (false, true) => {
-                        // Not include, and first char is in set
-                        clerk::debug!(
-                            "UntilOneInCharSet(not include): first char in set, returning None, input='{}'",
-                            input
-                        );
-                        return (None, input);
-                    }
-                    (false, false) => {
+
+                    UntilMode::KeepRight => {
                         // Not include, and not first char
                         let prefix = &input[..i];
                         let rest = &input[i..];
@@ -79,95 +86,87 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
-
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::tracing::level_filters::LevelFilter;
 
     use super::*;
-    use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
+    use crate::str_parser::filters::{ASCII_LETTERS, DIGITS};
 
     #[test]
-    fn test_until_one_of_char_set_include_true() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
-        let filter = CharSetFilter::<2>::from_str(",*")?;
-        let rule = UntilOneInCharSet {
-            filter: &filter,
-            include: true,
-        };
-        let input = "0.7,1*38";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some("0.7,"));
-        assert_eq!(rest, "1*38");
-        Ok(())
-    }
-
-    #[test]
-    fn test_until_one_of_char_set_include_false_first_char() {
+    fn test_until_one_in_char_set_discard() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
-            include: false,
+            mode: UntilMode::Discard,
         };
-        let input = "1abc";
-        let (matched, rest) = rule.apply(input);
-        // First char is in set and include=false, should return None
-        assert_eq!(matched, None);
-        assert_eq!(rest, "1abc");
+        let input = "abc1def";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("abc"));
+        assert_eq!(rest, "def");
     }
 
     #[test]
-    fn test_until_one_of_char_set_include_false_middle() {
+    fn test_until_one_in_char_set_keep_left() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
-            include: false,
+            mode: UntilMode::KeepLeft,
         };
-        let input = "abc123";
-        let (matched, rest) = rule.apply(input);
-        // Should split before first digit
-        assert_eq!(matched, Some("abc"));
-        assert_eq!(rest, "123");
+        let input = "abc1def";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("abc1"));
+        assert_eq!(rest, "def");
     }
 
     #[test]
-    fn test_until_one_of_char_set_no_match() {
+    fn test_until_one_in_char_set_keep_right_first_char() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = UntilOneInCharSet {
-            filter: &ASCII_LETTERS_DIGITS,
-            include: true,
+            filter: &ASCII_LETTERS,
+            mode: UntilMode::KeepRight,
         };
-        let input = "!@#$%^&*()";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, None);
-        assert_eq!(rest, input);
+        let input = "a123";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some(""));
+        assert_eq!(rest, "a123");
     }
 
     #[test]
-    fn test_until_one_of_char_set_empty_input() {
+    fn test_until_one_in_char_set_keep_right_not_first_char() {
         init_log_with_level(LevelFilter::TRACE);
         let rule = UntilOneInCharSet {
-            filter: &ASCII_LETTERS_DIGITS,
-            include: true,
+            filter: &DIGITS,
+            mode: UntilMode::KeepRight,
+        };
+        let input = "abc1def";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some("abc"));
+        assert_eq!(rest, "1def");
+    }
+
+    #[test]
+    fn test_until_one_in_char_set_no_match() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = UntilOneInCharSet {
+            filter: &DIGITS,
+            mode: UntilMode::Discard,
+        };
+        let input = "abcdef";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, None);
+        assert_eq!(rest, "abcdef");
+    }
+
+    #[test]
+    fn test_until_one_in_char_set_empty_input() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = UntilOneInCharSet {
+            filter: &DIGITS,
+            mode: UntilMode::Discard,
         };
         let input = "";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, None);
-        assert_eq!(rest, input);
-    }
-
-    #[test]
-    fn test_until_one_of_char_set_unicode() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
-        let filter: CharSetFilter<1> = CharSetFilter::from_str("好")?;
-        let rule = UntilOneInCharSet {
-            filter: &filter,
-            include: true,
-        };
-        let input = "你好世界";
-        let (matched, rest) = rule.apply(input);
-        assert_eq!(matched, Some("你好"));
-        assert_eq!(rest, "世界");
-        Ok(())
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, None);
+        assert_eq!(rest, "");
     }
 }

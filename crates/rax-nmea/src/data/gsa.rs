@@ -79,39 +79,32 @@ impl INmeaData for Gsa {
         ctx.global(&NMEA_VALIDATE)?;
 
         let op_mode = ctx
-            .skip_strict(&UNTIL_COMMA_INCLUDE)?
-            .take(&UNTIL_COMMA)
+            .skip_strict(&UNTIL_COMMA_DISCARD)?
+            .take(&UNTIL_COMMA_DISCARD)
             .parse_opt();
         clerk::trace!("Gsa::new: selection_mode={:?}", op_mode);
-        let nav_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let nav_mode = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::trace!("Gsa::new: mode={:?}", nav_mode);
 
         let mut svid = Vec::with_capacity(12);
         for _ in 0..12 {
-            match ctx
-                .skip_strict(&CHAR_COMMA)?
-                .take(&UNTIL_COMMA)
-                .parse_opt::<u8>()
-            {
+            match ctx.take(&UNTIL_COMMA_DISCARD).parse_opt::<u8>() {
                 Some(sat_id) => svid.push(sat_id),
                 None => continue,
             }
         }
         clerk::trace!("Gsa::new: satellite_ids={:?}", svid);
 
-        let pdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let pdop = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::trace!("Gsa::new: pdop={:?}", pdop);
 
-        let hdop = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let hdop = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::trace!("Gsa::new: hdop={:?}", hdop);
 
-        let vdop = ctx
-            .skip(&CHAR_COMMA)
-            .take(&UNTIL_COMMA_OR_STAR)
-            .parse_opt::<f64>();
+        let vdop = ctx.take(&UNTIL_COMMA_OR_STAR_DISCARD).parse_opt::<f64>();
         clerk::trace!("Gsa::new: vdop={:?}", vdop);
 
-        let system_id = ctx.skip(&CHAR_COMMA).take(&UNTIL_STAR).parse_opt();
+        let system_id = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
         clerk::trace!("Gsa::new: system_id={:?}", system_id);
 
         Ok(Gsa {
