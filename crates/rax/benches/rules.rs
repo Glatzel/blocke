@@ -8,7 +8,6 @@ use rax::str_parser::rules::{
     UntilNotInCharSet, UntilOneInCharSet,
 };
 
-// Helper for rules with config (structs)
 fn bench_rule<R: IStrFlowRule<'static>>(
     c: &mut Criterion,
     name: &str,
