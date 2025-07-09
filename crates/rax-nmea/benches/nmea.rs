@@ -11,7 +11,7 @@ where
     ctx.init(sentence.to_string());
     c.bench_function(name, move |b| {
         b.iter(|| {
-            for _ in 0..1000 {
+            for _ in 0..100 {
                 ctx.reset();
                 ctor(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
             }
