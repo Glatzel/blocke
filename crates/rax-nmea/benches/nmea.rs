@@ -72,6 +72,16 @@ fn bench_glq(c: &mut Criterion) {
         })
     });
 }
+fn bench_gns(c: &mut Criterion) {
+    let mut ctx = StrParserContext::new();
+    ctx.init("$GLGLQ,RMC*28".to_string());
+    c.bench_function("gns", |b| {
+        b.iter(|| {
+            ctx.reset();
+            rax_nmea::data::Gns::new(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
+        })
+    });
+}
 fn bench_gsa(c: &mut Criterion) {
     let mut ctx = StrParserContext::new();
     ctx.init("$GPGSA,A,3,04,05,,09,12,,,,,1.8,1.0,1.2*30".to_string());
