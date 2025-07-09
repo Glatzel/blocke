@@ -36,8 +36,7 @@ impl INmeaData for Vtg {
         ctx.global(&NMEA_VALIDATE)?;
 
         let cogt = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
             .take(&UNTIL_COMMA)
             .parse_opt();
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_T);
@@ -92,8 +91,8 @@ impl fmt::Debug for Vtg {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

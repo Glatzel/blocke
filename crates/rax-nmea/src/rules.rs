@@ -23,6 +23,10 @@ pub const UNTIL_COMMA: Until = Until {
     delimiter: ",",
     include: false,
 };
+pub const UNTIL_COMMA_INCLUDE: Until = Until {
+    delimiter: ",",
+    include: true,
+};
 pub const UNTIL_STAR: Until = Until {
     delimiter: "*",
     include: false,

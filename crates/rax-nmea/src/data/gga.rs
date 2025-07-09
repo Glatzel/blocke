@@ -95,10 +95,7 @@ impl INmeaData for Gga {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
@@ -203,8 +200,8 @@ impl fmt::Debug for Gga {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

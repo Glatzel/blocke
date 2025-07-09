@@ -58,12 +58,9 @@ impl INmeaData for Txt {
         let mut infos = Vec::new();
         for _ in 0..ctx.full_str().lines().count() {
             let txt_type = ctx
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
-                .skip_strict(&UNTIL_COMMA)?
-                .skip_strict(&CHAR_COMMA)?
+                .skip_strict(&UNTIL_COMMA_INCLUDE)?
+                .skip_strict(&UNTIL_COMMA_INCLUDE)?
+                .skip_strict(&UNTIL_COMMA_INCLUDE)?
                 .take(&UNTIL_COMMA)
                 .parse_opt::<u8>()
                 .map(TxtType::try_from)

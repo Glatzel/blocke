@@ -85,10 +85,7 @@ impl INmeaData for Gns {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");

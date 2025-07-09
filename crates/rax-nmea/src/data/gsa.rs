@@ -79,8 +79,7 @@ impl INmeaData for Gsa {
         ctx.global(&NMEA_VALIDATE)?;
 
         let op_mode = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
             .take(&UNTIL_COMMA)
             .parse_opt();
         clerk::trace!("Gsa::new: selection_mode={:?}", op_mode);
@@ -163,8 +162,8 @@ impl fmt::Debug for Gsa {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

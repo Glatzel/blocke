@@ -38,10 +38,7 @@ impl INmeaData for Gll {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing lat...");
-        let lat = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_COORD);
+        let lat = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");

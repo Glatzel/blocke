@@ -4,7 +4,7 @@ use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, SystemId, Talker};
 use crate::macros::readonly_struct;
-use crate::{CHAR_COMMA, NMEA_UTC, UNTIL_COMMA, UNTIL_COMMA_OR_STAR, UNTIL_STAR};
+use crate::rules::*;
 
 readonly_struct!(
     Gbs,
@@ -56,10 +56,7 @@ readonly_struct!(
 
 impl INmeaData for Gbs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
         let err_lat = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let err_lon = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         let err_alt = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();

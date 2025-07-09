@@ -66,12 +66,9 @@ impl INmeaData for Gsv {
 
         // The first line contains the talker, number of lines, and number of satellites
         let satellite_count = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
             .take(&UNTIL_COMMA)
             .parse_opt::<usize>()
             .expect("Cannot get the count of satellites.");

@@ -53,10 +53,7 @@ impl INmeaData for Grs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let time = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
-            .take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_INCLUDE)?.take(&NMEA_UTC);
 
         let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         clerk::debug!(
@@ -122,8 +119,8 @@ impl fmt::Debug for Grs {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

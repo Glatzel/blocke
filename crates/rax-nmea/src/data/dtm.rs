@@ -55,8 +55,7 @@ impl INmeaData for Dtm {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
         let datum = ctx
-            .skip_strict(&UNTIL_COMMA)?
-            .skip_strict(&CHAR_COMMA)?
+            .skip_strict(&UNTIL_COMMA_INCLUDE)?
             .take(&UNTIL_COMMA)
             .parse_opt();
         let sub_datum = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
