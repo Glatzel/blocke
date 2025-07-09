@@ -3,7 +3,7 @@ use std::fmt;
 use chrono::NaiveDate;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::data::{PosMode, Status, Talker};
+use crate::data::{INmeaData, PosMode, Status, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
@@ -50,8 +50,8 @@ readonly_struct!(
     }
 );
 
-impl Rmc {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Rmc {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
         let time = ctx
@@ -121,8 +121,8 @@ impl fmt::Debug for Rmc {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

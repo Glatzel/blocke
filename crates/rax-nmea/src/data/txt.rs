@@ -3,7 +3,7 @@ use std::fmt::{self};
 use rax::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::Talker;
+use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
@@ -47,8 +47,8 @@ readonly_struct!(
     }
 );
 
-impl Txt {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Txt {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Txt::new: sentence='{}'", ctx.full_str());
 
         for l in ctx.full_str().lines() {

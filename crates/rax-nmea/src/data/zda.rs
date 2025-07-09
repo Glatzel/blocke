@@ -2,7 +2,7 @@ use std::fmt;
 
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::data::Talker;
+use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 readonly_struct!(
@@ -36,8 +36,8 @@ readonly_struct!(
     }
 );
 
-impl Zda {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Zda {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
         let time = ctx

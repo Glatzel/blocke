@@ -4,7 +4,7 @@ use std::str::FromStr;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::{PosMode, Talker};
+use crate::data::{INmeaData, PosMode, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
@@ -78,8 +78,8 @@ readonly_struct!(
     }
 );
 
-impl Gns {
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Gns {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gga::new: sentence='{}'", ctx.full_str());
 
         ctx.global(&NMEA_VALIDATE)?;

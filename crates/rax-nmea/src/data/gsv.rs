@@ -3,7 +3,7 @@ use std::fmt;
 use rax::str_parser::{IStrGlobalRule, ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
-use crate::data::Talker;
+use crate::data::{INmeaData, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
 
@@ -52,9 +52,8 @@ readonly_struct!(
     }
 );
 
-impl Gsv {
-    /// Parse a GSV sentence (possibly multi-line) into a Gsv struct.
-    pub fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
+impl INmeaData for Gsv {
+    fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         clerk::trace!("Gsv::new: sentence='{}'", ctx.full_str());
         // Validate each line with NMEA_VALIDATE
         for l in ctx.full_str().lines() {
@@ -114,7 +113,10 @@ impl Gsv {
             }
             satellites.push(Self::parse_satellite(ctx, true)?);
         }
-        let signal_id = ctx.skip(&UNTIL_COMMA).take(&UNTIL_COMMA_OR_STAR).parse_opt();
+        let signal_id = ctx
+            .skip(&UNTIL_COMMA)
+            .take(&UNTIL_COMMA_OR_STAR)
+            .parse_opt();
 
         Ok(Self {
             talker,
@@ -122,7 +124,8 @@ impl Gsv {
             signal_id,
         })
     }
-
+}
+impl Gsv {
     /// Helper to parse a single satellite entry.
     /// If `last` is true, the SNR field is terminated by a star.
     fn parse_satellite(ctx: &mut StrParserContext, last: bool) -> miette::Result<Satellite> {
@@ -142,7 +145,6 @@ impl Gsv {
         })
     }
 }
-
 impl fmt::Debug for Gsv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("GSV");
