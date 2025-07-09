@@ -1,4 +1,3 @@
-
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use rax::str_parser::IStrFlowRule;
 use rax::str_parser::filters::{ASCII_LETTERS_DIGITS, CharSetFilter, DIGITS};
@@ -13,7 +12,13 @@ fn bench_rule<R: IStrFlowRule<'static>>(
     rule: R,
     input: &'static str,
 ) {
-    c.bench_function(name, |b| b.iter(|| rule.apply(black_box(input))));
+    c.bench_function(name, |b| {
+        b.iter(|| {
+            for _ in 0..100 {
+                rule.apply(black_box(input));
+            }
+        })
+    });
 }
 
 fn benches(c: &mut Criterion) {
