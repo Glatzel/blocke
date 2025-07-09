@@ -18,6 +18,8 @@ mod gbq;
 mod glq;
 mod gnq;
 mod gpq;
+mod ths;
+mod vlw;
 
 pub use dhv::*;
 pub use dtm::*;
@@ -36,7 +38,9 @@ pub use gsv::*;
 use rax::str_parser::StrParserContext;
 pub use rmc::*;
 use serde::{Deserialize, Serialize};
+pub use ths::*;
 pub use txt::*;
+pub use vlw::*;
 pub use vtg::*;
 pub use zda::*;
 pub trait INmeaData {
@@ -217,6 +221,7 @@ impl FromStr for PosMode {
             "P" => Ok(Self::Precise),
             "R" => Ok(Self::RtkInteger),
             "S" => Ok(Self::Simulator),
+            "V" => Ok(Self::NotValid),
 
             other => miette::bail!("Unknown FaaMode: {}", other),
         }
@@ -236,6 +241,7 @@ impl TryFrom<&char> for PosMode {
             'P' => Ok(Self::Precise),
             'R' => Ok(Self::RtkInteger),
             'S' => Ok(Self::Simulator),
+            'V' => Ok(Self::NotValid),
 
             other => miette::bail!("Unknown FaaMode: {}", other),
         }
