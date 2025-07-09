@@ -55,10 +55,7 @@ impl INmeaData for Grs {
 
         let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
 
-        let mode = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let mode = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!(
             "Grs::new: utc_time={:?}, grs_residual_mode={:?}",
             time,

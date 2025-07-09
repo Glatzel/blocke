@@ -41,10 +41,7 @@ impl INmeaData for Zda {
         ctx.global(&NMEA_VALIDATE)?;
 
         let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
-        let day = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let day = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let month = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let year = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let ltzh = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();

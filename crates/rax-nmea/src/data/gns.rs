@@ -89,16 +89,15 @@ impl INmeaData for Gns {
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");
-        let lat = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lat = ctx.take(&NMEA_COORD);
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lon = ctx.take(&NMEA_COORD);
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing mode...");
         let mode_str = ctx
-            .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA_DISCARD)
             .expect("Mode string should not be empty.");
         let pos_mode = mode_str

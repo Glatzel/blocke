@@ -55,23 +55,14 @@ impl INmeaData for Rmc {
         ctx.global(&NMEA_VALIDATE)?;
 
         let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
-        let status = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let status = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let lat = ctx.take(&NMEA_COORD);
-        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
-        let spd = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let lon = ctx.take(&NMEA_COORD);
+        let spd = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let cog = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let date = ctx.take(&NMEA_DATE);
-        let mv = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
-        let pos_mode = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_STAR_DISCARD)
-            .parse_opt();
+        let mv = ctx.take(&NMEA_DEGREE);
+        let pos_mode = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
         Ok(Rmc {
             talker,
             time,

@@ -1,5 +1,7 @@
 use rax::str_parser::{IRule, IStrFlowRule};
 
+use crate::UNTIL_COMMA_DISCARD;
+
 /// Rule to parse an NMEA coordinate in the format "DDDMM.MMM,<sign>,...".
 /// Converts the coordinate to decimal degrees, applying the correct sign.
 /// Returns a tuple of (decimal_degrees, rest_of_input) if successful, otherwise
@@ -18,59 +20,54 @@ impl<'a> IStrFlowRule<'a> for NmeaCoord {
     fn apply(&self, input: &'a str) -> (std::option::Option<f64>, &'a str) {
         // Log the input at trace level.
         clerk::trace!("NmeaCoord rule: input='{}'", input);
-
-        // Find the index of the second comma, which separates the sign and the rest.
-        if let Some(second_comma_idx) = input
-            .char_indices()
-            .filter(|&(_, c)| c == ',')
-            .nth(1) // 0-based: 0 is first, 1 is second
-            .map(|(idx, _)| idx)
-        {
-            let res = &input[..second_comma_idx];
-            // Split into number and sign.
-            let (num, sign) = res.split_once(",").unwrap();
-            clerk::debug!("NmeaCoord: parsed num='{}', sign='{}'", num, sign);
-            match (num.parse::<f64>(), sign) {
-                (Ok(v), "E" | "N") => {
-                    // Convert to decimal degrees.
-                    let deg = (v / 100.0).floor();
-                    let min = v - deg * 100.0;
-                    let result = deg + min / 60.0;
-                    clerk::debug!(
-                        "NmeaCoord: positive sign, deg={}, min={}, result={}",
-                        deg,
-                        min,
-                        result
-                    );
-                    (Some(result), &input[second_comma_idx..])
-                }
-                (Ok(v), "W" | "S") => {
-                    // Convert to negative decimal degrees.
-                    let deg = (v / 100.0).floor();
-                    let min = v - deg * 100.0;
-                    let result = -(deg + min / 60.0);
-                    clerk::debug!(
-                        "NmeaCoord: negative sign, deg={}, min={}, result={}",
-                        deg,
-                        min,
-                        result
-                    );
-                    (Some(result), &input[second_comma_idx..])
-                }
-                _ => {
-                    // Log parse failure or invalid sign.
-                    clerk::info!(
-                        "NmeaCoord: failed to parse number or invalid sign: num='{}', sign='{}'",
-                        num,
-                        sign
-                    );
-                    (None, &input[second_comma_idx..])
+        let (num, rest) = UNTIL_COMMA_DISCARD.apply(input);
+        let (sign, rest) = UNTIL_COMMA_DISCARD.apply(rest);
+        match (num, sign) {
+            (Some(num), Some(sign)) => {
+                clerk::debug!("NmeaCoord: parsed num='{}', sign='{}'", num, sign);
+                match (num.parse::<f64>(), sign) {
+                    (Ok(v), "E" | "N") => {
+                        // Convert to decimal degrees.
+                        let deg = (v / 100.0).floor();
+                        let min = v - deg * 100.0;
+                        let result = deg + min / 60.0;
+                        clerk::debug!(
+                            "NmeaCoord: positive sign, deg={}, min={}, result={}",
+                            deg,
+                            min,
+                            result
+                        );
+                        (Some(result), rest)
+                    }
+                    (Ok(v), "W" | "S") => {
+                        // Convert to negative decimal degrees.
+                        let deg = (v / 100.0).floor();
+                        let min = v - deg * 100.0;
+                        let result = -(deg + min / 60.0);
+                        clerk::debug!(
+                            "NmeaCoord: negative sign, deg={}, min={}, result={}",
+                            deg,
+                            min,
+                            result
+                        );
+                        (Some(result), rest)
+                    }
+                    _ => {
+                        // Log parse failure or invalid sign.
+                        clerk::info!(
+                            "NmeaCoord: failed to parse number or invalid sign: num='{}', sign='{}'",
+                            num,
+                            sign
+                        );
+                        (None, rest)
+                    }
                 }
             }
-        } else {
-            // Log if the input does not contain two commas.
-            clerk::warn!("NmeaCoord: input does not contain two commas: '{}'", input);
-            (None, input)
+            _ => {
+                // Log if the input does not contain two commas.
+                clerk::warn!("NmeaCoord: input does not contain two commas: '{}'", input);
+                (None, input)
+            }
         }
     }
 }
@@ -94,7 +91,7 @@ mod tests {
         // deg = 123, min = 19.123, value = 123 + 19.123/60
         let expected = 123.0 + 19.123 / 60.0;
         assert_eq!(val, Some(expected));
-        assert_eq!(rest, ",rest");
+        assert_eq!(rest, "rest");
     }
 
     #[test]
@@ -106,7 +103,7 @@ mod tests {
         let (val, rest) = rule.apply(input);
         let expected = -(123.0 + 19.123 / 60.0);
         assert_eq!(val, Some(expected));
-        assert_eq!(rest, ",foo");
+        assert_eq!(rest, "foo");
     }
 
     #[test]
@@ -118,7 +115,7 @@ mod tests {
         let (val, rest) = rule.apply(input);
         let expected = 48.0 + 7.038 / 60.0;
         float_cmp::assert_approx_eq!(f64, val.unwrap(), expected);
-        assert_eq!(rest, ",bar");
+        assert_eq!(rest, "bar");
     }
 
     #[test]
@@ -130,7 +127,7 @@ mod tests {
         let (val, rest) = rule.apply(input);
         let expected = -(48.0 + 7.038 / 60.0);
         float_cmp::assert_approx_eq!(f64, val.unwrap(), expected);
-        assert_eq!(rest, ",xyz");
+        assert_eq!(rest, "xyz");
     }
 
     #[test]
@@ -141,7 +138,7 @@ mod tests {
 
         let (val, rest) = rule.apply(input);
         assert_eq!(val, None);
-        assert_eq!(rest, ",rest");
+        assert_eq!(rest, "rest");
     }
 
     #[test]
@@ -152,7 +149,7 @@ mod tests {
 
         let (val, rest) = rule.apply(input);
         assert_eq!(val, None);
-        assert_eq!(rest, ",rest");
+        assert_eq!(rest, "rest");
     }
 
     #[test]

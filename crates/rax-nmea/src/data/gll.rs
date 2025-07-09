@@ -42,17 +42,14 @@ impl INmeaData for Gll {
         clerk::debug!("lat: {:?}", lat);
 
         clerk::debug!("Parsing lon...");
-        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_COORD);
+        let lon = ctx.take(&NMEA_COORD);
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_UTC);
+        let time = ctx.take(&NMEA_UTC);
         clerk::debug!("utc_time: {:?}", time);
 
-        let status = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let status = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
 
         let pos_mode = ctx.take(&UNTIL_STAR_DISCARD).parse_opt();
 

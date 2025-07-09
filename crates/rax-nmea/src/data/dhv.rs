@@ -40,10 +40,7 @@ impl INmeaData for Dhv {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
         let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
-        let speed3d = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let speed3d = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let speed_x = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let speed_y = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let speed_z = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();

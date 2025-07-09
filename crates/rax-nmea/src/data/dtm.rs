@@ -60,11 +60,8 @@ impl INmeaData for Dtm {
             .parse_opt();
         let sub_datum = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let lat = ctx.take(&NMEA_DEGREE);
-        let lon = ctx.skip_strict(&CHAR_COMMA)?.take(&NMEA_DEGREE);
-        let alt = ctx
-            .skip_strict(&CHAR_COMMA)?
-            .take(&UNTIL_COMMA_DISCARD)
-            .parse_opt();
+        let lon = ctx.take(&NMEA_DEGREE);
+        let alt = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
 
         Ok(Dtm {
             talker,
