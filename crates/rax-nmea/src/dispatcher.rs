@@ -150,7 +150,7 @@ where
                     | Identifier::ZDA => return Some((talker, identifier, sentence)),
 
                     // Multi-line sentences
-                    Identifier::GSV | Identifier::Txt => {
+                    Identifier::GSV | Identifier::TXT => {
                         if let Some(result) = self.process_multilines(talker, identifier, sentence)
                         {
                             return Some(result);

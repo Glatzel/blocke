@@ -68,7 +68,7 @@ fn main() -> miette::Result<()> {
                 let nmea = Rmc::new(ctx, talker)?;
                 println!("{nmea:?}")
             }
-            Identifier::Txt => {
+            Identifier::TXT => {
                 let ctx = ctx.init(sentence);
                 let nmea = Txt::new(ctx, talker)?;
                 println!("{nmea:?}")

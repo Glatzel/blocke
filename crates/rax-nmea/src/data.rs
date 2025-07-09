@@ -55,7 +55,8 @@ pub enum Identifier {
     GSV,
     ///Recommended Minimum Navigation Information
     RMC,
-    Txt,
+    ///Text transmission
+    TXT,
     ///Track made good and Ground speed
     VTG,
     ///Time & Date - UTC, day, month, year and local time zone
@@ -79,7 +80,7 @@ impl FromStr for Identifier {
             "GST" => Self::GST,
             "GSV" => Self::GSV,
             "RMC" => Self::RMC,
-            "TXT" => Self::Txt,
+            "TXT" => Self::TXT,
             "VTG" => Self::VTG,
             "ZDA" => Self::ZDA,
 
@@ -101,7 +102,7 @@ impl Display for Identifier {
             Self::GST => "GST",
             Self::GSV => "GSV",
             Self::RMC => "RMC",
-            Self::Txt => "TXT",
+            Self::TXT => "TXT",
             Self::VTG => "VTG",
             Self::ZDA => "ZDA",
         };

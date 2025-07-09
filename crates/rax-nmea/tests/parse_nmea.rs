@@ -62,7 +62,7 @@ fn test_parse_nmea() -> miette::Result<()> {
                     let ctx = ctx.init(sentence);
                     let _ = Rmc::new(ctx, talker)?;
                 }
-                Identifier::Txt => {
+                Identifier::TXT => {
                     let ctx = ctx.init(sentence);
                     let _ = Txt::new(ctx, talker)?;
                 }
