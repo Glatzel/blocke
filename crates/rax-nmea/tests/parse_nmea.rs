@@ -62,7 +62,7 @@ fn test_parse_nmea() -> miette::Result<()> {
                     let ctx = ctx.init(sentence);
                     let _ = Rmc::new(ctx, talker)?;
                 }
-                Identifier::Txt => {
+                Identifier::TXT => {
                     let ctx = ctx.init(sentence);
                     let _ = Txt::new(ctx, talker)?;
                 }
@@ -73,6 +73,34 @@ fn test_parse_nmea() -> miette::Result<()> {
                 Identifier::ZDA => {
                     let ctx = ctx.init(sentence);
                     let _ = Zda::new(ctx, talker)?;
+                }
+                Identifier::DTM => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Dtm::new(ctx, talker)?;
+                }
+                Identifier::GBQ => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Gbq::new(ctx, talker)?;
+                }
+                Identifier::GLQ => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Glq::new(ctx, talker)?;
+                }
+                Identifier::GNQ => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Gnq::new(ctx, talker)?;
+                }
+                Identifier::GPQ => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Gpq::new(ctx, talker)?;
+                }
+                Identifier::THS => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Ths::new(ctx, talker)?;
+                }
+                Identifier::VLW => {
+                    let ctx = ctx.init(sentence);
+                    let _ = Vlw::new(ctx, talker)?;
                 }
             }
         }

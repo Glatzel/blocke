@@ -138,19 +138,26 @@ where
                 match identifier {
                     // Single-line sentences
                     Identifier::DHV
+                    | Identifier::DTM
+                    | Identifier::GBQ
                     | Identifier::GBS
                     | Identifier::GGA
                     | Identifier::GLL
+                    | Identifier::GLQ
+                    | Identifier::GNQ
                     | Identifier::GNS
+                    | Identifier::GPQ
                     | Identifier::GRS
                     | Identifier::GSA
                     | Identifier::GST
                     | Identifier::RMC
+                    | Identifier::THS
+                    | Identifier::VLW
                     | Identifier::VTG
                     | Identifier::ZDA => return Some((talker, identifier, sentence)),
 
                     // Multi-line sentences
-                    Identifier::GSV | Identifier::Txt => {
+                    Identifier::GSV | Identifier::TXT => {
                         if let Some(result) = self.process_multilines(talker, identifier, sentence)
                         {
                             return Some(result);

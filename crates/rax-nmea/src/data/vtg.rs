@@ -1,32 +1,33 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
-use crate::data::{FaaMode, INmeaData, Talker};
+use crate::data::{INmeaData, PosMode, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
-
 readonly_struct!(
     Vtg ,
-    "Vtg",
+    "Course over ground and ground speed",
     {talker: Talker},
 
     {
-        course_over_ground_true: Option<f64>,
+        cogt: Option<f64>,
         "Course over ground (true)"
     },
     {
-        course_over_ground_magnetic: Option<f64>,
+        cogm: Option<f64>,
         "Course over ground (magnetic)"
     },
     {
-        speed_over_ground_knots: Option<f64>,
+        sogn: Option<f64>,
         "Speed over ground (knots)"
     },
     {
-        speed_over_ground_kph: Option<f64>,
+        sogk: Option<f64>,
         "Speed over ground (kph)"
     },
     {
-        mode: Option<FaaMode>,
+        pos_mode: Option<PosMode>,
         "Mode"
     }
 );
@@ -34,69 +35,54 @@ impl INmeaData for Vtg {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let course_over_ground_true = ctx
+        let cogt = ctx
             .skip_strict(&UNTIL_COMMA)?
             .skip_strict(&CHAR_COMMA)?
             .take(&UNTIL_COMMA)
             .parse_opt();
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_T);
 
-        let course_over_ground_magnetic =
-            ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let cogm = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_M);
 
-        let speed_over_ground_knots = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let sogn = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_N);
 
-        let speed_over_ground_kph = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
+        let sogk = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_COMMA).parse_opt();
         ctx.skip_strict(&CHAR_COMMA)?.skip(&CHAR_K);
 
-        let mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
+        let pos_mode = ctx.skip_strict(&CHAR_COMMA)?.take(&UNTIL_STAR).parse_opt();
 
         Ok(Vtg {
             talker,
-            course_over_ground_true,
-            course_over_ground_magnetic,
-            speed_over_ground_knots,
-            speed_over_ground_kph,
-            mode,
+            cogt,
+            cogm,
+            sogn,
+            sogk,
+            pos_mode,
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Vtg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ds = f.debug_struct("VTG");
         ds.field("talker", &self.talker);
 
-        if let Some(course_over_ground_true) = self.course_over_ground_true {
-            ds.field(
-                "course_over_ground_true",
-                &format!("{course_over_ground_true} Degrees"),
-            );
+        if let Some(cogt) = self.cogt {
+            ds.field("cogt", &format!("{cogt} Degrees"));
         }
-        if let Some(course_over_ground_magnetic) = self.course_over_ground_magnetic {
-            ds.field(
-                "course_over_ground_magnetic",
-                &format!("{course_over_ground_magnetic} Degrees"),
-            );
+        if let Some(cogm) = self.cogm {
+            ds.field("cogm", &format!("{cogm} Degrees"));
         }
-        if let Some(speed_over_ground_knots) = self.speed_over_ground_knots {
-            ds.field(
-                "speed_over_ground_knots",
-                &format!("{speed_over_ground_knots} Knots"),
-            );
+        if let Some(sogn) = self.sogn {
+            ds.field("sogn", &format!("{sogn} Knots"));
         }
-        if let Some(speed_over_ground_kph) = self.speed_over_ground_kph {
-            ds.field(
-                "speed_over_ground_kph",
-                &format!("{speed_over_ground_kph} Kph"),
-            );
+        if let Some(sogk) = self.sogk {
+            ds.field("sogk", &format!("{sogk} Kph"));
         }
-        if let Some(ref mode) = self.mode {
-            ds.field("mode", mode);
+        if let Some(ref pos_mode) = self.pos_mode {
+            ds.field("pos_mode", pos_mode);
         }
 
         ds.finish()
@@ -118,11 +104,11 @@ mod test {
         let vtg = Vtg::new(ctx.init(s.to_string()), Talker::GN)?;
         println!("{vtg:?}");
         assert_eq!(vtg.talker, Talker::GN);
-        assert_approx_eq!(f64, vtg.course_over_ground_true.unwrap(), 83.7);
-        assert_approx_eq!(f64, vtg.course_over_ground_magnetic.unwrap(), 83.7);
-        assert_approx_eq!(f64, vtg.speed_over_ground_knots.unwrap(), 146.3);
-        assert_approx_eq!(f64, vtg.speed_over_ground_kph.unwrap(), 271.0);
-        assert_eq!(vtg.mode.unwrap(), FaaMode::Differential);
+        assert_approx_eq!(f64, vtg.cogt.unwrap(), 83.7);
+        assert_approx_eq!(f64, vtg.cogm.unwrap(), 83.7);
+        assert_approx_eq!(f64, vtg.sogn.unwrap(), 146.3);
+        assert_approx_eq!(f64, vtg.sogk.unwrap(), 271.0);
+        assert_eq!(vtg.pos_mode.unwrap(), PosMode::Differential);
         Ok(())
     }
 }

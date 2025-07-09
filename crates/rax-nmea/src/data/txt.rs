@@ -38,11 +38,11 @@ impl std::fmt::Display for TxtType {
 }
 readonly_struct!(
     Txt ,
-    "TXT",
+    "Text transmission",
     {talker: Talker},
 
     {
-        infos : Vec<( Option<TxtType>,Option<String>)>,
+        message : Vec<( Option<TxtType>,Option<String>)>,
         "Text information"
     }
 );
@@ -76,7 +76,10 @@ impl Txt {
             ctx.skip(&UNTIL_NEW_LINE).skip(&CHAR_NEW_LINE);
         }
 
-        Ok(Self { talker, infos })
+        Ok(Self {
+            talker,
+            message: infos,
+        })
     }
 }
 
@@ -86,9 +89,9 @@ impl fmt::Debug for Txt {
         ds.field("talker", &self.talker);
 
         ds.field(
-            "info",
+            "message",
             &self
-                .infos
+                .message
                 .iter()
                 .filter(|x| x.0.is_some() || x.1.is_some())
                 .map(|x| match x {
@@ -118,13 +121,13 @@ mod test {
         let txt = Txt::new(ctx.init(s.to_string()), Talker::GP)?;
         println!("{txt:?}");
         assert_eq!(txt.talker, Talker::GP);
-        assert_eq!(txt.infos.len(), 3);
-        assert_eq!(txt.infos[0].0, Some(TxtType::Info));
-        assert_eq!(txt.infos[0].1, Some("MA=CASIC".to_string()));
-        assert_eq!(txt.infos[1].0, Some(TxtType::Info));
-        assert_eq!(txt.infos[1].1, Some("IC=ATGB03+ATGR201".to_string()));
-        assert_eq!(txt.infos[2].0, Some(TxtType::Info));
-        assert_eq!(txt.infos[2].1, Some("SW=URANUS2,V2.2.1.0".to_string()));
+        assert_eq!(txt.message.len(), 3);
+        assert_eq!(txt.message[0].0, Some(TxtType::Info));
+        assert_eq!(txt.message[0].1, Some("MA=CASIC".to_string()));
+        assert_eq!(txt.message[1].0, Some(TxtType::Info));
+        assert_eq!(txt.message[1].1, Some("IC=ATGB03+ATGR201".to_string()));
+        assert_eq!(txt.message[2].0, Some(TxtType::Info));
+        assert_eq!(txt.message[2].1, Some("SW=URANUS2,V2.2.1.0".to_string()));
         Ok(())
     }
 }
