@@ -91,6 +91,6 @@ mod test {
         let input = ",,Nother_data";
         let (result, rest) = rule.apply(input);
         assert!(result.is_none());
-        assert_eq!(rest, ",Nother_data");
+        assert_eq!(rest, "Nother_data");
     }
 }
