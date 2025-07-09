@@ -1,2 +1,4 @@
 [default.extend-identifiers]
 ths = "ths"
+THS="THS"
+"Ths"="Ths"
