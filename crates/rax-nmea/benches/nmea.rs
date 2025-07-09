@@ -30,9 +30,7 @@ pub fn benches(c: &mut Criterion) {
         "$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B",
         rax_nmea::data::Dtm::new,
     );
-    bench_nmea(c, "gbq", "$EIGBQ,RMC*28", |ctx, t| {
-        rax_nmea::data::Gbq::new(ctx, t)
-    });
+    bench_nmea(c, "gbq", "$EIGBQ,RMC*28", rax_nmea::data::Gbq::new);
     bench_nmea(
         c,
         "gbs",
@@ -51,21 +49,15 @@ pub fn benches(c: &mut Criterion) {
         "$GPGLL,2959.9925,S,12000.0090,E,235316.000,A,A*4E",
         rax_nmea::data::Gll::new,
     );
-    bench_nmea(c, "glq", "$GLGLQ,RMC*28", |ctx, t| {
-        rax_nmea::data::Glq::new(ctx, t)
-    });
-    bench_nmea(c, "gnq", "$EIGNQ,RMC*24", |ctx, t| {
-        rax_nmea::data::Gnq::new(ctx, t)
-    });
+    bench_nmea(c, "glq", "$EIGLQ,RMC*26", rax_nmea::data::Glq::new);
+    bench_nmea(c, "gnq", "$EIGNQ,RMC*24", rax_nmea::data::Gnq::new);
     bench_nmea(
         c,
         "gns",
         "$GPGNS,112257.00,3844.24011,N,00908.43828,W,AN,03,10.5,,*57",
         rax_nmea::data::Gns::new,
     );
-    bench_nmea(c, "gpq", "$EIGPQ,RMC*3A", |ctx, t| {
-        rax_nmea::data::Gpq::new(ctx, t)
-    });
+    bench_nmea(c, "gpq", "$EIGPQ,RMC*3A", rax_nmea::data::Gpq::new);
     bench_nmea(
         c,
         "grs",
@@ -97,18 +89,19 @@ pub fn benches(c: &mut Criterion) {
         rax_nmea::data::Rmc::new,
     );
 
-    bench_nmea(c, "ths", "$GPTHS,77.52,E*34", |ctx, t| {
-        rax_nmea::data::Ths::new(ctx, t)
-    });
+    bench_nmea(c, "ths", "$GPTHS,77.52,E*34", rax_nmea::data::Ths::new);
     bench_nmea(
         c,
         "txt",
         "$GPTXT,03,01,02,MA=CASIC*25\r\n$GPTXT,03,02,02,IC=ATGB03+ATGR201*70\r\n$GPTXT,03,03,02,SW=URANUS2,V2.2.1.0*1D",
         rax_nmea::data::Txt::new,
     );
-    bench_nmea(c, "vlw", "$GPVLW,,N,,N,15.8,N,1.2,N*65", |ctx, t| {
-        rax_nmea::data::Vlw::new(ctx, t)
-    });
+    bench_nmea(
+        c,
+        "vlw",
+        "$GPVLW,,N,,N,15.8,N,1.2,N*65",
+        rax_nmea::data::Vlw::new,
+    );
     bench_nmea(
         c,
         "vtg",
