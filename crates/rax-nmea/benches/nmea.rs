@@ -22,13 +22,13 @@ pub fn benches(c: &mut Criterion) {
         c,
         "dhv",
         "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65",
-        |ctx, t| rax_nmea::data::Dhv::new(ctx, t),
+        rax_nmea::data::Dhv::new,
     );
     bench_nmea(
         c,
         "dtm",
         "$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B",
-        |ctx, t| rax_nmea::data::Dtm::new(ctx, t),
+        rax_nmea::data::Dtm::new,
     );
     bench_nmea(c, "gbq", "$EIGBQ,RMC*28", |ctx, t| {
         rax_nmea::data::Gbq::new(ctx, t)
