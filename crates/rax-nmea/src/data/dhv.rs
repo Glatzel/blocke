@@ -1,6 +1,5 @@
 use std::fmt;
 
-use rax::str_parser::rules::Until;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, Talker};
