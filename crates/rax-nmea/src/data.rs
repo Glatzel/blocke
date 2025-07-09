@@ -15,6 +15,9 @@ use std::fmt::Display;
 use std::str::FromStr;
 mod dtm;
 mod gbq;
+mod glq;
+mod gnq;
+mod gpq;
 
 pub use dhv::*;
 pub use dtm::*;
@@ -22,7 +25,10 @@ pub use gbq::*;
 pub use gbs::*;
 pub use gga::*;
 pub use gll::*;
+pub use glq::*;
+pub use gnq::*;
 pub use gns::*;
+pub use gpq::*;
 pub use grs::*;
 pub use gsa::*;
 pub use gst::*;
@@ -33,7 +39,6 @@ use serde::{Deserialize, Serialize};
 pub use txt::*;
 pub use vtg::*;
 pub use zda::*;
-
 pub trait INmeaData {
     fn new(ctx: &mut StrParserContext, navigation_system: Talker) -> miette::Result<Self>
     where

@@ -8,7 +8,7 @@ use crate::rules::*;
 
 readonly_struct!(
     Gbq ,
-    "Dtm",
+    "Poll a standard message(Talker ID GB)",
     {talker: Talker},
 
     {

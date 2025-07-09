@@ -28,7 +28,7 @@ impl FromStr for DtmDatum {
 }
 readonly_struct!(
     Dtm ,
-    "Dtm",
+    "Datum reference",
     {talker: Talker},
 
     {
@@ -48,7 +48,7 @@ readonly_struct!(
     },
     {
         alt:Option<f64>,
-        " Offset in altitude"
+        "Offset in altitude"
     }
 );
 impl INmeaData for Dtm {
