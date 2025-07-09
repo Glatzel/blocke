@@ -1,9 +1,10 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::Talker;
 use crate::macros::readonly_struct;
 use crate::rules::*;
-
 readonly_struct!(
     Zda ,
     "Time and date",
@@ -60,8 +61,6 @@ impl Zda {
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Zda {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

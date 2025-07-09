@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, Talker};
@@ -58,8 +60,6 @@ impl INmeaData for Dhv {
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Dhv {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

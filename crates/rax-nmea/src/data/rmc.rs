@@ -1,3 +1,5 @@
+use std::fmt;
+
 use chrono::NaiveDate;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
@@ -78,8 +80,6 @@ impl Rmc {
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Rmc {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

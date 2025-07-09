@@ -1,9 +1,10 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, PosMode, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
-
 readonly_struct!(
     Vtg ,
     "Course over ground and ground speed",
@@ -62,8 +63,6 @@ impl INmeaData for Vtg {
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Vtg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

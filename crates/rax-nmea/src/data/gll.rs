@@ -1,9 +1,10 @@
+use std::fmt;
+
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, PosMode, Status, Talker};
 use crate::macros::readonly_struct;
 use crate::rules::*;
-
 readonly_struct!(
     Gll ,
     "Latitude and longitude, with time of position fix and status",
@@ -65,8 +66,6 @@ impl INmeaData for Gll {
         })
     }
 }
-
-use std::fmt;
 
 impl fmt::Debug for Gll {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
