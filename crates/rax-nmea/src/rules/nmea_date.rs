@@ -61,7 +61,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaDate {
             }
             None => {
                 clerk::warn!("NmeaDate: no comma found in input '{}'", input);
-                return (None, input);
+                (None, input)
             }
         }
     }

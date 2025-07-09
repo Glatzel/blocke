@@ -121,7 +121,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaUtc {
             }
             None => {
                 clerk::info!("NmeaUtc: got empty string.");
-                return (None, input);
+                (None, input)
             }
         }
     }
