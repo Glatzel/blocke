@@ -121,7 +121,7 @@ impl fmt::Debug for Rmc {
 #[cfg(test)]
 mod test {
     use clerk::init_log_with_level;
-    use tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
     use float_cmp::assert_approx_eq;
 
     use super::*;

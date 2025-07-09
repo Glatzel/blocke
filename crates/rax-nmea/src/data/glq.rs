@@ -46,7 +46,7 @@ impl fmt::Debug for Glq {
 mod test {
 
     use clerk::init_log_with_level;
-    use tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

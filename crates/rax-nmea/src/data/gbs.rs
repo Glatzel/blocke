@@ -126,8 +126,8 @@ impl Debug for Gbs {
 }
 #[cfg(test)]
 mod tests {
-
-    use clerk::{LevelFilter, init_log_with_level};
+    use clerk::init_log_with_level;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

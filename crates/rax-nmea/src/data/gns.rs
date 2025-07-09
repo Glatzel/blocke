@@ -199,7 +199,7 @@ impl Debug for Gns {
 mod test {
     use clerk::init_log_with_level;
     use float_cmp::assert_approx_eq;
-    use tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::data::{PosMode, Talker};

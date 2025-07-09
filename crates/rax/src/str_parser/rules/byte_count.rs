@@ -42,7 +42,7 @@ impl<'a, const N: usize> IStrFlowRule<'a> for ByteCount<N> {
 mod tests {
 
     use clerk::init_log_with_level;
-    use tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

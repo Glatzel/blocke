@@ -82,7 +82,7 @@ mod tests {
     use std::str::FromStr;
 
     use clerk::init_log_with_level;
-    use tracing::level_filters::LevelFilter;
+    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
