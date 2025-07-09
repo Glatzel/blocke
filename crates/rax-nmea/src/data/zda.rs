@@ -6,7 +6,7 @@ use crate::rules::*;
 
 readonly_struct!(
     Zda ,
-    "Zda",
+    "Time and date",
     {talker: Talker},
 
     {

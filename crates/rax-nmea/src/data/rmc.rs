@@ -7,7 +7,7 @@ use crate::rules::*;
 
 readonly_struct!(
     Rmc ,
-    "Rmc",
+    "Recommended minimum data",
     {talker: Talker},
 
     {

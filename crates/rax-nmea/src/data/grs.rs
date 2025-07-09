@@ -25,7 +25,7 @@ impl FromStr for GrsResidualMode {
 }
 readonly_struct!(
     Grs ,
-    "Gsa",
+    "GNSS range residuals",
     {talker: Talker},
 
     {

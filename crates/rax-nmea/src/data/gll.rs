@@ -6,7 +6,7 @@ use crate::rules::*;
 
 readonly_struct!(
     Gll ,
-    "Gll",
+    "Latitude and longitude, with time of position fix and status",
     {talker: Talker},
 
     {

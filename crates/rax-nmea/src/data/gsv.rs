@@ -41,7 +41,7 @@ impl fmt::Debug for Satellite {
 
 readonly_struct!(
     Gsv,
-    "Gsv",
+    "GNSS satellites in view",
     {talker: Talker},
     {
         satellites: Vec<Satellite>,

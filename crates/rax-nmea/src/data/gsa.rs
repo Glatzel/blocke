@@ -42,7 +42,7 @@ impl FromStr for GsaNavigationMode {
 }
 readonly_struct!(
     Gsa ,
-    "Gsa",
+    " GNSS DOP and active satellites",
     {talker: Talker},
 
     {

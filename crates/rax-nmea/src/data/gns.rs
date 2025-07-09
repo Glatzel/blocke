@@ -29,7 +29,7 @@ impl FromStr for NavigationStatus {
 }
 readonly_struct!(
     Gns,
-    "Gns",
+    "GNSS fix data",
     {talker: Talker},
 
     {

@@ -8,7 +8,7 @@ use crate::{CHAR_COMMA, NMEA_UTC, UNTIL_COMMA, UNTIL_COMMA_OR_STAR, UNTIL_STAR};
 
 readonly_struct!(
     Gbs,
-    "GPS Satellite Fault Detection"
+    "GNSS satellite fault detection"
     "# References"
     "* <https://gpsd.gitlab.io/gpsd/NMEA.html#_gbs_gps_satellite_fault_detection>"
     ,

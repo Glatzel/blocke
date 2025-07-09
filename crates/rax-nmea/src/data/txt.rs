@@ -38,7 +38,7 @@ impl std::fmt::Display for TxtType {
 }
 readonly_struct!(
     Txt ,
-    "TXT",
+    "Text transmission",
     {talker: Talker},
 
     {

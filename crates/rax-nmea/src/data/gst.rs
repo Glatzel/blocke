@@ -5,7 +5,7 @@ use crate::macros::readonly_struct;
 use crate::rules::*;
 readonly_struct!(
     Gst ,
-    "Gst",
+    "GNSS pseudorange error statistics",
     {talker: Talker},
 
     {

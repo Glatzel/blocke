@@ -6,7 +6,7 @@ use crate::rules::*;
 
 readonly_struct!(
     Vtg ,
-    "Vtg",
+    "Course over ground and ground speed",
     {talker: Talker},
 
     {
