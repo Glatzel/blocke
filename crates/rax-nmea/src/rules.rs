@@ -13,10 +13,6 @@ use crate::rules::nmea_utc::NmeaUtc;
 use crate::rules::nmea_validate::NmeaValidate;
 
 pub const CHAR_COMMA: Char<','> = Char;
-pub const CHAR_NEW_LINE: Char<'\n'> = Char;
-pub const CHAR_M: Char<'M'> = Char;
-pub const CHAR_T: Char<'T'> = Char;
-pub const CHAR_N: Char<'N'> = Char;
 
 pub const UNTIL_COMMA_DISCARD: Until = Until {
     delimiter: ",",
@@ -41,5 +37,3 @@ pub const UNTIL_COMMA_OR_STAR_DISCARD: UntilOneInCharSet<2> = UntilOneInCharSet 
     filter: &CharSetFilter::new([',', '*']),
     mode: UntilMode::Discard,
 };
-
-pub const THREE_CHAR: CharCount<3> = CharCount;
