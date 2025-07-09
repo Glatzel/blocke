@@ -29,46 +29,27 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
     /// If `include` is true, the N-th matched character is included in the
     /// prefix.
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
-        let mut count = 0;
-        let mut start_idx = None;
-        let mut end_idx = None;
+        // How many more matches do we still need?
+        let mut remaining = N;
 
-        // Iterate over each character and its byte index in the input string
-        for (i, c) in input.char_indices() {
-            if self.filter.filter(&c) {
-                count += 1;
-                if count == N {
-                    // If include, split after the N-th matched character
-                    let end_of_char = i + c.len_utf8();
-                    start_idx = Some(match self.mode {
-                        UntilMode::Discard | UntilMode::KeepRight => i,
-                        UntilMode::KeepLeft => end_of_char,
-                    });
-                    end_idx = Some(match self.mode {
-                        UntilMode::Discard | UntilMode::KeepLeft => end_of_char,
-                        UntilMode::KeepRight => i,
-                    });
-                    break;
+        for (idx, ch) in input.char_indices() {
+            // Ask the user‑supplied filter whether this character is in the set.
+            if self.filter.filter(&ch) {
+                remaining -= 1;
+                if remaining == 0 {
+                    // `idx` points to the first byte of the N‑th match.
+                    // `after` points to the first byte *after* it.
+                    let after = idx + ch.len_utf8();
+                    return match self.mode {
+                        UntilMode::Discard => (Some(&input[..idx]), &input[after..]),
+                        UntilMode::KeepLeft => (Some(&input[..after]), &input[after..]),
+                        UntilMode::KeepRight => (Some(&input[..idx]), &input[idx..]),
+                    };
                 }
             }
         }
-
-        if let Some(start_idx) = start_idx
-            && let Some(end_idx) = end_idx
-        {
-            let prefix = &input[..start_idx];
-            let rest = &input[end_idx..];
-            clerk::debug!(
-                "UntilNInCharSet: prefix='{}', rest='{}', N={}, mode={}",
-                prefix,
-                rest,
-                N,
-                self.mode
-            );
-            (Some(prefix), rest)
-        } else {
-            (None, input)
-        }
+        // Fewer than N occurrences found.
+        (None, input)
     }
 }
 
