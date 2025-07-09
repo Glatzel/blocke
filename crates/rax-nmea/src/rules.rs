@@ -4,7 +4,7 @@ mod nmea_degree;
 mod nmea_utc;
 mod nmea_validate;
 use rax::str_parser::filters::CharSetFilter;
-use rax::str_parser::rules::{Char, UntilChar, UntilMode, UntilOneInCharSet, UntilStr};
+use rax::str_parser::rules::{Char, UntilChar, UntilMode, UntilOneInCharSet};
 
 use crate::rules::nmea_coord::NmeaCoord;
 use crate::rules::nmea_date::NmeaDate;
