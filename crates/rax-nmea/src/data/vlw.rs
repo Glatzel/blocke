@@ -79,7 +79,7 @@ mod test {
 
     use super::*;
     #[test]
-    fn test_new_dtm() -> miette::Result<()> {
+    fn test_new_vlw() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$GPVLW,,N,,N,15.8,N,1.2,N*65";
         let mut ctx = StrParserContext::new();

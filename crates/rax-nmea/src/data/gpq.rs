@@ -50,7 +50,7 @@ mod test {
 
     use super::*;
     #[test]
-    fn test_new_dtm() -> miette::Result<()> {
+    fn test_new_gpq() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
         let s = "$EIGPQ,RMC*3A";
         let mut ctx = StrParserContext::new();
