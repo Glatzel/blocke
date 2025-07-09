@@ -22,3 +22,7 @@ tracing-subscriber = { workspace = true }
 async = ["tokio/io-util", "async-trait"]
 device = ["serialport"]
 log = ["clerk/log"]
+
+[[bench]]
+harness = false
+name = "rules"
