@@ -9,7 +9,8 @@ use crate::str_parser::rules::UntilMode;
 /// up to the N-th character in the set, and `rest` is the remainder of the
 /// string starting from that character. If fewer than N characters in the set
 /// are found, returns (None, input).
-/// If `include` is true, the N-th matched character is included in the prefix.
+/// The `mode` determines whether the N-th matched character is included in the
+/// prefix, excluded, or kept as the first character of the rest.
 pub struct UntilNInCharSet<'a, const N: usize, const M: usize> {
     pub filter: &'a CharSetFilter<M>,
     pub mode: UntilMode,
@@ -26,8 +27,8 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
     /// N-th character in the set, and the rest of the string starting from
     /// that character. If fewer than N characters in the set are found,
     /// returns (None, input).
-    /// If `include` is true, the N-th matched character is included in the
-    /// prefix.
+    /// The `mode` determines whether the N-th matched character is included in
+    /// the prefix, excluded, or kept as the first character of the rest.
     fn apply(&self, input: &'a str) -> (Option<&'a str>, &'a str) {
         // How many more matches do we still need?
         let mut remaining = N;
@@ -40,15 +41,30 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
                     // `idx` points to the first byte of the N‑th match.
                     // `after` points to the first byte *after* it.
                     let after = idx + ch.len_utf8();
-                    return match self.mode {
-                        UntilMode::Discard => (Some(&input[..idx]), &input[after..]),
-                        UntilMode::KeepLeft => (Some(&input[..after]), &input[after..]),
-                        UntilMode::KeepRight => (Some(&input[..idx]), &input[idx..]),
+                    let (prefix, rest) = match self.mode {
+                        UntilMode::Discard => (&input[..idx], &input[after..]),
+                        UntilMode::KeepLeft => (&input[..after], &input[after..]),
+                        UntilMode::KeepRight => (&input[..idx], &input[idx..]),
                     };
+                    clerk::debug!(
+                        "UntilNInCharSet: mode={:?}, prefix='{}', rest='{}', idx={}, after={}, N={}",
+                        self.mode,
+                        prefix,
+                        rest,
+                        idx,
+                        after,
+                        N
+                    );
+                    return (Some(prefix), rest);
                 }
             }
         }
         // Fewer than N occurrences found.
+        clerk::debug!(
+            "UntilNInCharSet: fewer than {} matches found, returning None, input='{}'",
+            N,
+            input
+        );
         (None, input)
     }
 }
