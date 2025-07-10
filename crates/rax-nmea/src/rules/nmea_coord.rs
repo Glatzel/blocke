@@ -52,8 +52,8 @@ impl<'a> IStrFlowRule<'a> for NmeaCoord {
                 );
                 (Some(result), rest2)
             }
-            (Some(_), Some(sign)) => {
-                clerk::info!("NmeaCoord: invalid sign '{}'", sign);
+            (Some(_), Some(_sign)) => {
+                clerk::info!("NmeaCoord: invalid sign '{}'", _sign);
                 (None, rest2)
             }
             _ => {
