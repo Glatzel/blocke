@@ -29,7 +29,7 @@ impl<'a> IStrFlowRule<'a> for NmeaDegree {
             }
             _ => {
                 clerk::warn!("NmeaDegree: failed to parse input '{}'", input);
-                (None, input)
+                (None, rest2)
             }
         }
     }
@@ -77,7 +77,7 @@ mod test {
         let input = "12345.6789,Nother_data";
         let (result, rest) = rule.apply(input);
         assert!(result.is_none());
-        assert_eq!(rest, input);
+        assert_eq!(rest, "Nother_data");
     }
     #[test]
     fn test_nmea_degree_null() {
@@ -86,6 +86,6 @@ mod test {
         let input = ",,Nother_data";
         let (result, rest) = rule.apply(input);
         assert!(result.is_none());
-        assert_eq!(rest, input);
+        assert_eq!(rest, "Nother_data");
     }
 }
