@@ -110,7 +110,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
 
 #[cfg(test)]
 mod tests {
-    use chrono::{Timelike, Utc};
+    use chrono::Timelike;
     use rax::str_parser::IStrFlowRule;
 
     use super::*;
@@ -118,7 +118,6 @@ mod tests {
     #[test]
     fn test_nmea_utc_valid() {
         let rule = NmeaTime();
-        let today = Utc::now().date_naive();
         let (dt, rest) = rule.apply("123456.789,foo,bar");
         let dt = dt.expect("Should parse valid UTC time");
         assert_eq!(dt.hour(), 12);
@@ -132,7 +131,6 @@ mod tests {
     #[test]
     fn test_nmea_utc_no_fraction() {
         let rule = NmeaTime();
-        let today = Utc::now().date_naive();
         let (dt, rest) = rule.apply("235959,rest");
         let dt = dt.expect("Should parse valid UTC time");
         assert_eq!(dt.hour(), 23);
