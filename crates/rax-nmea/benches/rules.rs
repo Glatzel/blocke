@@ -13,7 +13,7 @@ fn benches(c: &mut Criterion) {
     bench_rule(c, "coord", NMEA_COORD, "12319.123,E,rest");
     bench_rule(c, "date", NMEA_DATE, "110324,foo,bar");
     bench_rule(c, "degree", NMEA_DEGREE, "123.45,N,other_data");
-    bench_rule(c, "utc", NMEA_TIME, "123456.789,foo,bar");
+    bench_rule(c, "time", NMEA_TIME, "123456.789,foo,bar");
 }
 
 fn bench_validate(c: &mut Criterion) {
