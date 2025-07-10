@@ -52,3 +52,49 @@ where
         Ok(lines)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use clerk::init_log_with_level;
+    use tokio::io::BufReader;
+    use tracing_subscriber::filter::LevelFilter;
+
+    use super::*;
+
+    // Helper to create a BufReader from a string for async tests
+    fn make_reader(data: &str) -> AsyncRaxReader<BufReader<&[u8]>> {
+        AsyncRaxReader::new(BufReader::new(data.as_bytes()))
+    }
+
+    #[tokio::test]
+    async fn test_read_line_some() {
+        init_log_with_level(LevelFilter::TRACE);
+        let mut reader = make_reader("foo\nbar\n");
+        let line1 = reader.read_line().await.unwrap();
+        assert_eq!(line1.as_deref(), Some("foo\n"));
+        let line2 = reader.read_line().await.unwrap();
+        assert_eq!(line2.as_deref(), Some("bar\n"));
+        let line3 = reader.read_line().await.unwrap();
+        assert_eq!(line3, None);
+    }
+
+    #[tokio::test]
+    async fn test_read_lines_by_count_partial() {
+        init_log_with_level(LevelFilter::TRACE);
+        let mut reader = make_reader("a\nb\nc\n");
+        let lines = reader.read_lines_by_count(2).await.unwrap();
+        assert_eq!(lines, vec!["a\n".to_string(), "b\n".to_string()]);
+        let lines = reader.read_lines_by_count(2).await.unwrap();
+        assert_eq!(lines, vec!["c\n".to_string()]);
+        let lines = reader.read_lines_by_count(1).await.unwrap();
+        assert!(lines.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_read_lines_by_count_empty() {
+        init_log_with_level(LevelFilter::TRACE);
+        let mut reader = make_reader("");
+        let lines = reader.read_lines_by_count(3).await.unwrap();
+        assert!(lines.is_empty());
+    }
+}
