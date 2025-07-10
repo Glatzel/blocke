@@ -11,62 +11,57 @@ pub struct NmeaCoord();
 impl IRule for NmeaCoord {
     fn name(&self) -> &str { "NmeaCoord" }
 }
-
+impl NmeaCoord {
+    fn convert_to_decimal_degrees(v: f64) -> f64 {
+        let deg = (v / 100.0).floor();
+        let min = v - deg * 100.0;
+        deg + min / 60.0
+    }
+}
 impl<'a> IStrFlowRule<'a> for NmeaCoord {
     type Output = f64;
     /// Applies the NmeaCoord rule to the input string.
     /// Parses the coordinate and sign, converts to decimal degrees, and returns
     /// the result and the rest of the string. Logs each step for debugging.
     fn apply(&self, input: &'a str) -> (std::option::Option<f64>, &'a str) {
-        // Log the input at trace level.
         clerk::trace!("NmeaCoord rule: input='{}'", input);
-        let (num, rest) = UNTIL_COMMA_DISCARD.apply(input);
-        let (sign, rest) = UNTIL_COMMA_DISCARD.apply(rest);
-        match (num, sign) {
-            (Some(num), Some(sign)) => {
-                clerk::debug!("NmeaCoord: parsed num='{}', sign='{}'", num, sign);
-                match (num.parse::<f64>(), sign) {
-                    (Ok(v), "E" | "N") => {
-                        // Convert to decimal degrees.
-                        let deg = (v / 100.0).floor();
-                        let min = v - deg * 100.0;
-                        let result = deg + min / 60.0;
-                        clerk::debug!(
-                            "NmeaCoord: positive sign, deg={}, min={}, result={}",
-                            deg,
-                            min,
-                            result
-                        );
-                        (Some(result), rest)
-                    }
-                    (Ok(v), "W" | "S") => {
-                        // Convert to negative decimal degrees.
-                        let deg = (v / 100.0).floor();
-                        let min = v - deg * 100.0;
-                        let result = -(deg + min / 60.0);
-                        clerk::debug!(
-                            "NmeaCoord: negative sign, deg={}, min={}, result={}",
-                            deg,
-                            min,
-                            result
-                        );
-                        (Some(result), rest)
-                    }
-                    _ => {
-                        // Log parse failure or invalid sign.
-                        clerk::info!(
-                            "NmeaCoord: failed to parse number or invalid sign: num='{}', sign='{}'",
-                            num,
-                            sign
-                        );
-                        (None, rest)
-                    }
-                }
+
+        let (num_str, rest1) = UNTIL_COMMA_DISCARD.apply(input);
+        let (sign_str, rest2) = UNTIL_COMMA_DISCARD.apply(rest1);
+
+        match (num_str.and_then(|s| s.parse::<f64>().ok()), sign_str) {
+            (Some(v), Some(sign @ ("N" | "E"))) => {
+                let result = Self::convert_to_decimal_degrees(v);
+                clerk::debug!(
+                    "NmeaCoord: positive sign '{}', deg={}, min={}, result={}",
+                    sign,
+                    (v / 100.0).floor(),
+                    v - (v / 100.0).floor() * 100.0,
+                    result
+                );
+                (Some(result), rest2)
+            }
+            (Some(v), Some(sign @ ("S" | "W"))) => {
+                let result = -Self::convert_to_decimal_degrees(v);
+                clerk::debug!(
+                    "NmeaCoord: negative sign '{}', deg={}, min={}, result={}",
+                    sign,
+                    (v / 100.0).floor(),
+                    v - (v / 100.0).floor() * 100.0,
+                    result
+                );
+                (Some(result), rest2)
+            }
+            (Some(_), Some(sign)) => {
+                clerk::info!("NmeaCoord: invalid sign '{}'", sign);
+                (None, rest2)
             }
             _ => {
-                // Log if the input does not contain two commas.
-                clerk::warn!("NmeaCoord: input does not contain two commas: '{}'", input);
-                (None, input)
+                clerk::warn!(
+                    "NmeaCoord: input does not contain two valid comma-separated parts: '{}'",
+                    input
+                );
+                (None, rest2)
             }
         }
     }
