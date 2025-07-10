@@ -1,7 +1,6 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use chrono::NaiveTime;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 

@@ -1,6 +1,5 @@
 use std::fmt::Debug;
 
-use chrono::NaiveTime;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 
 use crate::data::{INmeaData, SystemId, Talker};
