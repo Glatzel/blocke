@@ -1,6 +1,9 @@
 # APT
+echo "Update APT..."
 apt update
+echo "Upgrade APT..."
 apt upgrade
+
 echo "Cleaning APT cache..."
 apt-get clean
 apt-get autoclean
@@ -17,6 +20,16 @@ rm -rf /tmp/*
 rm -rf /var/tmp/*
 
 # Pixi
+echo "Attempting pixi self-update..."
+if pixi self-update; then
+    echo "pixi successfully updated."
+else
+    echo "pixi not found or update failed — installing fresh copy..."
+    curl -fsSL https://pixi.sh/install.sh | sh
+fi
+
+echo "copy pixi-global.toml to manifests..."
+mkdir -p ~/.pixi/manifests
+cp ~/config/pixi-global.toml ~/.pixi/manifests/
+
 pixi global update
-echo "Cleaning Pixi cache..."
-pixi clean cache -y
