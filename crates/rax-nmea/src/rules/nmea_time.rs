@@ -23,9 +23,12 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
         clerk::trace!("NmeaUtc rule: input='{}'", input);
 
         let (res, rest) = UNTIL_COMMA_DISCARD.apply(input);
-        let Some(res) = res else {
-            clerk::info!("NmeaUtc: got empty string.");
-            return (None, input);
+        let res = match res {
+            Some("") | None => {
+                clerk::info!("NmeaTime: got empty string.");
+                return (None, input);
+            }
+            Some(res) => res,
         };
 
         let nanos = match res.get(7..) {
@@ -118,7 +121,7 @@ mod tests {
         init_log_with_level(LevelFilter::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("235959,rest");
-        let dt = dt.expect("Should parse valid UTC time");
+        let dt = dt.expect("Should parse valid time");
         assert_eq!(dt.hour(), 23);
         assert_eq!(dt.minute(), 59);
         assert_eq!(dt.second(), 59);

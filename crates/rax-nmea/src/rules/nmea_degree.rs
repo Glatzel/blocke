@@ -27,6 +27,10 @@ impl<'a> IStrFlowRule<'a> for NmeaDegree {
                 clerk::info!("NmeaDegree: unknown sign '{}'", _sign);
                 (None, rest2)
             }
+            (_, Some("")) => {
+                clerk::info!("NmeaDegree: Null degree: `{}`", input);
+                (None, rest2)
+            }
             _ => {
                 clerk::warn!("NmeaDegree: failed to parse input '{}'", input);
                 (None, rest2)
