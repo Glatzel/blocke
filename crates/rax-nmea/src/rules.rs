@@ -1,7 +1,7 @@
 mod nmea_coord;
 mod nmea_date;
 mod nmea_degree;
-mod nmea_utc;
+mod nmea_time;
 mod nmea_validate;
 use rax::str_parser::filters::CharSetFilter;
 use rax::str_parser::rules::{Char, UntilChar, UntilMode, UntilOneInCharSet};
@@ -9,7 +9,7 @@ use rax::str_parser::rules::{Char, UntilChar, UntilMode, UntilOneInCharSet};
 use crate::rules::nmea_coord::NmeaCoord;
 use crate::rules::nmea_date::NmeaDate;
 use crate::rules::nmea_degree::NmeaDegree;
-use crate::rules::nmea_utc::NmeaUtc;
+use crate::rules::nmea_time::NmeaTime;
 use crate::rules::nmea_validate::NmeaValidate;
 
 pub const CHAR_COMMA: Char<','> = Char;
@@ -26,7 +26,7 @@ pub const UNTIL_NEW_LINE_DISCARD: UntilChar<'\n'> = UntilChar {
 
 pub const NMEA_COORD: NmeaCoord = NmeaCoord();
 pub const NMEA_DATE: NmeaDate = NmeaDate();
-pub const NMEA_UTC: NmeaUtc = NmeaUtc();
+pub const NMEA_TIME: NmeaTime = NmeaTime();
 pub const NMEA_VALIDATE: NmeaValidate = NmeaValidate();
 pub const NMEA_DEGREE: NmeaDegree = NmeaDegree();
 

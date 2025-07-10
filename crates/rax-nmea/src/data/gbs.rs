@@ -15,7 +15,7 @@ readonly_struct!(
    {talker: Talker},
 
    {
-       time:  Option<chrono::DateTime<chrono::Utc>>,
+       time:  Option<chrono::NaiveTime>,
        "UTC time to which this RAIM sentence belongs. See section UTC representation in the integration manual for details."
    },
    {
@@ -56,7 +56,7 @@ readonly_struct!(
 
 impl INmeaData for Gbs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
-        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_TIME);
         let err_lat = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let err_lon = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         let err_alt = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();

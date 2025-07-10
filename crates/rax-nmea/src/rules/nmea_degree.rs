@@ -18,23 +18,18 @@ impl<'a> IStrFlowRule<'a> for NmeaDegree {
     fn apply(&self, input: &'a str) -> (std::option::Option<f64>, &'a str) {
         // Log the input at trace level.
         clerk::trace!("NmeaDegree rule: input='{}'", input);
-        let (deg, rest) = UNTIL_COMMA_DISCARD.apply(input);
-        let (sign, rest) = UNTIL_COMMA_DISCARD.apply(rest);
-        match (deg, sign) {
-            (Some(deg), Some(sign)) => {
-                clerk::debug!("NmeaDegree: parsed num='{}', sign='{}'", deg, sign);
-                match (deg.parse::<f64>(), sign) {
-                    (Ok(v), "E" | "N") => (Some(v), rest),
-                    (Ok(v), "W" | "S") => (Some(-v), rest),
-                    _ => {
-                        clerk::info!("NmeaDegree: failed to parse coordinate '{:?}'", (deg, sign));
-                        (None, rest)
-                    }
-                }
+        let (deg_str, rest1) = UNTIL_COMMA_DISCARD.apply(input);
+        let (sign_str, rest2) = UNTIL_COMMA_DISCARD.apply(rest1);
+        match (deg_str.and_then(|d| d.parse::<f64>().ok()), sign_str) {
+            (Some(val), Some("E" | "N")) => (Some(val), rest2),
+            (Some(val), Some("W" | "S")) => (Some(-val), rest2),
+            (Some(_), Some(_sign)) => {
+                clerk::info!("NmeaDegree: unknown sign '{}'", _sign);
+                (None, rest2)
             }
-            (_, _) => {
-                clerk::warn!("NmeaDegree: no second comma found in input '{}'", input);
-                (None, input)
+            _ => {
+                clerk::warn!("NmeaDegree: failed to parse input '{}'", input);
+                (None, rest2)
             }
         }
     }
@@ -82,7 +77,7 @@ mod test {
         let input = "12345.6789,Nother_data";
         let (result, rest) = rule.apply(input);
         assert!(result.is_none());
-        assert_eq!(rest, input);
+        assert_eq!(rest, "Nother_data");
     }
     #[test]
     fn test_nmea_degree_null() {
