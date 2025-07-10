@@ -10,10 +10,7 @@ where
     let mut ctx = StrParserContext::new();
     ctx.init(sentence.to_string());
     c.bench_function(name, move |b| {
-        b.iter(|| {
-            ctx.reset();
-            ctor(black_box(&mut ctx), black_box(Talker::GN)).unwrap();
-        })
+        b.iter(|| ctor(black_box(&mut ctx), black_box(Talker::GN)).unwrap())
     });
 }
 
