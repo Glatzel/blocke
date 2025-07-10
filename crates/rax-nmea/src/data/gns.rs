@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
+use chrono::NaiveTime;
 use rax::str_parser::{ParseOptExt, StrParserContext};
 use serde::{Deserialize, Serialize};
 
@@ -33,7 +34,7 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        time:Option<chrono::DateTime<chrono::Utc>>,
+        time:Option<chrono::NaiveTime>,
         "UTC time of the position fix"
     },
     {
@@ -85,7 +86,7 @@ impl INmeaData for Gns {
         ctx.global(&NMEA_VALIDATE)?;
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_TIME);
         clerk::debug!("utc_time: {:?}", time);
 
         clerk::debug!("Parsing lat...");

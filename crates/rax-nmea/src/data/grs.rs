@@ -29,7 +29,7 @@ readonly_struct!(
     {talker: Talker},
 
     {
-        time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::NaiveTime>,
         "UTC time of the position fix"
     },
     {
@@ -53,7 +53,7 @@ impl INmeaData for Grs {
     fn new(ctx: &mut StrParserContext, talker: Talker) -> miette::Result<Self> {
         ctx.global(&NMEA_VALIDATE)?;
 
-        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_UTC);
+        let time = ctx.skip_strict(&UNTIL_COMMA_DISCARD)?.take(&NMEA_TIME);
 
         let mode = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();
         clerk::debug!(

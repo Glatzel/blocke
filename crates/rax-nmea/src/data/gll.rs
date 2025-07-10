@@ -19,7 +19,7 @@ readonly_struct!(
         "Longitude, dddmm.mmmm, where ddd is degrees and mm.mmmm is minutes. Positive values indicate East, negative values indicate West."
     },
     {
-        time: Option<chrono::DateTime<chrono::Utc>>,
+        time: Option<chrono::NaiveTime>,
         "UTC time of the position fix"
     },
     {
@@ -46,7 +46,7 @@ impl INmeaData for Gll {
         clerk::debug!("lon: {:?}", lon);
 
         clerk::debug!("Parsing utc_time...");
-        let time = ctx.take(&NMEA_UTC);
+        let time = ctx.take(&NMEA_TIME);
         clerk::debug!("utc_time: {:?}", time);
 
         let status = ctx.take(&UNTIL_COMMA_DISCARD).parse_opt();

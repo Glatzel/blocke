@@ -7,19 +7,19 @@ use crate::UNTIL_COMMA_DISCARD;
 /// Converts the time to a `DateTime<Utc>` using today's date.
 /// Returns a tuple of (DateTime<Utc>, rest_of_input) if successful, otherwise
 /// None.
-pub struct NmeaUtc();
+pub struct NmeaTime();
 
-impl IRule for NmeaUtc {
+impl IRule for NmeaTime {
     fn name(&self) -> &str { "NmeaUtc" }
 }
 
-impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaUtc {
-    type Output = DateTime<Utc>;
+impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
+    type Output = NaiveTime;
     /// Applies the NmeaUtc rule to the input string.
     /// Parses the UTC time, converts to `DateTime<Utc>` using today's date, and
     /// returns the result and the rest of the string. Logs each step for
     /// debugging.
-    fn apply(&self, input: &'a str) -> (std::option::Option<DateTime<Utc>>, &'a str) {
+    fn apply(&self, input: &'a str) -> (std::option::Option<NaiveTime>, &'a str) {
         clerk::trace!("NmeaUtc rule: input='{}'", input);
 
         let (res, rest) = UNTIL_COMMA_DISCARD.apply(input);
@@ -61,7 +61,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaUtc {
                         return (None, rest);
                     }
                 };
-                let sec = match main.get(4..6).and_then(|s| s.parse::<u32>().ok()) {
+                let sec = match main.get(4..).and_then(|s| s.parse::<u32>().ok()) {
                     Some(s) => s,
                     None => {
                         clerk::warn!(
@@ -98,26 +98,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaUtc {
                     }
                 };
 
-                // Use today's date for the DateTime.
-                let today = Utc::now().date_naive();
-                let dt = match NaiveDate::from_ymd_opt(today.year(), today.month(), today.day()) {
-                    Some(date) => {
-                        let dt = date.and_time(time);
-                        clerk::debug!("NmeaUtc: constructed DateTime<Utc>: {}", dt);
-                        dt
-                    }
-                    None => {
-                        clerk::warn!(
-                            "NmeaUtc: invalid date: y={}, m={}, d={}",
-                            today.year(),
-                            today.month(),
-                            today.day()
-                        );
-                        return (None, rest);
-                    }
-                };
-
-                (Some(dt.and_utc()), rest)
+                (Some(time), rest)
             }
             None => {
                 clerk::info!("NmeaUtc: got empty string.");
@@ -136,7 +117,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_valid() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let today = Utc::now().date_naive();
         let (dt, rest) = rule.apply("123456.789,foo,bar");
         let dt = dt.expect("Should parse valid UTC time");
@@ -144,13 +125,13 @@ mod tests {
         assert_eq!(dt.minute(), 34);
         assert_eq!(dt.second(), 56);
         assert_eq!(dt.nanosecond(), 789_000_000);
-        assert_eq!(dt.date_naive(), today);
+
         assert_eq!(rest, "foo,bar");
     }
 
     #[test]
     fn test_nmea_utc_no_fraction() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let today = Utc::now().date_naive();
         let (dt, rest) = rule.apply("235959,rest");
         let dt = dt.expect("Should parse valid UTC time");
@@ -158,13 +139,13 @@ mod tests {
         assert_eq!(dt.minute(), 59);
         assert_eq!(dt.second(), 59);
         assert_eq!(dt.nanosecond(), 0);
-        assert_eq!(dt.date_naive(), today);
+
         assert_eq!(rest, "rest");
     }
 
     #[test]
     fn test_nmea_utc_invalid_hour() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let (dt, rest) = rule.apply("xx3456,foo");
         assert!(dt.is_none());
         assert_eq!(rest, "foo");
@@ -172,7 +153,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_invalid_minute() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let (dt, rest) = rule.apply("12xx56,foo");
         assert!(dt.is_none());
         assert_eq!(rest, "foo");
@@ -180,7 +161,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_invalid_second() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let (dt, rest) = rule.apply("1234xx,foo");
         assert!(dt.is_none());
         assert_eq!(rest, "foo");
@@ -188,7 +169,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_empty() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let (dt, rest) = rule.apply(",foo");
         assert!(dt.is_none());
         assert_eq!(rest, "foo");
@@ -196,7 +177,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_no_comma() {
-        let rule = NmeaUtc();
+        let rule = NmeaTime();
         let (dt, rest) = rule.apply("123456");
         assert!(dt.is_none());
         assert_eq!(rest, "123456");
