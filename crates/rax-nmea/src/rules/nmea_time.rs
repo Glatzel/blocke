@@ -26,7 +26,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
         let res = match res {
             Some("") | None => {
                 clerk::info!("NmeaTime: got empty string.");
-                return (None, input);
+                return (None, rest);
             }
             Some(res) => res,
         };
