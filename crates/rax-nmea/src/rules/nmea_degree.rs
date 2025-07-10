@@ -23,8 +23,8 @@ impl<'a> IStrFlowRule<'a> for NmeaDegree {
         match (deg_str.and_then(|d| d.parse::<f64>().ok()), sign_str) {
             (Some(val), Some("E" | "N")) => (Some(val), rest2),
             (Some(val), Some("W" | "S")) => (Some(-val), rest2),
-            (Some(_), Some(sign)) => {
-                clerk::info!("NmeaDegree: unknown sign '{}'", sign);
+            (Some(_), Some(_sign)) => {
+                clerk::info!("NmeaDegree: unknown sign '{}'", _sign);
                 (None, rest2)
             }
             _ => {
