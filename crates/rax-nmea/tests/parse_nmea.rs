@@ -44,11 +44,11 @@ fn test_parse_nmea() -> miette::Result<()> {
                 }
                 Identifier::GRS => {
                     let ctx = ctx.init(sentence);
-                    let _ = Gbs::new(ctx, talker)?;
+                    let _ = Grs::new(ctx, talker)?;
                 }
                 Identifier::GSA => {
                     let ctx = ctx.init(sentence);
-                    let _ = Grs::new(ctx, talker)?;
+                    let _ = Gsa::new(ctx, talker)?;
                 }
                 Identifier::GST => {
                     let ctx = ctx.init(sentence);

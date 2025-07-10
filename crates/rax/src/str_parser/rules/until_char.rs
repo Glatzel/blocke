@@ -103,7 +103,17 @@ mod tests {
         assert_eq!(prefix, Some("abc"));
         assert_eq!(rest, ";def");
     }
-
+    #[test]
+    fn test_until_first() {
+        init_log_with_level(LevelFilter::TRACE);
+        let rule = UntilChar::<';'> {
+            mode: super::UntilMode::Discard,
+        };
+        let input = ";abcdef";
+        let (prefix, rest) = rule.apply(input);
+        assert_eq!(prefix, Some(""));
+        assert_eq!(rest, "abcdef");
+    }
     #[test]
     fn test_until_no_delimiter() {
         init_log_with_level(LevelFilter::TRACE);

@@ -56,11 +56,12 @@ impl<'a> IStrFlowRule<'a> for NmeaCoord {
                 clerk::info!("NmeaCoord: invalid sign '{}'", _sign);
                 (None, rest2)
             }
+            (_, Some("")) => {
+                clerk::info!("NmeaCoord: Null coord: '{}'", input);
+                (None, rest2)
+            }
             _ => {
-                clerk::warn!(
-                    "NmeaCoord: input does not contain two valid comma-separated parts: '{}'",
-                    input
-                );
+                clerk::warn!("NmeaCoord: Invalid input: '{}'", input);
                 (None, rest2)
             }
         }
