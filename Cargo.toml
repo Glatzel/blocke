@@ -12,7 +12,7 @@ rax-nmea = { path = "./crates/rax-nmea" }
 
 async-trait = { version = "0.1" }
 chrono = { version = "0.4.40", features = ["serde"] }
-clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.22" }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.23" }
 criterion = { package = "codspeed-criterion-compat", version = "2.10.1" }
 float-cmp = "0.10.0"
 miette = { version = "7.6.0", features = ["fancy"] }
