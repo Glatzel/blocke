@@ -1,7 +1,7 @@
 use chrono::NaiveTime;
 use rax::str_parser::IRule;
 
-use crate::UNTIL_COMMA_DISCARD;
+use super::UNTIL_COMMA_DISCARD;
 
 /// Rule to parse an NMEA UTC time string in the format "hhmmss.sss,...".
 /// Converts the time to a `DateTime<Utc>` using today's date.

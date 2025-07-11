@@ -1,6 +1,5 @@
 pub mod data;
-mod macros;
-mod rules;
-pub use rules::*;
 mod dispatcher;
+mod macros;
+pub mod rules;
 pub use dispatcher::*;

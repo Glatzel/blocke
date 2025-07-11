@@ -1,6 +1,6 @@
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use rax::str_parser::{IStrFlowRule, IStrGlobalRule};
-use rax_nmea::{NMEA_COORD, NMEA_DATE, NMEA_DEGREE, NMEA_TIME, NMEA_VALIDATE};
+use rax_nmea::rules::*;
 fn bench_rule<R: IStrFlowRule<'static>>(
     c: &mut Criterion,
     name: &str,
