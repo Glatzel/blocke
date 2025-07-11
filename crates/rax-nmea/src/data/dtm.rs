@@ -34,7 +34,8 @@ readonly_struct!(
     {
         datum: Option<DtmDatum>,
         "Local datum"
-    },  {
+    },
+    {
         sub_datum: Option<String>,
         "sub datum"
     },

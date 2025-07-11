@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
 use rax::str_parser::IRule;
 
-use crate::UNTIL_COMMA_DISCARD;
+use super::UNTIL_COMMA_DISCARD;
 
 pub struct NmeaDate();
 
@@ -54,7 +54,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaDate {
                             month,
                             day
                         );
-                        return (None,rest);
+                        return (None, rest);
                     }
                 };
                 (Some(dt), rest)
