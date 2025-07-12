@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "gnss-toolkit"
+name = "term-nmea"
 version.workspace = true
 
 [dependencies]
