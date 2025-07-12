@@ -4,6 +4,7 @@ name = "term-nmea"
 version.workspace = true
 
 [dependencies]
+crossterm = { workspace = true }
 miette = { workspace = true }
 rax = { workspace = true, features = ["async"] }
 rax-nmea = { workspace = true }
