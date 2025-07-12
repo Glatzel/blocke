@@ -11,6 +11,7 @@ edit = "*"
 jq = "*"
 p7zip = "*"
 wget = "*"
+yazi = "*"
 zstd = "*"
 
 [envs.base.exposed]
@@ -21,4 +22,5 @@ curl = "curl"
 edit = "edit"
 jq = "jq"
 wget = "wget"
+yazi = "yazi"
 zstd = "zstd"

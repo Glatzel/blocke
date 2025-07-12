@@ -33,3 +33,4 @@ mkdir -p ~/.pixi/manifests
 cp ~/config/pixi-global.toml ~/.pixi/manifests/
 
 pixi global update
+pixi clean cache -y
