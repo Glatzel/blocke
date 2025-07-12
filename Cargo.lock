@@ -380,6 +380,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
 
 [[package]]
+name = "gnss-toolkit"
+version = "0.0.26"
+dependencies = [
+ "miette",
+ "rax",
+ "rax-nmea",
+ "tokio",
+]
+
+[[package]]
 name = "half"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

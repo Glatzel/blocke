@@ -1,0 +1,10 @@
+[package]
+edition.workspace = true
+name = "gnss-toolkit"
+version.workspace = true
+
+[dependencies]
+miette = { workspace = true }
+rax = { workspace = true, features = ["async"] }
+rax-nmea = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
