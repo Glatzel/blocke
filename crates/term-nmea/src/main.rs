@@ -1,13 +1,12 @@
 use std::io::stdout;
 use std::time::Duration;
 
-use app::{App, Tab};
+use app::App;
 use crossterm::execute;
 use crossterm::terminal::{enable_raw_mode, *};
 use miette::IntoDiagnostic;
 use ratatui::Terminal;
 use ratatui::backend::CrosstermBackend;
-use serial::start_serial_reader;
 use tokio::sync::mpsc;
 use tokio::task;
 
@@ -46,7 +45,7 @@ async fn main() -> miette::Result<()> {
                     if app.handle_key(key).await { break; }
                 }
             }
-            Some(data) = rx.recv() => { /* … */ }
+            Some(_data) = rx.recv() => { /* … */ }
         }
     }
 
