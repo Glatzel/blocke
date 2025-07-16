@@ -11,9 +11,9 @@ pub struct App {
 }
 
 impl App {
-    pub  fn new() -> Self { Self { tab: Tab::Info } }
+    pub fn new() -> Self { Self { tab: Tab::Info } }
 
-    pub  fn handle_key(&mut self, key: KeyEvent) -> bool {
+    pub fn handle_key(&mut self, key: KeyEvent) -> bool {
         match key.code {
             KeyCode::Esc => return true,
             KeyCode::Right => self.next_tab(),
@@ -23,7 +23,7 @@ impl App {
         false
     }
 
-     fn next_tab(&mut self) {
+    fn next_tab(&mut self) {
         self.tab = match self.tab {
             Tab::Info => Tab::Nmea,
             Tab::Nmea => Tab::Settings,
@@ -31,7 +31,7 @@ impl App {
         }
     }
 
-     fn prev_tab(&mut self) {
+    fn prev_tab(&mut self) {
         self.tab = match self.tab {
             Tab::Info => Tab::Settings,
             Tab::Nmea => Tab::Info,
