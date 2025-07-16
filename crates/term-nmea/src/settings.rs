@@ -5,11 +5,11 @@ use miette::IntoDiagnostic;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Config {
+pub struct Settings {
     pub port: String,
     pub baud_rate: u32,
 }
-impl Default for Config {
+impl Default for Settings {
     fn default() -> Self {
         Self {
             port: "COM1".into(), // pick sensible defaults for your platform
@@ -17,7 +17,7 @@ impl Default for Config {
         }
     }
 }
-impl Config {
+impl Settings {
     /// Initialise the config: try to read `term‑nmea.toml` located
     /// in the same directory as the executable.  
     /// Falls back to `Config::default()` if the file is missing

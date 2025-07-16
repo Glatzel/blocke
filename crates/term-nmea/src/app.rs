@@ -11,7 +11,7 @@ pub struct App {
 }
 
 impl App {
-    pub async fn new() -> Self { Self { tab: Tab::Nmea } }
+    pub async fn new() -> Self { Self { tab: Tab::Info } }
 
     pub async fn handle_key(&mut self, key: KeyEvent) -> bool {
         match key.code {

@@ -11,11 +11,11 @@ use serial::start_serial_reader;
 use tokio::sync::mpsc;
 use tokio::task;
 
-use crate::config::Config;
+use crate::settings::Settings;
 mod app;
-mod config;
 mod event;
 mod serial;
+mod settings;
 mod ui;
 
 #[tokio::main]
@@ -26,7 +26,7 @@ async fn main() -> miette::Result<()> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend).into_diagnostic()?;
 
-    let config = Config::init()?;
+    let config = Settings::init()?;
 
     let (tx, mut rx) = mpsc::channel(100);
     let mut app = App::new().await;
