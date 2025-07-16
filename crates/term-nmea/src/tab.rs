@@ -1,6 +1,5 @@
 use crossterm::event::KeyCode;
 use ratatui::Frame;
-use ratatui::widgets::Widget;
 
 pub use crate::tab::info::TabInfo;
 pub use crate::tab::nmea::TabNmea;

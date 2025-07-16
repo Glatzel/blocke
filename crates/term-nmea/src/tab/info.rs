@@ -1,4 +1,4 @@
-use ratatui::widgets::{Block, Paragraph, Widget};
+use ratatui::widgets::{Block, Paragraph};
 
 pub struct TabInfo {}
 impl Default for TabInfo {

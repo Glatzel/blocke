@@ -1,5 +1,5 @@
 use crossterm::event::{KeyCode, KeyEvent};
-use ratatui::widgets::Widget;
+
 
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
