@@ -19,9 +19,9 @@ impl Default for Settings {
 }
 impl Settings {
     /// Initialise the config: try to read `term‑nmea.toml` located
-    /// in the same directory as the executable.  
+    /// in the same directory as the executable.
     /// Falls back to `Config::default()` if the file is missing
-    /// or malformed.  
+    /// or malformed.
     pub fn init() -> miette::Result<Self> {
         // Where is the executable?
         let path = match std::env::current_exe().map(|exe| exe.with_file_name("term-nmea.toml")) {
