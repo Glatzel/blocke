@@ -19,7 +19,7 @@ impl App {
         let settings = Settings::init()?;
         Ok(Self {
             raw_nmea: VecDeque::with_capacity(settings.capacity),
-            settings: settings,
+            settings,
             tab: Tab::Info,
             tab_info: TabInfo::default(),
             tab_nmea: TabNmea::default(),

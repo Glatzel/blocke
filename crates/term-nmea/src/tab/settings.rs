@@ -3,7 +3,6 @@ use std::collections::VecDeque;
 use crossterm::event::KeyEvent;
 use ratatui::widgets::{Block, Paragraph};
 
-
 #[derive(Default)]
 pub struct TabSettings {}
 impl super::ITab for TabSettings {
