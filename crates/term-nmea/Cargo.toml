@@ -4,8 +4,13 @@ name = "term-nmea"
 version.workspace = true
 
 [dependencies]
+clerk = { workspace = true, features = ["log"] }
 crossterm = { workspace = true }
 miette = { workspace = true }
+ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
 rax-nmea = { workspace = true }
-tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+serde = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "sync"] }
+tokio-serial = { workspace = true }
+toml = { workspace = true }
