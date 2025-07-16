@@ -20,7 +20,7 @@ tracing-subscriber = { workspace = true }
 
 [features]
 log = ["clerk/log"]
-async = ["futures"]
+async = ["futures","rax/async"]
 
 [[bench]]
 harness = false

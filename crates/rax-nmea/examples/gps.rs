@@ -8,7 +8,7 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::*;
 fn main() -> miette::Result<()> {
     clerk::init_log_with_level(LevelFilter::WARN);
-    let path = "COM3";
+    let path = "COM5";
     let port = serialport::new(path, 9600)
         .timeout(Duration::from_millis(3000))
         .open()
