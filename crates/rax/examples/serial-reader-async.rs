@@ -1,22 +1,19 @@
-use std::io::BufReader;
-use std::time::Duration;
-
 use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
-use rax::io::IRaxReader;
+use rax::io::{AsyncIRaxReader, AsyncRaxReader};
+use tokio::io::BufReader;
+use tokio_serial::SerialPortBuilderExt;
 #[tokio::main]
 async fn main() -> miette::Result<()> {
-    clerk::init_log_with_level(LevelFilter::TRACE);
-    let path = "COM4";
-    let port = serialport::new(path, 9600)
-        .timeout(Duration::from_millis(3000))
-        .open()
+    clerk::init_log_with_level(LevelFilter::WARN);
+    let port = "COM5";
+    let serial = tokio_serial::new(port, 9600)
+        .open_native_async()
         .into_diagnostic()?;
-    let mut reader = rax::io::RaxReader::new(BufReader::new(port));
-    loop {
-        let message = reader.read_line()?;
-        if let Some(m) = message {
-            println!("{m}")
-        }
+    let mut reader = AsyncRaxReader::new(BufReader::new(serial));
+
+    while let Some(sentence) = reader.read_line().await? {
+        println!("{sentence}")
     }
+    Ok(())
 }

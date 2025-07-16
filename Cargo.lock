@@ -1194,6 +1194,8 @@ dependencies = [
  "rax",
  "serde",
  "serialport",
+ "tokio",
+ "tokio-serial",
  "tracing",
  "tracing-subscriber",
 ]
