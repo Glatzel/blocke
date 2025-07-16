@@ -39,6 +39,5 @@ impl super::ITab for TabInfo {
             }
         }
     }
-
     fn hint(&mut self) -> &'static [&'static str] { &[] }
 }

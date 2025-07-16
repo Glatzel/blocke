@@ -97,29 +97,29 @@ impl FromStr for Identifier {
         if sentence.len() < 6 {
             miette::bail!("Invalid sentence: {}", sentence);
         }
-        let out = match &sentence[3..6] {
-            "DHV" => Self::DHV,
-            "DTM" => Self::DTM,
-            "GBQ" => Self::GBQ,
-            "GBS" => Self::GBS,
-            "GGA" => Self::GGA,
-            "GLL" => Self::GLL,
-            "GLQ" => Self::GLQ,
-            "GNQ" => Self::GNQ,
-            "GNS" => Self::GNS,
-            "GPQ" => Self::GPQ,
-            "GRS" => Self::GRS,
-            "GSA" => Self::GSA,
-            "GST" => Self::GST,
-            "GSV" => Self::GSV,
-            "RMC" => Self::RMC,
-            "THS" => Self::THS,
-            "TXT" => Self::TXT,
-            "VLW" => Self::VLW,
-            "VTG" => Self::VTG,
-            "ZDA" => Self::ZDA,
+        let out = match &sentence.get(3..6) {
+            Some("DHV") => Self::DHV,
+            Some("DTM") => Self::DTM,
+            Some("GBQ") => Self::GBQ,
+            Some("GBS") => Self::GBS,
+            Some("GGA") => Self::GGA,
+            Some("GLL") => Self::GLL,
+            Some("GLQ") => Self::GLQ,
+            Some("GNQ") => Self::GNQ,
+            Some("GNS") => Self::GNS,
+            Some("GPQ") => Self::GPQ,
+            Some("GRS") => Self::GRS,
+            Some("GSA") => Self::GSA,
+            Some("GST") => Self::GST,
+            Some("GSV") => Self::GSV,
+            Some("RMC") => Self::RMC,
+            Some("THS") => Self::THS,
+            Some("TXT") => Self::TXT,
+            Some("VLW") => Self::VLW,
+            Some("VTG") => Self::VTG,
+            Some("ZDA") => Self::ZDA,
 
-            s => miette::bail!("Unknown identifier: {}", s),
+            _ => miette::bail!("Unknown identifier: {}", sentence),
         };
         Ok(out)
     }
@@ -171,14 +171,14 @@ impl FromStr for Talker {
     type Err = miette::Report;
 
     fn from_str(sentence: &str) -> miette::Result<Self> {
-        let out = match &sentence[1..3] {
-            "BD" => Self::BD,
-            "GA" => Self::GA,
-            "GL" => Self::GL,
-            "GN" => Self::GN,
-            "GP" => Self::GP,
-            "PQ" => Self::PQ,
-            _ => miette::bail!("Unknown talker: {}", &sentence[1..3]),
+        let out = match &sentence.get(1..3) {
+            Some("BD") => Self::BD,
+            Some("GA") => Self::GA,
+            Some("GL") => Self::GL,
+            Some("GN") => Self::GN,
+            Some("GP") => Self::GP,
+            Some("PQ") => Self::PQ,
+            _ => miette::bail!("Unknown talker: {}", sentence),
         };
         Ok(out)
     }
