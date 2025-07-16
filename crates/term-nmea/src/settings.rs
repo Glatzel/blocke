@@ -46,7 +46,7 @@ impl Settings {
                 Ok(default)
             }
             Err(e) => {
-                clerk::warn!("⚠️  Failed to read config file: {e}. Using defaults.");
+                clerk::warn!("Failed to read config file: {e}. Using defaults.");
                 Ok(Self::default())
             }
         }

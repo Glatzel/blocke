@@ -5,7 +5,6 @@ use ratatui::text::Span;
 use ratatui::widgets::{Block, Borders, Paragraph, Tabs};
 
 use crate::app::App;
-use crate::tab::Tab;
 
 pub fn draw(f: &mut Frame, app: &mut App) {
     let chunks = Layout::default()

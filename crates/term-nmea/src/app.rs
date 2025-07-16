@@ -52,8 +52,8 @@ impl App {
     pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         match self.tab {
             Tab::Info => self.tab_info.draw(f, area),
-            Tab::Nmea => self.tab_info.draw(f, area),
-            Tab::Settings => self.tab_info.draw(f, area),
+            Tab::Nmea => self.tab_nmea.draw(f, area),
+            Tab::Settings => self.tab_settings.draw(f, area),
         }
     }
 }
