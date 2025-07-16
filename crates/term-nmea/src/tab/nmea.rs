@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crossterm::event::{KeyCode, KeyEvent, MouseEventKind};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEventKind};
 use ratatui::text::Line;
 use ratatui::widgets::{Paragraph, ScrollbarState};
 
@@ -14,6 +14,9 @@ pub struct TabNmea {
 }
 impl super::ITab for TabNmea {
     fn handle_key(&mut self, key: KeyEvent) {
+        if key.kind != KeyEventKind::Press {
+            return;
+        }
         match key.code {
             KeyCode::Down => {
                 self.vertical_scroll = self.vertical_scroll.saturating_add(1);

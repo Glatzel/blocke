@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crossterm::event::{KeyCode, KeyEvent, MouseEvent};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEvent};
 
 use crate::settings::Settings;
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
@@ -34,6 +34,7 @@ impl App {
                 _,
                 KeyEvent {
                     code: KeyCode::Right,
+                    kind: KeyEventKind::Press,
                     ..
                 },
             ) => self.next_tab(),
@@ -41,6 +42,7 @@ impl App {
                 _,
                 KeyEvent {
                     code: KeyCode::Left,
+                    kind: KeyEventKind::Press,
                     ..
                 },
             ) => self.prev_tab(),
@@ -48,7 +50,9 @@ impl App {
             (
                 _,
                 KeyEvent {
-                    code: KeyCode::Esc, ..
+                    code: KeyCode::Esc,
+                    kind: KeyEventKind::Press,
+                    ..
                 },
             ) => return true,
 
