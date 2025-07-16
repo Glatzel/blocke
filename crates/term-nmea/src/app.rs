@@ -36,6 +36,7 @@ impl App {
     }
 
     fn next_tab(&mut self) {
+    fn next_tab(&mut self) {
         self.tab = match self.tab {
             Tab::Info => Tab::Nmea,
             Tab::Nmea => Tab::Settings,
@@ -43,6 +44,7 @@ impl App {
         }
     }
 
+    fn prev_tab(&mut self) {
     fn prev_tab(&mut self) {
         self.tab = match self.tab {
             Tab::Info => Tab::Settings,
