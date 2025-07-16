@@ -5,6 +5,9 @@ $PSNativeCommandUseErrorActionPreference = $true
 $ROOT = git rev-parse --show-toplevel
 Set-Location $ROOT
 foreach ($f in Get-ChildItem "Cargo.lock" -Recurse) {
+    # skip target folder
+    if ($f -contains "target") { continue }
+
     Set-Location $f.Directory.ToString()
     Write-Output "Cargo fmt in: $pwd"
     if (Test-Path ./scripts/setup.ps1) {
