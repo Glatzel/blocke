@@ -9,6 +9,7 @@ clerk = { workspace = true }
 miette = { workspace = true }
 rax = { workspace = true }
 serde = { workspace = true }
+futures = { workspace = true ,optional = true}
 
 [dev-dependencies]
 criterion = { workspace = true }
@@ -19,6 +20,7 @@ tracing-subscriber = { workspace = true }
 
 [features]
 log = ["clerk/log"]
+async = ["futures"]
 
 [[bench]]
 harness = false

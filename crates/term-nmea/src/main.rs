@@ -55,8 +55,8 @@ async fn main() -> miette::Result<()> {
                     }
                 }
             }
-            Some(sentence) = rx.recv() => {
-                app.update(sentence)
+            Some((talker, identifier, sentence)) = rx.recv() => {
+                app.update(talker, identifier, sentence)
             }
         }
     }

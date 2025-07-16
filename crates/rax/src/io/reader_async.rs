@@ -8,7 +8,6 @@ pub trait AsyncIRaxReader {
     async fn read_line(&mut self) -> miette::Result<Option<String>>;
     async fn read_lines_by_count(&mut self, count: usize) -> miette::Result<Vec<String>>;
 }
-
 /// Buffered async reader implementing `AsyncIRaxReader`.
 pub struct AsyncRaxReader<R: AsyncBufRead + Unpin> {
     inner: R,

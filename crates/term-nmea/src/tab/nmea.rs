@@ -3,6 +3,7 @@ use std::collections::VecDeque;
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEventKind};
 use ratatui::text::Line;
 use ratatui::widgets::{Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState};
+use rax_nmea::data::{Identifier, Talker};
 
 pub struct TabNmea {
     pub lock_to_bottom: bool,
@@ -51,7 +52,7 @@ impl super::ITab for TabNmea {
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
-        raw_nmea: &VecDeque<String>,
+        raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
         let count = raw_nmea.len();
 
@@ -68,7 +69,7 @@ impl super::ITab for TabNmea {
                 .iter()
                 .skip(self.vertical_scroll)
                 .take(self.vertical_scroll + visible_lines)
-                .map(|f| Line::from(f.as_str()))
+                .map(|f| Line::from(f.2.as_str()))
                 .collect::<Vec<Line>>(),
         );
 

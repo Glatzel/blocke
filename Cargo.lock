@@ -1176,6 +1176,7 @@ dependencies = [
  "miette",
  "serialport",
  "tokio",
+ "tokio-serial",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1188,6 +1189,7 @@ dependencies = [
  "clerk",
  "codspeed-criterion-compat",
  "float-cmp",
+ "futures",
  "miette",
  "rax",
  "serde",
@@ -1527,6 +1529,7 @@ version = "0.0.26"
 dependencies = [
  "clerk",
  "crossterm 0.29.0",
+ "futures",
  "miette",
  "ratatui",
  "rax",

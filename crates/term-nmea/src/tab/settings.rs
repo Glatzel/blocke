@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 
 use crossterm::event::KeyEvent;
 use ratatui::widgets::{Block, Paragraph};
+use rax_nmea::data::{Identifier, Talker};
 
 #[derive(Default)]
 pub struct TabSettings {}
@@ -12,7 +13,7 @@ impl super::ITab for TabSettings {
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
-        _raw_nmea: &VecDeque<String>,
+        _raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
         let _ = _raw_nmea;
         let p = Paragraph::new("Todo!").block(Block::default().title("Settings"));

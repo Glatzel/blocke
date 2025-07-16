@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 use ratatui::widgets::{Block, Paragraph};
+use rax_nmea::data::{Identifier, Talker};
 
 #[derive(Default)]
 pub struct TabInfo {}
@@ -11,7 +12,7 @@ impl super::ITab for TabInfo {
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
-        _raw_nmea: &VecDeque<String>,
+        _raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
         let p = Paragraph::new("Todo!").block(Block::default().title("Info"));
         f.render_widget(p, area);

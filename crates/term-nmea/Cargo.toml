@@ -9,8 +9,9 @@ crossterm = { workspace = true }
 miette = { workspace = true }
 ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
-rax-nmea = { workspace = true }
+rax-nmea = { workspace = true, features = ["async"] }
 serde = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "sync"] }
 tokio-serial = { workspace = true }
 toml = { workspace = true }
+futures = { workspace = true }
