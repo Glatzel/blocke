@@ -41,7 +41,7 @@ async fn main() -> miette::Result<()> {
         terminal.draw(|f| ui::draw(f, &mut app)).into_diagnostic()?;
 
         tokio::select! {
-            maybe_key = poll_key(Duration::from_millis(50)) => {
+            maybe_key = poll_key(Duration::from_millis(10)) => {
                 if let Ok(Some(key)) = maybe_key {
                     if app.handle_key(key) { break; }
                 }
