@@ -15,6 +15,7 @@ mod app;
 mod event;
 mod serial;
 mod settings;
+mod tab;
 mod ui;
 
 #[tokio::main]
