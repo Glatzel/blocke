@@ -2,6 +2,7 @@ use std::io::stdout;
 use std::time::Duration;
 
 use app::App;
+use crossterm::event::KeyEventKind;
 use crossterm::execute;
 use crossterm::terminal::{enable_raw_mode, *};
 use miette::IntoDiagnostic;
@@ -41,12 +42,12 @@ async fn main() -> miette::Result<()> {
         terminal.draw(|f| ui::draw(f, &mut app)).into_diagnostic()?;
 
         tokio::select! {
-            maybe_key = poll_key(Duration::from_millis(10)) => {
+            maybe_key = poll_key(Duration::from_millis(50)) => {
                 if let Ok(Some(key)) = maybe_key {
                     if app.handle_key(key) { break; }
                 }
             }
-            Some(_data) = rx.recv() => { /* … */ }
+            Some(_data) = rx.recv() => {  break; }
         }
     }
 
@@ -59,7 +60,9 @@ async fn poll_key(timeout: Duration) -> std::io::Result<Option<crossterm::event:
     task::spawn_blocking(move || {
         if crossterm::event::poll(timeout)? {
             if let crossterm::event::Event::Key(k) = crossterm::event::read()? {
-                return Ok(Some(k));
+                if k.kind == KeyEventKind::Press {
+                    return Ok(Some(k));
+                }
             }
         }
         Ok(None)
