@@ -28,7 +28,7 @@ async fn main() -> miette::Result<()> {
     let config = Settings::init()?;
 
     let (tx, mut rx) = mpsc::channel(100);
-    let mut app = App::new().await;
+    let mut app = App::new();
 
     tokio::spawn(serial::start_serial_reader(
         config.port.clone(),
@@ -42,7 +42,7 @@ async fn main() -> miette::Result<()> {
         tokio::select! {
             maybe_key = poll_key(Duration::from_millis(50)) => {
                 if let Ok(Some(key)) = maybe_key {
-                    if app.handle_key(key).await { break; }
+                    if app.handle_key(key) { break; }
                 }
             }
             Some(_data) = rx.recv() => { /* … */ }

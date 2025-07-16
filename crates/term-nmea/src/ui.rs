@@ -48,7 +48,6 @@ pub fn draw(f: &mut Frame, app: &App) {
 fn draw_info(f: &mut Frame, _app: &App, area: ratatui::layout::Rect) {
     let p = Paragraph::new("Info go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
         .block(Block::default().title("Info"));
-
     f.render_widget(p, area);
 }
 fn draw_nmea(f: &mut Frame, _app: &App, area: ratatui::layout::Rect) {
