@@ -15,22 +15,24 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             Constraint::Length(2), //Bottom
         ])
         .split(f.area());
-
-    let titles = ["Info", "NMEA", "Settings"]
+    
+    //header
+    let header = ["Info", "NMEA", "Settings"]
         .iter()
         .cloned()
         .map(Span::from)
         .collect::<Vec<_>>();
-
-    let tabs = Tabs::new(titles)
+    let tabs = Tabs::new(header)
         .select(app.tab.index())
         .block(Block::default().title("Term-NMEA").borders(Borders::ALL))
         .highlight_style(Style::default().add_modifier(Modifier::BOLD));
 
+    //content
     f.render_widget(tabs, chunks[0]);
-
     app.draw(f, chunks[1]);
-    let footer = Paragraph::new("`←/→` Tab | `esc` Quit")
+
+    //footer
+    let footer = Paragraph::new(app.hint())
         .block(Block::default().borders(Borders::TOP))
         .style(Style::default().fg(Color::Gray));
     f.render_widget(footer, chunks[2]);

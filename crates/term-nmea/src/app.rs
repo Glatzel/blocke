@@ -99,4 +99,18 @@ impl App {
         }
         self.raw_nmea.push_back(sentence);
     }
+    pub fn hint(&mut self) -> String {
+        const GLOBAL_HINT: [&'static str; 2] = ["`←/→` Tab", "`esc` Quit"];
+        let tab_hint = match self.tab {
+            Tab::Info => self.tab_info.hint(),
+            Tab::Nmea => self.tab_nmea.hint(),
+            Tab::Settings => self.tab_settings.hint(),
+        };
+        GLOBAL_HINT
+            .iter()
+            .chain(tab_hint.iter())
+            .map(|s| *s)
+            .collect::<Vec<&str>>()
+            .join(" | ")
+    }
 }

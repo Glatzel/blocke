@@ -2,15 +2,21 @@ use std::collections::VecDeque;
 
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEventKind};
 use ratatui::text::Line;
-use ratatui::widgets::{Paragraph, ScrollbarState};
+use ratatui::widgets::{Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState};
 
-#[derive(Default)]
 pub struct TabNmea {
-    pub raw_nmea: VecDeque<String>,
+    pub lock_to_bottom: bool,
     pub vertical_scroll_state: ScrollbarState,
-    pub horizontal_scroll_state: ScrollbarState,
     pub vertical_scroll: usize,
-    pub horizontal_scroll: usize,
+}
+impl Default for TabNmea {
+    fn default() -> Self {
+        Self {
+            lock_to_bottom: true,
+            vertical_scroll_state: Default::default(),
+            vertical_scroll: Default::default(),
+        }
+    }
 }
 impl super::ITab for TabNmea {
     fn handle_key(&mut self, key: KeyEvent) {
@@ -20,26 +26,12 @@ impl super::ITab for TabNmea {
         match key.code {
             KeyCode::Down => {
                 self.vertical_scroll = self.vertical_scroll.saturating_add(1);
-                self.vertical_scroll_state =
-                    self.vertical_scroll_state.position(self.vertical_scroll);
             }
             KeyCode::Up => {
+                self.lock_to_bottom = false;
                 self.vertical_scroll = self.vertical_scroll.saturating_sub(1);
-                self.vertical_scroll_state =
-                    self.vertical_scroll_state.position(self.vertical_scroll);
             }
-            KeyCode::Left => {
-                self.horizontal_scroll = self.horizontal_scroll.saturating_sub(1);
-                self.horizontal_scroll_state = self
-                    .horizontal_scroll_state
-                    .position(self.horizontal_scroll);
-            }
-            KeyCode::Right => {
-                self.horizontal_scroll = self.horizontal_scroll.saturating_add(1);
-                self.horizontal_scroll_state = self
-                    .horizontal_scroll_state
-                    .position(self.horizontal_scroll);
-            }
+            KeyCode::Char('b') => self.lock_to_bottom = true,
             _ => {}
         }
     }
@@ -47,25 +39,10 @@ impl super::ITab for TabNmea {
         match mouse.kind {
             MouseEventKind::ScrollDown => {
                 self.vertical_scroll = self.vertical_scroll.saturating_add(1);
-                self.vertical_scroll_state =
-                    self.vertical_scroll_state.position(self.vertical_scroll);
             }
             MouseEventKind::ScrollUp => {
+                self.lock_to_bottom = false;
                 self.vertical_scroll = self.vertical_scroll.saturating_sub(1);
-                self.vertical_scroll_state =
-                    self.vertical_scroll_state.position(self.vertical_scroll);
-            }
-            MouseEventKind::ScrollLeft => {
-                self.horizontal_scroll = self.horizontal_scroll.saturating_sub(1);
-                self.horizontal_scroll_state = self
-                    .horizontal_scroll_state
-                    .position(self.horizontal_scroll);
-            }
-            MouseEventKind::ScrollRight => {
-                self.horizontal_scroll = self.horizontal_scroll.saturating_add(1);
-                self.horizontal_scroll_state = self
-                    .horizontal_scroll_state
-                    .position(self.horizontal_scroll);
             }
             _ => {}
         }
@@ -74,15 +51,36 @@ impl super::ITab for TabNmea {
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
-        _raw_nmea: &VecDeque<String>,
+        raw_nmea: &VecDeque<String>,
     ) {
+        let count = raw_nmea.len();
+
+        let visible_lines = area.height as usize;
+        if self.vertical_scroll + visible_lines >= count || self.lock_to_bottom {
+            self.lock_to_bottom = true;
+            self.vertical_scroll = count.saturating_sub(visible_lines);
+        }
+        self.vertical_scroll_state = self.vertical_scroll_state.content_length(count);
+        self.vertical_scroll_state = self.vertical_scroll_state.position(self.vertical_scroll);
+
         let p = Paragraph::new(
-            self.raw_nmea
+            raw_nmea
                 .iter()
+                .skip(self.vertical_scroll)
+                .take(self.vertical_scroll + visible_lines)
                 .map(|f| Line::from(f.as_str()))
                 .collect::<Vec<Line>>(),
-        )
-        .scroll((self.vertical_scroll as u16, 0));
+        );
+
         f.render_widget(p, area);
+        f.render_stateful_widget(
+            Scrollbar::new(ScrollbarOrientation::VerticalRight)
+                .begin_symbol(Some("↑"))
+                .end_symbol(Some("↓")),
+            area,
+            &mut self.vertical_scroll_state,
+        );
     }
+
+    fn hint(&mut self) -> &'static [&'static str] { &["`b` Lock to Bottom", "`↑↓` Scroll"] }
 }

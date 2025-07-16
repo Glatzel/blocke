@@ -13,8 +13,9 @@ impl super::ITab for TabInfo {
         area: ratatui::layout::Rect,
         _raw_nmea: &VecDeque<String>,
     ) {
-        let p = Paragraph::new("Info go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
-            .block(Block::default().title("Info"));
+        let p = Paragraph::new("Todo!").block(Block::default().title("Info"));
         f.render_widget(p, area);
     }
+
+    fn hint(&mut self) -> &'static [&'static str] { &[] }
 }

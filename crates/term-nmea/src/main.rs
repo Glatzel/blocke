@@ -40,7 +40,7 @@ async fn main() -> miette::Result<()> {
         terminal.draw(|f| ui::draw(f, &mut app)).into_diagnostic()?;
 
         tokio::select! {
-           maybe_evt = poll_event(Duration::from_millis(50)) => {
+           maybe_evt = poll_event(Duration::from_millis(10)) => {
                 if let Ok(Some(evt)) = maybe_evt {
                     match evt {
                         crossterm::event::Event::Key(key) => {
@@ -55,7 +55,9 @@ async fn main() -> miette::Result<()> {
                     }
                 }
             }
-            Some(sentence) = rx.recv() => {app.update(sentence) }
+            Some(sentence) = rx.recv() => {
+                app.update(sentence)
+            }
         }
     }
 

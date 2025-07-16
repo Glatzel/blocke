@@ -15,8 +15,9 @@ impl super::ITab for TabSettings {
         _raw_nmea: &VecDeque<String>,
     ) {
         let _ = _raw_nmea;
-        let p = Paragraph::new("Settings go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
-            .block(Block::default().title("Settings"));
+        let p = Paragraph::new("Todo!").block(Block::default().title("Settings"));
         f.render_widget(p, area);
     }
+
+    fn hint(&mut self) -> &'static [&'static str] { &[] }
 }
