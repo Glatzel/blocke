@@ -6,7 +6,7 @@ impl Default for TabNmea {
     fn default() -> Self { Self {} }
 }
 impl super::ITab for TabNmea {
-    fn handle_key(&mut self, _key: KeyCode) { todo!() }
+    fn handle_key(&mut self, _key: KeyCode) {  }
 
     fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         let p = Paragraph::new("NMEA go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")

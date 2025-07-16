@@ -23,14 +23,8 @@ pub fn draw(f: &mut Frame, app: &mut App) {
         .map(Span::from)
         .collect::<Vec<_>>();
 
-    let tab_index = match app.tab {
-        Tab::Info => 0,
-        Tab::Nmea => 1,
-        Tab::Settings => 2,
-    };
-
     let tabs = Tabs::new(titles)
-        .select(tab_index)
+        .select(app.tab.index())
         .block(Block::default().title("Term-NMEA").borders(Borders::ALL))
         .highlight_style(Style::default().add_modifier(Modifier::BOLD));
 

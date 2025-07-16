@@ -19,3 +19,12 @@ pub enum Tab {
     Nmea,
     Settings,
 }
+impl Tab {
+    pub fn index(&self) -> usize {
+        match self {
+            Tab::Info => 0,
+            Tab::Nmea => 1,
+            Tab::Settings => 2,
+        }
+    }
+}

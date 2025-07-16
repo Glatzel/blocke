@@ -6,7 +6,7 @@ impl Default for TabSettings {
     fn default() -> Self { Self {} }
 }
 impl super::ITab for TabSettings {
-    fn handle_key(&mut self, _key: KeyCode) { todo!() }
+    fn handle_key(&mut self, _key: KeyCode) {}
 
     fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         let p = Paragraph::new("Settings go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
