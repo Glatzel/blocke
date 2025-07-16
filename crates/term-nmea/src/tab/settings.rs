@@ -1,10 +1,8 @@
 use crossterm::event::KeyCode;
 use ratatui::widgets::{Block, Paragraph};
 
+#[derive(Default)]
 pub struct TabSettings {}
-impl Default for TabSettings {
-    fn default() -> Self { Self {} }
-}
 impl super::ITab for TabSettings {
     fn handle_key(&mut self, _key: KeyCode) {}
 

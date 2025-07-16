@@ -53,7 +53,7 @@ impl Settings {
     }
     pub fn save_to(&self, path: &PathBuf) -> miette::Result<()> {
         let toml_str = toml::to_string_pretty(self)
-            .map_err(|e| io::Error::new(io::ErrorKind::Other, format!("TOML serialize error: {e}")))
+            .map_err(|e| io::Error::other(format!("TOML serialize error: {e}")))
             .into_diagnostic()?;
         fs::write(path, toml_str).into_diagnostic()
     }
