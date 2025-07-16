@@ -9,6 +9,10 @@ pub struct Dispatcher {
     buffer: HashMap<(Talker, Identifier), String>, // (total count, accumulated sentence)
 }
 
+impl Default for Dispatcher {
+    fn default() -> Self { Self::new() }
+}
+
 impl Dispatcher {
     /// Create a new dispatcher with the given reader.
     pub fn new() -> Self {
@@ -34,7 +38,7 @@ impl Dispatcher {
                 return None;
             }
         };
-        return Some((talker, identifier, sentence));
+        Some((talker, identifier, sentence))
     }
 
     /// Handle multi-line sentences (e.g., GSV, TXT).
@@ -132,19 +136,15 @@ impl Dispatcher {
                 | Identifier::THS
                 | Identifier::VLW
                 | Identifier::VTG
-                | Identifier::ZDA => return Some((talker, identifier, sentence)),
+                | Identifier::ZDA => Some((talker, identifier, sentence)),
 
                 // Multi-line sentences
-                Identifier::GSV | Identifier::TXT => {
-                    if let Some(result) = self.process_multilines(talker, identifier, sentence) {
-                        return Some(result);
-                    } else {
-                        return None;
-                    }
-                }
+                Identifier::GSV | Identifier::TXT => self
+                    .process_multilines(talker, identifier, sentence)
+                    .map(|result| result),
             }
         } else {
-            return None;
+            None
         }
     }
 }
