@@ -101,7 +101,7 @@ impl App {
         self.raw_nmea.push_back((talker, identifier, sentence));
     }
     pub fn hint(&mut self) -> String {
-        const GLOBAL_HINT: [&'static str; 2] = ["`←/→` Tab", "`esc` Quit"];
+        const GLOBAL_HINT: [&str; 2] = ["`←/→` Tab", "`esc` Quit"];
         let tab_hint = match self.tab {
             Tab::Info => self.tab_info.hint(),
             Tab::Nmea => self.tab_nmea.hint(),
@@ -110,7 +110,7 @@ impl App {
         GLOBAL_HINT
             .iter()
             .chain(tab_hint.iter())
-            .map(|s| *s)
+            .copied()
             .collect::<Vec<&str>>()
             .join(" | ")
     }
