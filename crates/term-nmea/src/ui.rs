@@ -15,7 +15,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             Constraint::Length(2), //Bottom
         ])
         .split(f.area());
-    
+
     //header
     let header = ["Info", "NMEA", "Settings"]
         .iter()
