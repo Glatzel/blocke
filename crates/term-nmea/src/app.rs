@@ -1,9 +1,9 @@
 use std::collections::VecDeque;
 
-use crossterm::event::{KeyCode, KeyEvent};
+use crossterm::event::{KeyCode, KeyEvent, MouseEvent};
 
 use crate::settings::Settings;
-use crate::tab::{ITab, NULL_CTX, Tab, TabInfo, TabNmea, TabSettings};
+use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
     pub raw_nmea: VecDeque<String>,
@@ -28,17 +28,42 @@ impl App {
     }
 
     pub fn handle_key(&mut self, key: KeyEvent) -> bool {
-        match (self.tab, key.code) {
+        match (self.tab, key) {
             //global key
-            (_, KeyCode::Right) => self.next_tab(),
-            (_, KeyCode::Left) => self.prev_tab(),
+            (
+                _,
+                KeyEvent {
+                    code: KeyCode::Right,
+                    ..
+                },
+            ) => self.next_tab(),
+            (
+                _,
+                KeyEvent {
+                    code: KeyCode::Left,
+                    ..
+                },
+            ) => self.prev_tab(),
 
-            (_, KeyCode::Esc) => return true,
+            (
+                _,
+                KeyEvent {
+                    code: KeyCode::Esc, ..
+                },
+            ) => return true,
 
             //tab key
             (Tab::Info, k) => self.tab_info.handle_key(k),
             (Tab::Nmea, k) => self.tab_nmea.handle_key(k),
             (Tab::Settings, k) => self.tab_settings.handle_key(k),
+        }
+        false
+    }
+    pub fn handle_mouse(&mut self, mouse: MouseEvent) -> bool {
+        match (self.tab, mouse) {
+            (Tab::Info, mouse) => self.tab_info.handle_mouse(mouse),
+            (Tab::Nmea, mouse) => self.tab_nmea.handle_mouse(mouse),
+            (Tab::Settings, mouse) => self.tab_settings.handle_mouse(mouse),
         }
         false
     }
@@ -59,12 +84,12 @@ impl App {
     }
     pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         match self.tab {
-            Tab::Info => self.tab_info.draw(f, area, &NULL_CTX),
+            Tab::Info => self.tab_info.draw(f, area, &self.raw_nmea),
             Tab::Nmea => self.tab_nmea.draw(f, area, &self.raw_nmea),
-            Tab::Settings => self.tab_settings.draw(f, area, &NULL_CTX),
+            Tab::Settings => self.tab_settings.draw(f, area, &self.raw_nmea),
         }
     }
-    pub fn push(&mut self, sentence: String) {
+    pub fn update(&mut self, sentence: String) {
         if self.raw_nmea.len() > self.settings.capacity {
             self.raw_nmea.pop_front();
         }

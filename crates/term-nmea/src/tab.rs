@@ -1,7 +1,8 @@
-use crossterm::event::KeyCode;
+use std::collections::VecDeque;
+
+use crossterm::event::{KeyEvent, MouseEvent};
 use ratatui::Frame;
 
-use crate::app::App;
 pub use crate::tab::info::TabInfo;
 pub use crate::tab::nmea::TabNmea;
 pub use crate::tab::settings::TabSettings;
@@ -9,11 +10,11 @@ pub use crate::tab::settings::TabSettings;
 mod info;
 mod nmea;
 mod settings;
-pub struct NullCtx;
-pub const NULL_CTX: NullCtx = NullCtx;
-pub trait ITab<T>: Default {
-    fn handle_key(&mut self, key: KeyCode);
-    fn draw(&mut self, f: &mut Frame, area: ratatui::layout::Rect, ctx: T);
+
+pub trait ITab: Default {
+    fn handle_key(&mut self, key: KeyEvent);
+    fn handle_mouse(&mut self, mouse: MouseEvent);
+    fn draw(&mut self, f: &mut Frame, area: ratatui::layout::Rect, raw_nmea: &VecDeque<String>);
 }
 #[derive(Clone, Debug, Copy)]
 pub enum Tab {
