@@ -6,11 +6,10 @@ version.workspace = true
 [dependencies]
 clerk = { workspace = true, features = ["log"] }
 crossterm = { workspace = true }
-futures = { workspace = true }
 miette = { workspace = true }
 ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
-rax-nmea = { workspace = true, features = ["async"] }
+rax-nmea = { workspace = true }
 serde = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "sync"] }
 tokio-serial = { workspace = true }

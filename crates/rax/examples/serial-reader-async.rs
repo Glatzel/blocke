@@ -5,7 +5,7 @@ use tokio::io::BufReader;
 use tokio_serial::SerialPortBuilderExt;
 #[tokio::main]
 async fn main() -> miette::Result<()> {
-    clerk::init_log_with_level(LevelFilter::WARN);
+    clerk::init_log_with_level(LevelFilter::TRACE);
     let port = "COM5";
     let serial = tokio_serial::new(port, 9600)
         .open_native_async()
