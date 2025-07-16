@@ -38,7 +38,7 @@ async fn main() -> miette::Result<()> {
     ));
 
     loop {
-        terminal.draw(|f| ui::draw(f, &app)).into_diagnostic()?;
+        terminal.draw(|f| ui::draw(f, &mut app)).into_diagnostic()?;
 
         tokio::select! {
             maybe_key = poll_key(Duration::from_millis(50)) => {

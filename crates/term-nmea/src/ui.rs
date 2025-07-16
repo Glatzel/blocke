@@ -7,8 +7,7 @@ use ratatui::widgets::{Block, Borders, Paragraph, Tabs};
 use crate::app::App;
 use crate::tab::Tab;
 
-
-pub fn draw(f: &mut Frame, app: &App) {
+pub fn draw(f: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -37,29 +36,9 @@ pub fn draw(f: &mut Frame, app: &App) {
 
     f.render_widget(tabs, chunks[0]);
 
-    match app.tab {
-        Tab::Info => draw_info(f, app, chunks[1]),
-        Tab::Nmea => draw_nmea(f, app, chunks[1]),
-        Tab::Settings => draw_settings(f, chunks[1]),
-    }
+    app.draw(f, chunks[1]);
     let footer = Paragraph::new("`←/→` Tab | `esc` Quit")
         .block(Block::default().borders(Borders::TOP))
         .style(Style::default().fg(Color::Gray));
     f.render_widget(footer, chunks[2]);
-}
-fn draw_info(f: &mut Frame, _app: &App, area: ratatui::layout::Rect) {
-    let p = Paragraph::new("Info go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
-        .block(Block::default().title("Info"));
-    f.render_widget(p, area);
-}
-fn draw_nmea(f: &mut Frame, _app: &App, area: ratatui::layout::Rect) {
-    let p = Paragraph::new("NMEA go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
-        .block(Block::default().title("NMEA"));
-    f.render_widget(p, area);
-}
-
-fn draw_settings(f: &mut Frame, area: ratatui::layout::Rect) {
-    let p = Paragraph::new("Settings go here.\nPress ← → to switch tabs.\nPress 'q' to quit.")
-        .block(Block::default().title("Settings"));
-    f.render_widget(p, area);
 }

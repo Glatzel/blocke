@@ -1,4 +1,5 @@
 use crossterm::event::{KeyCode, KeyEvent};
+use ratatui::widgets::Widget;
 
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
@@ -47,6 +48,13 @@ impl App {
             Tab::Info => Tab::Settings,
             Tab::Nmea => Tab::Info,
             Tab::Settings => Tab::Nmea,
+        }
+    }
+    pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
+        match self.tab {
+            Tab::Info => self.tab_info.draw(f, area),
+            Tab::Nmea => self.tab_info.draw(f, area),
+            Tab::Settings => self.tab_info.draw(f, area),
         }
     }
 }

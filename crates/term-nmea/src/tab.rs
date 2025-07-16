@@ -1,4 +1,5 @@
 use crossterm::event::KeyCode;
+use ratatui::Frame;
 use ratatui::widgets::Widget;
 
 pub use crate::tab::info::TabInfo;
@@ -9,8 +10,9 @@ mod info;
 mod nmea;
 mod settings;
 
-pub trait ITab: Widget {
+pub trait ITab {
     fn handle_key(&mut self, key: KeyCode);
+    fn draw(&mut self, f: &mut Frame, area: ratatui::layout::Rect);
 }
 #[derive(Clone, Debug, Copy)]
 pub enum Tab {
