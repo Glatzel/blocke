@@ -8,12 +8,14 @@ use serde::{Deserialize, Serialize};
 pub struct Settings {
     pub port: String,
     pub baud_rate: u32,
+    pub capacity: usize,
 }
 impl Default for Settings {
     fn default() -> Self {
         Self {
             port: "COM1".into(), // pick sensible defaults for your platform
             baud_rate: 9_600,
+            capacity: 1000,
         }
     }
 }

@@ -11,7 +11,6 @@ use ratatui::backend::CrosstermBackend;
 use tokio::sync::mpsc;
 use tokio::task;
 
-use crate::settings::Settings;
 mod app;
 mod event;
 mod serial;
@@ -27,14 +26,12 @@ async fn main() -> miette::Result<()> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend).into_diagnostic()?;
 
-    let config = Settings::init()?;
-
     let (tx, mut rx) = mpsc::channel(100);
-    let mut app = App::new();
+    let mut app = App::new()?;
 
     tokio::spawn(serial::start_serial_reader(
-        config.port.clone(),
-        config.baud_rate,
+        app.settings.port.clone(),
+        app.settings.baud_rate,
         tx,
     ));
 
@@ -47,7 +44,7 @@ async fn main() -> miette::Result<()> {
                     if app.handle_key(key) { break; }
                 }
             }
-            Some(_data) = rx.recv() => {  break; }
+            Some(sentence) = rx.recv() => {  app.push(sentence); }
         }
     }
 

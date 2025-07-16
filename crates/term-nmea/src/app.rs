@@ -1,8 +1,13 @@
+use std::collections::VecDeque;
+
 use crossterm::event::{KeyCode, KeyEvent};
 
+use crate::settings::Settings;
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
+    pub raw_nmea: VecDeque<String>,
+    pub settings: Settings,
     pub tab: Tab,
     pub tab_info: TabInfo,
     pub tab_nmea: TabNmea,
@@ -10,13 +15,16 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Self {
-        Self {
+    pub fn new() -> miette::Result<Self> {
+        let settings = Settings::init()?;
+        Ok(Self {
+            raw_nmea: VecDeque::with_capacity(settings.capacity),
+            settings: settings,
             tab: Tab::Info,
             tab_info: TabInfo::default(),
             tab_nmea: TabNmea::default(),
             tab_settings: TabSettings::default(),
-        }
+        })
     }
 
     pub fn handle_key(&mut self, key: KeyEvent) -> bool {
@@ -55,5 +63,11 @@ impl App {
             Tab::Nmea => self.tab_nmea.draw(f, area),
             Tab::Settings => self.tab_settings.draw(f, area),
         }
+    }
+    pub fn push(&mut self, sentence: String) {
+        if self.raw_nmea.len() > self.settings.capacity {
+            self.raw_nmea.pop_front();
+        }
+        self.raw_nmea.push_back(sentence);
     }
 }
