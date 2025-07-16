@@ -1,10 +1,8 @@
 use crossterm::event::KeyCode;
 use ratatui::widgets::{Block, Paragraph};
 
+#[derive(Default)]
 pub struct TabNmea {}
-impl Default for TabNmea {
-    fn default() -> Self { Self {} }
-}
 impl super::ITab for TabNmea {
     fn handle_key(&mut self, _key: KeyCode) { todo!() }
 

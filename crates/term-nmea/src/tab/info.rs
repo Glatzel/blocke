@@ -1,9 +1,7 @@
 use ratatui::widgets::{Block, Paragraph};
 
+#[derive(Default)]
 pub struct TabInfo {}
-impl Default for TabInfo {
-    fn default() -> Self { Self {} }
-}
 impl super::ITab for TabInfo {
     fn handle_key(&mut self, _key: crossterm::event::KeyCode) { todo!() }
 
