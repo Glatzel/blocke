@@ -7,7 +7,6 @@ use ratatui::widgets::{Block, Borders, Paragraph, Tabs};
 use crate::app::App;
 use crate::tab::Tab;
 
-
 pub fn draw(f: &mut Frame, app: &App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
