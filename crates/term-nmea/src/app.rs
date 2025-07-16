@@ -1,6 +1,5 @@
 use crossterm::event::{KeyCode, KeyEvent};
 
-
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
