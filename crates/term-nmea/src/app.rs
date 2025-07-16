@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use crossterm::event::{KeyCode, KeyEvent};
 
 use crate::settings::Settings;
-use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
+use crate::tab::{ITab, NULL_CTX, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
     pub raw_nmea: VecDeque<String>,
@@ -59,9 +59,9 @@ impl App {
     }
     pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         match self.tab {
-            Tab::Info => self.tab_info.draw(f, area),
-            Tab::Nmea => self.tab_nmea.draw(f, area),
-            Tab::Settings => self.tab_settings.draw(f, area),
+            Tab::Info => self.tab_info.draw(f, area, &NULL_CTX),
+            Tab::Nmea => self.tab_nmea.draw(f, area, &self.raw_nmea),
+            Tab::Settings => self.tab_settings.draw(f, area, &NULL_CTX),
         }
     }
     pub fn push(&mut self, sentence: String) {
