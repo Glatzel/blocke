@@ -3,7 +3,7 @@ use tokio::sync::mpsc::Sender;
 use tokio_serial::SerialPortBuilderExt;
 
 pub async fn start_serial_reader(
-    port: &str,
+    port: String,
     baud_rate: u32,
     tx: Sender<String>,
 ) -> miette::Result<()> {

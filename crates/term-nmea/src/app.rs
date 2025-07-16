@@ -1,8 +1,8 @@
 use crossterm::event::{KeyCode, KeyEvent};
 
 pub enum Tab {
-    Nmea,
     Info,
+    Nmea,
     Settings,
 }
 
@@ -25,17 +25,17 @@ impl App {
 
     async fn next_tab(&mut self) {
         self.tab = match self.tab {
-            Tab::Nmea => Tab::Info,
-            Tab::Info => Tab::Settings,
-            Tab::Settings => Tab::Nmea,
+            Tab::Info => Tab::Nmea,
+            Tab::Nmea => Tab::Settings,
+            Tab::Settings => Tab::Info,
         }
     }
 
     async fn prev_tab(&mut self) {
         self.tab = match self.tab {
-            Tab::Nmea => Tab::Settings,
-            Tab::Info => Tab::Nmea,
-            Tab::Settings => Tab::Info,
+            Tab::Info => Tab::Settings,
+            Tab::Nmea => Tab::Info,
+            Tab::Settings => Tab::Nmea,
         }
     }
 }
