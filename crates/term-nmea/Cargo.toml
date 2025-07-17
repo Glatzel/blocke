@@ -9,7 +9,7 @@ clap = { workspace = true }
 clap-verbosity-flag = { workspace = true }
 clerk = { workspace = true, features = ["log"] }
 crossterm = { workspace = true }
-miette = { workspace = true, features = ["fancy"] }
+miette = { workspace = true , features = ["fancy"]}
 once_cell = { workspace = true }
 ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
@@ -23,3 +23,4 @@ tracing-subscriber = { workspace = true }
 
 [dev-dependencies]
 async-trait = { workspace = true }
+tempfile = { workspace = true }
