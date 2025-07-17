@@ -139,9 +139,9 @@ impl Dispatcher {
                 | Identifier::ZDA => Some((talker, identifier, sentence)),
 
                 // Multi-line sentences
-                Identifier::GSV | Identifier::TXT => self
-                    .process_multilines(talker, identifier, sentence)
-                    .map(|result| result),
+                Identifier::GSV | Identifier::TXT => {
+                    self.process_multilines(talker, identifier, sentence)
+                }
             }
         } else {
             None

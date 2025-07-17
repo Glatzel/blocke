@@ -106,7 +106,7 @@ impl FromStr for Identifier {
             Some("GLL") => Self::GLL,
             Some("GLQ") => Self::GLQ,
             Some("GNQ") => Self::GNQ,
-            Some("GNS")=> Self::GNS,
+            Some("GNS") => Self::GNS,
             Some("GPQ") => Self::GPQ,
             Some("GRS") => Self::GRS,
             Some("GSA") => Self::GSA,
