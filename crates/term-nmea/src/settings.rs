@@ -119,7 +119,6 @@ impl Settings {
 #[cfg(test)]
 mod tests {
     use clap_verbosity_flag::Verbosity;
-    use serial_test::serial;
     use tempfile::tempdir;
 
     use super::*;
@@ -173,8 +172,6 @@ mod tests {
         assert_eq!(s.baud_rate, 115_200);
         assert_eq!(s.capacity, 2048);
     }
-
-    #[serial]
     #[test]
     fn test_malformed_config_fallbacks_to_default() {
         let temp_dir = tempdir().unwrap();
