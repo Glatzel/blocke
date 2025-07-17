@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::sync::OnceLock;
 
 use chrono::Local;
-use clap_verbosity_flag::Verbosity;
+use clap_verbosity_flag::{Verbosity, VerbosityFilter};
 use tracing_subscriber::filter::LevelFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::registry;
@@ -16,12 +16,12 @@ pub fn init(verbosity: &Verbosity) {
         // Determine log level
         let log_level = verbosity.filter();
         let tracing_level = match log_level {
-            clap_verbosity_flag::VerbosityFilter::Error => LevelFilter::ERROR,
-            clap_verbosity_flag::VerbosityFilter::Warn => LevelFilter::WARN,
-            clap_verbosity_flag::VerbosityFilter::Info => LevelFilter::INFO,
-            clap_verbosity_flag::VerbosityFilter::Debug => LevelFilter::DEBUG,
-            clap_verbosity_flag::VerbosityFilter::Trace => LevelFilter::TRACE,
-            clap_verbosity_flag::VerbosityFilter::Off => return,
+            VerbosityFilter::Error => LevelFilter::ERROR,
+            VerbosityFilter::Warn => LevelFilter::WARN,
+            VerbosityFilter::Info => LevelFilter::INFO,
+            VerbosityFilter::Debug => LevelFilter::DEBUG,
+            VerbosityFilter::Trace => LevelFilter::TRACE,
+            VerbosityFilter::Off => return,
         };
 
         // Generate log file path with datetime
