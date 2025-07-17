@@ -8,7 +8,7 @@ use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
     pub raw_nmea: VecDeque<(Talker, Identifier, String)>,
-    pub settings: Settings,
+
     pub tab: Tab,
     pub tab_info: TabInfo,
     pub tab_nmea: TabNmea,
@@ -17,10 +17,8 @@ pub struct App {
 
 impl App {
     pub fn new() -> miette::Result<Self> {
-        let settings = Settings::init()?;
         Ok(Self {
-            raw_nmea: VecDeque::with_capacity(settings.capacity),
-            settings,
+            raw_nmea: VecDeque::with_capacity(Settings::capacity()),
             tab: Tab::Info,
             tab_info: TabInfo::default(),
             tab_nmea: TabNmea::default(),
@@ -95,7 +93,7 @@ impl App {
         }
     }
     pub fn update(&mut self, talker: Talker, identifier: Identifier, sentence: String) {
-        if self.raw_nmea.len() > self.settings.capacity {
+        if self.raw_nmea.len() > Settings::capacity() {
             self.raw_nmea.pop_front();
         }
         self.raw_nmea.push_back((talker, identifier, sentence));

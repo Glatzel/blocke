@@ -25,7 +25,7 @@ async fn main() -> miette::Result<()> {
     let cli = cli::CliArgs::parse();
 
     // Load settings from TOML, overridden by CLI arguments
-    let settings = Settings::init(&cli)?;
+    Settings::init(&cli)?;
 
     // Enable raw mode and enter alternate screen for TUI
     enable_raw_mode().into_diagnostic()?;
@@ -43,8 +43,8 @@ async fn main() -> miette::Result<()> {
 
     // Spawn async task to read from serial port
     tokio::spawn(serial::start_serial_reader(
-        settings.port.clone(),
-        settings.baud_rate,
+        Settings::port(),
+        Settings::baud_rate(),
         tx,
     ));
 
@@ -87,7 +87,7 @@ async fn main() -> miette::Result<()> {
     terminal.show_cursor().into_diagnostic()?;
 
     // Save settings
-    settings.save_to(&Settings::path());
+    Settings::save();
     Ok(())
 }
 async fn poll_event(timeout: Duration) -> std::io::Result<Option<Event>> {
