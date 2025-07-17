@@ -5,7 +5,7 @@ param (
 Set-Location $PSScriptRoot/..
 
 # remove file
-ssh $User@$IP "rm -rf ~/bin ~/config ~/scripts"
+ssh $User@$IP "rm -rf ~/config ~/scripts"
 
 # copy file
 Write-Host "Copying files to $User@$IP`:~/"
