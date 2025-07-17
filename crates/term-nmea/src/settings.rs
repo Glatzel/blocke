@@ -100,7 +100,7 @@ impl Settings {
             .expect("RwLock poisoned")
     }
     /// Get a writer reference to the global Settings.
-    pub fn _writter() -> std::sync::RwLockWriteGuard<'static, Settings> {
+    pub fn _writer() -> std::sync::RwLockWriteGuard<'static, Settings> {
         SETTINGS
             .get()
             .expect("SETTINGS not initialized")
