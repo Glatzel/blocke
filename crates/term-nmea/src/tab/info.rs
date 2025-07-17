@@ -1,5 +1,4 @@
 use std::collections::VecDeque;
-use std::f64::NAN;
 
 use ratatui::widgets::{Block, Paragraph};
 use rax::str_parser::StrParserContext;
@@ -27,8 +26,8 @@ impl super::ITab for TabInfo {
                 Ok(gga) => {
                     let p = Paragraph::new(format!(
                         "Longitude: {}\nLatitude: {}",
-                        gga.lon().unwrap_or(NAN),
-                        gga.lat().unwrap_or(NAN)
+                        gga.lon().unwrap_or_default(),
+                        gga.lat().unwrap_or_default()
                     ));
                     f.render_widget(p, area);
                 }
