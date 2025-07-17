@@ -116,3 +116,89 @@ impl Settings {
 
     pub fn capacity() -> usize { Self::reader().capacity }
 }
+#[cfg(test)]
+mod tests {
+    use clap_verbosity_flag::Verbosity;
+    use serial_test::serial;
+    use tempfile::tempdir;
+
+    use super::*;
+    use crate::cli::CliArgs;
+
+    fn with_test_exe_path(path: &PathBuf) {
+        unsafe { std::env::set_var("CARGO_BIN_EXE_fake", path) };
+    }
+
+    #[serial] // prevent parallel test on global SETTINGS
+    #[test]
+    fn test_default_init_and_save() {
+        let temp_dir = tempdir().unwrap();
+        let config_path = temp_dir.path().join("term-nmea.toml");
+
+        // Override current_exe() via PATH-like behavior
+        std::env::set_current_dir(temp_dir.path()).unwrap();
+
+        let cli = CliArgs {
+            port: None,
+            baud_rate: None,
+            capacity: None,
+            verbose: Verbosity::new(0, 0),
+        };
+
+        Settings::init(&cli).expect("Should initialize default settings");
+
+        let settings = Settings::reader();
+        assert_eq!(settings.port, "COM1");
+        assert_eq!(settings.baud_rate, 9600);
+        assert_eq!(settings.capacity, 1000);
+
+        // Check that config file was written
+        assert!(config_path.exists());
+        let contents = std::fs::read_to_string(config_path).unwrap();
+        assert!(contents.contains("port = \"COM1\""));
+    }
+
+    #[serial]
+    #[test]
+    fn test_init_with_cli_override() {
+        let temp_dir = tempdir().unwrap();
+        std::env::set_current_dir(temp_dir.path()).unwrap();
+
+        let cli = CliArgs {
+            port: Some("COM9".to_string()),
+            baud_rate: Some(115_200),
+            capacity: Some(2048),
+            verbose: Verbosity::new(0, 0),
+        };
+
+        Settings::init(&cli).expect("Init with CLI override");
+        let s = Settings::reader();
+
+        assert_eq!(s.port, "COM9");
+        assert_eq!(s.baud_rate, 115_200);
+        assert_eq!(s.capacity, 2048);
+    }
+
+    #[serial]
+    #[test]
+    fn test_malformed_config_fallbacks_to_default() {
+        let temp_dir = tempdir().unwrap();
+        std::env::set_current_dir(temp_dir.path()).unwrap();
+        let config_path = temp_dir.path().join("term-nmea.toml");
+
+        // Write malformed TOML
+        std::fs::write(&config_path, "bad = [this is: not toml").unwrap();
+
+        let cli = CliArgs {
+            port: None,
+            baud_rate: None,
+            capacity: None,
+            verbose: Verbosity::new(0, 0),
+        };
+
+        Settings::init(&cli).expect("Should fallback to default on malformed");
+
+        let s = Settings::reader();
+        assert_eq!(s.port, "COM1");
+    }
+}

@@ -131,12 +131,7 @@ impl TabInfo {
     fn find_last_sentence(
         ctx: &mut StrParserContext,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-    ) -> (
-        Option<Gga>, // GGA
-        Option<Rmc>, // RMC
-        Option<Gsa>, // GSA
-        Option<Gst>, // GST
-    ) {
+    ) -> (Option<Gga>, Option<Rmc>, Option<Gsa>, Option<Gst>) {
         let mut last_gga = None;
         let mut last_rmc = None;
         let mut last_gsa = None;
