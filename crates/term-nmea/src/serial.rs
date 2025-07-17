@@ -16,7 +16,7 @@ pub async fn start_serial_reader(
         .iter()
         .any(|p| p.port_name.eq_ignore_ascii_case(&port))
     {
-        let msg = format!("Port '{}' is not available", port);
+        let msg = format!("Port '{port}' is not available");
         clerk::error!("{msg}");
         if !cfg!(debug_assertions) {
             eprintln!("{msg}");
