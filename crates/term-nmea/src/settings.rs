@@ -63,13 +63,13 @@ impl Settings {
     }
     pub fn path() -> PathBuf {
         // Locate config file next to the binary
-        let path = std::env::current_exe()
+
+        std::env::current_exe()
             .map(|exe| exe.with_file_name("term-nmea.toml"))
             .unwrap_or_else(|e| {
                 clerk::warn!("Cannot determine executable path: {e}. Using defaults.");
                 PathBuf::from("term-nmea.toml")
-            });
-        path
+            })
     }
 
     pub fn save() -> miette::Result<()> {
