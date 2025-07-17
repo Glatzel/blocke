@@ -15,4 +15,7 @@ pub struct CliArgs {
     /// Line buffer capacity
     #[arg(short, long)]
     pub capacity: Option<usize>,
+
+    #[command(flatten)]
+    pub verbose: clap_verbosity_flag::Verbosity,
 }

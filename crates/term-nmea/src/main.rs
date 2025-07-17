@@ -14,6 +14,7 @@ use tokio::task;
 use crate::settings::Settings;
 mod app;
 mod cli;
+mod logging;
 mod serial;
 mod settings;
 mod tab;
@@ -23,6 +24,9 @@ mod ui;
 async fn main() -> miette::Result<()> {
     // Parse CLI arguments
     let cli = cli::CliArgs::parse();
+
+    // Init log
+    logging::init(&cli.verbose);
 
     // Load settings from TOML, overridden by CLI arguments
     Settings::init(&cli)?;
