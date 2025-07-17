@@ -9,4 +9,4 @@ ssh $User@$IP "rm -rf ~/config ~/scripts"
 
 # copy file
 Write-Host "Copying files to $User@$IP`:~/"
-scp -r ./deploy/* "$User@$IP`:~/"
+scp -r ./deploy-linux-aarch64/* "$User@$IP`:~/"
