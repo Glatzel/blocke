@@ -4,6 +4,7 @@ name = "term-nmea"
 version.workspace = true
 
 [dependencies]
+clap = { workspace = true }
 clerk = { workspace = true, features = ["log"] }
 crossterm = { workspace = true }
 miette = { workspace = true }

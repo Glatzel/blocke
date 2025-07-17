@@ -4,6 +4,8 @@ use std::{fs, io};
 use miette::IntoDiagnostic;
 use serde::{Deserialize, Serialize};
 
+use crate::cli::CliArgs;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Settings {
     pub port: String,
@@ -24,34 +26,42 @@ impl Settings {
     /// in the same directory as the executable.
     /// Falls back to `Config::default()` if the file is missing
     /// or malformed.
-    pub fn init() -> miette::Result<Self> {
-        // Where is the executable?
-        let path = match std::env::current_exe().map(|exe| exe.with_file_name("term-nmea.toml")) {
-            Ok(p) => p,
+    pub fn init(cli: &CliArgs) -> miette::Result<Self> {
+        let path = Self::path();
+        // Read from file or fallback
+        let mut settings = match fs::read_to_string(&path) {
+            Ok(content) => toml::from_str(&content).unwrap_or_else(|e| {
+                clerk::warn!("Malformed config file: {e}. Using defaults.");
+                Self::default()
+            }),
             Err(e) => {
-                clerk::warn!("Cannot determine executable path: {e}. Using defaults.");
-                return Ok(Self::default());
+                clerk::warn!("Failed to read config: {e}. Using defaults.");
+                Self::default()
             }
         };
 
-        // Try to read the file; missing file is not an error.
-        match fs::read_to_string(&path) {
-            Ok(toml_str) => toml::from_str(&toml_str).into_diagnostic(),
-            Err(e) if e.kind() == io::ErrorKind::NotFound => {
-                // File not found: create with default values
-                let default = Self::default();
-                if let Err(e) = default.save_to(&path) {
-                    clerk::warn!("Failed to write default config: {e}");
-                } else {
-                    clerk::info!("Created default config at {}", path.display());
-                }
-                Ok(default)
-            }
-            Err(e) => {
-                clerk::warn!("Failed to read config file: {e}. Using defaults.");
-                Ok(Self::default())
-            }
+        // Override with CLI args
+        if let Some(ref port) = cli.port {
+            settings.port = port.clone();
         }
+        if let Some(baud) = cli.baud_rate {
+            settings.baud_rate = baud;
+        }
+        if let Some(cap) = cli.capacity {
+            settings.capacity = cap;
+        }
+        settings.save_to(&path);
+        Ok(settings)
+    }
+    pub fn path() -> PathBuf {
+        // Locate config file next to the binary
+        let path = std::env::current_exe()
+            .map(|exe| exe.with_file_name("term-nmea.toml"))
+            .unwrap_or_else(|e| {
+                clerk::warn!("Cannot determine executable path: {e}. Using defaults.");
+                PathBuf::from("term-nmea.toml")
+            });
+        path
     }
     pub fn save_to(&self, path: &PathBuf) -> miette::Result<()> {
         let toml_str = toml::to_string_pretty(self)
