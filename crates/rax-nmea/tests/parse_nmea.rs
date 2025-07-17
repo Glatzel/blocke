@@ -4,7 +4,7 @@ use std::io;
 use clerk::init_log_with_level;
 use clerk::tracing::level_filters::LevelFilter;
 use miette::IntoDiagnostic;
-use rax::io::RaxReader;
+use rax::io::{IRaxReader, RaxReader};
 use rax::str_parser::StrParserContext;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::*;
@@ -18,9 +18,11 @@ fn test_parse_nmea() -> miette::Result<()> {
     ] {
         let mut reader = RaxReader::new(io::BufReader::new(File::open(f).into_diagnostic()?));
         let mut ctx = StrParserContext::new();
-        let dispatcher = Dispatcher::new(&mut reader);
-
-        for (talker, identifier, sentence) in dispatcher {
+        let mut dispatcher = Dispatcher::new();
+        while let Some((talker, identifier, sentence)) = reader
+            .read_line()?
+            .and_then(|line| dispatcher.dispatch(line))
+        {
             match identifier {
                 Identifier::DHV => {
                     let ctx = ctx.init(sentence);
@@ -105,5 +107,6 @@ fn test_parse_nmea() -> miette::Result<()> {
             }
         }
     }
+
     Ok(())
 }

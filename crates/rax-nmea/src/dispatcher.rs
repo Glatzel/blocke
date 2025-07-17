@@ -1,61 +1,44 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use rax::io::IRaxReader;
-
 use crate::data::{Identifier, Talker};
 
 /// Dispatcher reads and groups sentences, handling both single and multi-line
 /// messages.
-pub struct Dispatcher<'a, R>
-where
-    R: IRaxReader,
-{
-    reader: &'a mut R,
+pub struct Dispatcher {
     buffer: HashMap<(Talker, Identifier), String>, // (total count, accumulated sentence)
 }
 
-impl<'a, R> Dispatcher<'a, R>
-where
-    R: IRaxReader,
-{
+impl Default for Dispatcher {
+    fn default() -> Self { Self::new() }
+}
+
+impl Dispatcher {
     /// Create a new dispatcher with the given reader.
-    pub fn new(reader: &'a mut R) -> Self {
+    pub fn new() -> Self {
         Self {
-            reader,
             buffer: HashMap::new(),
         }
     }
 
     /// Read and parse a line, returning its talker, identifier, and the
     /// sentence.
-    fn preprocess(&mut self) -> Option<(Talker, Identifier, String)> {
-        loop {
-            match self.reader.read_line() {
-                Ok(Some(sentence)) => {
-                    let talker = match Talker::from_str(&sentence) {
-                        Ok(t) => t,
-                        Err(_e) => {
-                            clerk::warn!("{}", _e);
-                            continue;
-                        }
-                    };
-                    let identifier = match Identifier::from_str(&sentence) {
-                        Ok(i) => i,
-                        Err(_e) => {
-                            clerk::warn!("{}", _e);
-                            continue;
-                        }
-                    };
-                    return Some((talker, identifier, sentence));
-                }
-                Ok(None) => return None,
-                Err(_e) => {
-                    clerk::warn!("{}", _e);
-                    continue;
-                }
+    fn preprocess(&mut self, sentence: String) -> Option<(Talker, Identifier, String)> {
+        let talker = match Talker::from_str(&sentence) {
+            Ok(t) => t,
+            Err(_e) => {
+                clerk::warn!("{}", _e);
+                return None;
             }
-        }
+        };
+        let identifier = match Identifier::from_str(&sentence) {
+            Ok(i) => i,
+            Err(_e) => {
+                clerk::warn!("{}", _e);
+                return None;
+            }
+        };
+        Some((talker, identifier, sentence))
     }
 
     /// Handle multi-line sentences (e.g., GSV, TXT).
@@ -132,53 +115,40 @@ where
     }
 
     /// Dispatches sentences, handling both single and multi-line types.
-    fn dispatch_by_lines(&mut self) -> Option<(Talker, Identifier, String)> {
-        loop {
-            if let Some((talker, identifier, sentence)) = self.preprocess() {
-                match identifier {
-                    // Single-line sentences
-                    Identifier::DHV
-                    | Identifier::DTM
-                    | Identifier::GBQ
-                    | Identifier::GBS
-                    | Identifier::GGA
-                    | Identifier::GLL
-                    | Identifier::GLQ
-                    | Identifier::GNQ
-                    | Identifier::GNS
-                    | Identifier::GPQ
-                    | Identifier::GRS
-                    | Identifier::GSA
-                    | Identifier::GST
-                    | Identifier::RMC
-                    | Identifier::THS
-                    | Identifier::VLW
-                    | Identifier::VTG
-                    | Identifier::ZDA => return Some((talker, identifier, sentence)),
+    pub fn dispatch(&mut self, sentence: String) -> Option<(Talker, Identifier, String)> {
+        if let Some((talker, identifier, sentence)) = self.preprocess(sentence) {
+            match identifier {
+                // Single-line sentences
+                Identifier::DHV
+                | Identifier::DTM
+                | Identifier::GBQ
+                | Identifier::GBS
+                | Identifier::GGA
+                | Identifier::GLL
+                | Identifier::GLQ
+                | Identifier::GNQ
+                | Identifier::GNS
+                | Identifier::GPQ
+                | Identifier::GRS
+                | Identifier::GSA
+                | Identifier::GST
+                | Identifier::RMC
+                | Identifier::THS
+                | Identifier::VLW
+                | Identifier::VTG
+                | Identifier::ZDA => Some((talker, identifier, sentence)),
 
-                    // Multi-line sentences
-                    Identifier::GSV | Identifier::TXT => {
-                        if let Some(result) = self.process_multilines(talker, identifier, sentence)
-                        {
-                            return Some(result);
-                        }
-                    }
+                // Multi-line sentences
+                Identifier::GSV | Identifier::TXT => {
+                    self.process_multilines(talker, identifier, sentence)
                 }
-            } else {
-                return None;
             }
+        } else {
+            None
         }
     }
 }
 
-impl<'a, R> Iterator for Dispatcher<'a, R>
-where
-    R: IRaxReader,
-{
-    type Item = (Talker, Identifier, String);
-
-    fn next(&mut self) -> Option<Self::Item> { self.dispatch_by_lines() }
-}
 #[cfg(test)]
 mod test {
     use std::fs::File;
@@ -186,22 +156,26 @@ mod test {
 
     use clerk::init_log_with_level;
     use miette::IntoDiagnostic;
-    use rax::io::RaxReader;
+    use rax::io::{IRaxReader, RaxReader};
     use tracing_subscriber::filter::LevelFilter;
 
     use crate::Dispatcher;
-
     #[test]
     fn test_dispatcher() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
+
         for f in [
             "data/nmea1.log",
             "data/nmea2.log",
             "data/nmea_with_sat_info.log",
         ] {
-            let mut reader = RaxReader::new(io::BufReader::new(File::open(f).into_diagnostic()?));
-            let dispatcher = Dispatcher::new(&mut reader);
-            for _ in dispatcher {}
+            let file = File::open(f).into_diagnostic()?;
+            let mut reader = RaxReader::new(io::BufReader::new(file));
+            let mut dispatcher = Dispatcher::new();
+
+            while let Some(line) = reader.read_line()? {
+                dispatcher.dispatch(line);
+            }
         }
 
         Ok(())
