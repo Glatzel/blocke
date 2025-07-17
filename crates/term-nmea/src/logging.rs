@@ -36,6 +36,12 @@ pub fn init(verbosity: &Verbosity) {
 }
 fn generate_log_filename() -> PathBuf {
     let now = Local::now();
-    let filename = format!("log/log-term-nmea-{}.log", now.format("%Y-%m-%d_%H-%M-%S"));
-    PathBuf::from(filename)
+    let filename = format!("log/log-term-nmea-{}.log", now.format("%Y-%m-%d-%H-%M-%S"));
+
+    let exe_dir = std::env::current_exe()
+        .ok()
+        .and_then(|p| p.parent().map(|p| p.to_path_buf()))
+        .unwrap_or_else(|| PathBuf::from("."));
+
+    exe_dir.join(filename)
 }

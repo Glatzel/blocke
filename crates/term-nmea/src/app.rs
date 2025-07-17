@@ -70,12 +70,20 @@ impl App {
         }
         false
     }
+    fn current_tab_name(&self) -> &'static str {
+        match self.tab {
+            Tab::Info => "Info",
+            Tab::Nmea => "NMEA",
+            Tab::Settings => "Settings",
+        }
+    }
     fn next_tab(&mut self) {
         self.tab = match self.tab {
             Tab::Info => Tab::Nmea,
             Tab::Nmea => Tab::Settings,
             Tab::Settings => Tab::Info,
-        }
+        };
+        clerk::trace!("Switch to Tab: {}", self.current_tab_name());
     }
 
     fn prev_tab(&mut self) {
@@ -83,7 +91,8 @@ impl App {
             Tab::Info => Tab::Settings,
             Tab::Nmea => Tab::Info,
             Tab::Settings => Tab::Nmea,
-        }
+        };
+        clerk::trace!("Switch to Tab: {}", self.current_tab_name());
     }
     pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) {
         match self.tab {
