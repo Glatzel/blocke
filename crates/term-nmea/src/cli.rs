@@ -51,9 +51,15 @@ mod tests {
     #[test]
     fn test_cli_parsing_verbosity() {
         let args = CliArgs::parse_from(["term-nmea", "-v"]);
-        assert!(args.verbose.log_level().is_some());
+        assert_eq!(
+            args.verbose.filter(),
+            clap_verbosity_flag::VerbosityFilter::Info
+        );
 
         let args = CliArgs::parse_from(["term-nmea", "-vvv"]);
-        assert_eq!(args.verbose.log_level().unwrap(), log::Level::Trace);
+        assert_eq!(
+            args.verbose.filter(),
+            clap_verbosity_flag::VerbosityFilter::Trace
+        );
     }
 }
