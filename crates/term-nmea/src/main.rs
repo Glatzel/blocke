@@ -87,7 +87,7 @@ async fn main() -> miette::Result<()> {
     terminal.show_cursor().into_diagnostic()?;
 
     // Save settings
-    Settings::save();
+    Settings::save()?;
     Ok(())
 }
 async fn poll_event(timeout: Duration) -> std::io::Result<Option<Event>> {
