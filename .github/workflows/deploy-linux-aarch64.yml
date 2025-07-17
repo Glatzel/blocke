@@ -23,5 +23,5 @@ jobs:
         with:
           name: cross-build-linux-aarch64
           path: |
-            ./deploy
+            ./deploy/linux-aarch64
           if-no-files-found: error
