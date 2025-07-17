@@ -11,15 +11,17 @@ pub async fn start_serial_reader(
     baud_rate: u32,
     tx: Sender<(Talker, Identifier, String)>,
 ) -> miette::Result<()> {
-    #[cfg(not(debug_assertions))]
     if !tokio_serial::available_ports()
         .into_diagnostic()?
         .iter()
         .any(|p| p.port_name.eq_ignore_ascii_case(&port))
     {
-        clerk::error!("Port '{}' is not available", port);
-        eprint!("Port '{}' is not available", port);
-        std::process::exit(1);
+        let msg = format!("Port '{}' is not available", port);
+        clerk::error!("{msg}");
+        if !cfg!(debug_assertions) {
+            eprintln!("{msg}");
+            std::process::exit(1);
+        }
     }
     let serial = tokio_serial::new(port.clone(), baud_rate)
         .open_native_async()
