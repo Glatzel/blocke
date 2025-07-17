@@ -60,12 +60,12 @@ jobs:
         with:
           fail_ci_if_error: true
 
-  cross-build:
+  cross-build-linux-aarch64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: cross-build
-        run: ./scripts/cross-build.ps1
+        run: ./scripts/cross-build-linux-aarch64.ps1
         shell: pwsh
 
   cargo-bench:
