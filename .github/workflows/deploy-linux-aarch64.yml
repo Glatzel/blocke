@@ -1,4 +1,4 @@
-name: CI
+name: deploy-linux-aarch64
 
 on:
   workflow_dispatch:
