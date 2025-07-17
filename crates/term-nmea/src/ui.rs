@@ -25,7 +25,11 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     let tabs = Tabs::new(header)
         .select(app.tab.index())
         .block(Block::default().title("Term-NMEA").borders(Borders::ALL))
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD));
+        .highlight_style(
+            Style::default()
+                .fg(Color::LightBlue)
+                .add_modifier(Modifier::BOLD),
+        );
 
     //content
     f.render_widget(tabs, chunks[0]);

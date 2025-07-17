@@ -1,4 +1,4 @@
-use miette::IntoDiagnostic;
+use miette::{Context, IntoDiagnostic};
 use rax::io::{AsyncIRaxReader, AsyncRaxReader};
 use rax_nmea::Dispatcher;
 use rax_nmea::data::{Identifier, Talker};
@@ -11,15 +11,18 @@ pub async fn start_serial_reader(
     baud_rate: u32,
     tx: Sender<(Talker, Identifier, String)>,
 ) -> miette::Result<()> {
-    let serial = tokio_serial::new(port, baud_rate)
+    let serial = tokio_serial::new(port.clone(), baud_rate)
         .open_native_async()
-        .into_diagnostic()?;
+        .into_diagnostic()
+        .wrap_err_with(|| format!("Failed to open serial port: {port}"))?;
     let mut reader = AsyncRaxReader::new(BufReader::new(serial));
     let mut dispatcher = Dispatcher::new();
-    while let Some(line) = reader.read_line().await? {
-        if let Some((talker, identifier, sentence)) = dispatcher.dispatch(line) {
-            let _ = tx.send((talker, identifier, sentence)).await;
-        }
+    while let Some(msg) = reader
+        .read_line()
+        .await?
+        .and_then(|l| dispatcher.dispatch(l))
+    {
+        let _ = tx.send(msg).await;
     }
     Ok(())
 }
