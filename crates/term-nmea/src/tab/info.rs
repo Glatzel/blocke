@@ -157,17 +157,13 @@ impl TabInfo {
             }
         }
         let last_gga = last_gga
-            .map(|(talker, _identityer, sentence)| Gga::new(ctx.init(sentence), talker).ok())
-            .flatten();
+            .and_then(|(talker, _identityer, sentence)| Gga::new(ctx.init(sentence), talker).ok());
         let last_rmc = last_rmc
-            .map(|(talker, _identityer, sentence)| Rmc::new(ctx.init(sentence), talker).ok())
-            .flatten();
+            .and_then(|(talker, _identityer, sentence)| Rmc::new(ctx.init(sentence), talker).ok());
         let last_gsa = last_gsa
-            .map(|(talker, _identityer, sentence)| Gsa::new(ctx.init(sentence), talker).ok())
-            .flatten();
+            .and_then(|(talker, _identityer, sentence)| Gsa::new(ctx.init(sentence), talker).ok());
         let last_gst = last_gst
-            .map(|(talker, _identityer, sentence)| Gst::new(ctx.init(sentence), talker).ok())
-            .flatten();
+            .and_then(|(talker, _identityer, sentence)| Gst::new(ctx.init(sentence), talker).ok());
         (last_gga, last_rmc, last_gsa, last_gst)
     }
 }

@@ -229,7 +229,7 @@ impl FromStr for PosMode {
 }
 impl Display for PosMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-       let s= match self {
+        let s = match self {
             PosMode::Autonomous => "Autonomous",
             PosMode::Differential => "Differential",
             PosMode::Estimated => "Estimated",
@@ -240,7 +240,7 @@ impl Display for PosMode {
             PosMode::RtkInteger => "Rtk Integer",
             PosMode::Simulator => "Simulator",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 impl TryFrom<&char> for PosMode {

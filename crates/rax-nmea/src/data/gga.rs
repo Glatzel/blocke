@@ -1,4 +1,4 @@
-use std::fmt::{self, Display, write};
+use std::fmt::{self, Display};
 use std::str::FromStr;
 
 use rax::str_parser::{ParseOptExt, StrParserContext};
@@ -50,7 +50,7 @@ impl Display for GgaQualityIndicator {
             GgaQualityIndicator::ManualInputMode => "Manual Input Mode",
             GgaQualityIndicator::SimulationMode => "Simulation Mode",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 readonly_struct!(
