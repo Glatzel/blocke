@@ -3,7 +3,6 @@ use std::sync::OnceLock;
 
 use chrono::Local;
 use clap_verbosity_flag::Verbosity;
-use clap_verbosity_flag::log::Level;
 use tracing_subscriber::filter::LevelFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::registry;
@@ -15,13 +14,14 @@ static LOG_INIT: OnceLock<()> = OnceLock::new();
 pub fn init(verbosity: &Verbosity) {
     LOG_INIT.get_or_init(|| {
         // Determine log level
-        let log_level = verbosity.log_level().unwrap_or(Level::Warn);
+        let log_level = verbosity.filter();
         let tracing_level = match log_level {
-            Level::Error => LevelFilter::ERROR,
-            Level::Warn => LevelFilter::WARN,
-            Level::Info => LevelFilter::INFO,
-            Level::Debug => LevelFilter::DEBUG,
-            Level::Trace => LevelFilter::TRACE,
+            clap_verbosity_flag::VerbosityFilter::Error => LevelFilter::ERROR,
+            clap_verbosity_flag::VerbosityFilter::Warn => LevelFilter::WARN,
+            clap_verbosity_flag::VerbosityFilter::Info => LevelFilter::INFO,
+            clap_verbosity_flag::VerbosityFilter::Debug => LevelFilter::DEBUG,
+            clap_verbosity_flag::VerbosityFilter::Trace => LevelFilter::TRACE,
+            clap_verbosity_flag::VerbosityFilter::Off => return,
         };
 
         // Generate log file path with datetime

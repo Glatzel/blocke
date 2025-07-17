@@ -17,7 +17,8 @@ pub async fn start_serial_reader(
         .iter()
         .any(|p| p.port_name.eq_ignore_ascii_case(&port))
     {
-        eprintln!("Port '{}' is not available", port);
+        clerk::error!("Port '{}' is not available", port);
+        eprint!("Port '{}' is not available", port);
         std::process::exit(1);
     }
     let serial = tokio_serial::new(port.clone(), baud_rate)
