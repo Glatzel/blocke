@@ -1,4 +1,4 @@
-use std::fmt;
+use std::fmt::{self, Display, write};
 use std::str::FromStr;
 
 use rax::str_parser::{ParseOptExt, StrParserContext};
@@ -37,7 +37,22 @@ impl FromStr for GgaQualityIndicator {
         }
     }
 }
-
+impl Display for GgaQualityIndicator {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            GgaQualityIndicator::Invalid => "Invalid",
+            GgaQualityIndicator::GpsFix => "Gps Fix",
+            GgaQualityIndicator::DifferentialGpsFix => "Differential Gps Fix",
+            GgaQualityIndicator::PpsFix => "Pps Fix",
+            GgaQualityIndicator::RealTimeKinematic => "RealTimeKinematic",
+            GgaQualityIndicator::FloatRTK => "Float RTK",
+            GgaQualityIndicator::DeadReckoning => "Dead Reckoning",
+            GgaQualityIndicator::ManualInputMode => "Manual Input Mode",
+            GgaQualityIndicator::SimulationMode => "Simulation Mode",
+        };
+        write!(f, "{}", s)
+    }
+}
 readonly_struct!(
     Gga ,
     "Global Positioning System Fix Data."
