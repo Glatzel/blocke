@@ -13,8 +13,7 @@ fn main() -> miette::Result<()> {
         .into_diagnostic()?;
     let mut reader = rax::io::RaxReader::new(BufReader::new(port));
     loop {
-        let message = reader.read_line()?;
-        if let Some(m) = message {
+        if let Some(m) = reader.read_line()? {
             println!("{m}")
         }
     }

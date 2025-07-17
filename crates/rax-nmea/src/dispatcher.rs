@@ -160,24 +160,21 @@ mod test {
     use tracing_subscriber::filter::LevelFilter;
 
     use crate::Dispatcher;
-
     #[test]
     fn test_dispatcher() -> miette::Result<()> {
         init_log_with_level(LevelFilter::TRACE);
+
         for f in [
             "data/nmea1.log",
             "data/nmea2.log",
             "data/nmea_with_sat_info.log",
         ] {
-            let mut reader = RaxReader::new(io::BufReader::new(File::open(f).into_diagnostic()?));
+            let file = File::open(f).into_diagnostic()?;
+            let mut reader = RaxReader::new(io::BufReader::new(file));
             let mut dispatcher = Dispatcher::new();
-            loop {
-                match reader.read_line()? {
-                    Some(l) => {
-                        dispatcher.dispatch(l);
-                    }
-                    None => break,
-                }
+
+            while let Some(line) = reader.read_line()? {
+                dispatcher.dispatch(line);
             }
         }
 
