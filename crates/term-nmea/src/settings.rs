@@ -124,7 +124,6 @@ mod tests {
     use super::*;
     use crate::cli::CliArgs;
 
-
     #[test]
     fn test_default_init_and_save() {
         let temp_dir = tempdir().unwrap();
