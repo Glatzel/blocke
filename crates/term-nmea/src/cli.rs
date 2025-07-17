@@ -21,7 +21,6 @@ pub struct CliArgs {
 }
 #[cfg(test)]
 mod tests {
-    use clap_verbosity_flag::log;
 
     use super::*;
 
