@@ -52,10 +52,10 @@ mod tests {
         let args = CliArgs::parse_from(["term-nmea", "-v"]);
         assert_eq!(
             args.verbose.filter(),
-            clap_verbosity_flag::VerbosityFilter::Info
+            clap_verbosity_flag::VerbosityFilter::Warn
         );
 
-        let args = CliArgs::parse_from(["term-nmea", "-vvv"]);
+        let args = CliArgs::parse_from(["term-nmea", "-vvvv"]);
         assert_eq!(
             args.verbose.filter(),
             clap_verbosity_flag::VerbosityFilter::Trace
