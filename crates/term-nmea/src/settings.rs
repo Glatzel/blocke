@@ -125,11 +125,7 @@ mod tests {
     use super::*;
     use crate::cli::CliArgs;
 
-    fn with_test_exe_path(path: &PathBuf) {
-        unsafe { std::env::set_var("CARGO_BIN_EXE_fake", path) };
-    }
 
-    #[serial] // prevent parallel test on global SETTINGS
     #[test]
     fn test_default_init_and_save() {
         let temp_dir = tempdir().unwrap();
@@ -158,7 +154,6 @@ mod tests {
         assert!(contents.contains("port = \"COM1\""));
     }
 
-    #[serial]
     #[test]
     fn test_init_with_cli_override() {
         let temp_dir = tempdir().unwrap();
