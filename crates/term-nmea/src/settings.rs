@@ -12,9 +12,9 @@ pub static SETTINGS: OnceCell<RwLock<Settings>> = OnceCell::new();
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Settings {
-    port: String,
-    baud_rate: u32,
-    capacity: usize,
+    pub port: String,
+    pub baud_rate: u32,
+    pub capacity: usize,
 }
 impl Default for Settings {
     fn default() -> Self {
