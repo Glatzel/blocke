@@ -10,14 +10,15 @@ async fn run_serial_dispatcher<R: AsyncIRaxReader>(
     tx: Sender<(Talker, Identifier, String)>,
 ) -> miette::Result<()> {
     let mut dispatcher = Dispatcher::new();
-    while let Some(msg) = reader
-        .read_line()
-        .await?
-        .and_then(|l| dispatcher.dispatch(l))
-    {
-        let _ = tx.send(msg).await;
+    loop {
+        if let Some(msg) = reader
+            .read_line()
+            .await?
+            .and_then(|l| dispatcher.dispatch(l))
+        {
+            let _ = tx.send(msg).await;
+        }
     }
-    Ok(())
 }
 pub async fn start_serial_reader(
     port: String,
