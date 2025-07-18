@@ -14,8 +14,8 @@ async-trait = { version = "0.1" }
 chrono = { version = "0.4.40", features = ["serde"] }
 clap = { version = "4.5.41", features = ["derive"] }
 clap-verbosity-flag = "3.0.3"
-# clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.22" }
-clerk = {path="../toolbox/rust/crates/clerk/" }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.23" }
+# clerk = {path="../toolbox/rust/crates/clerk/" }
 criterion = { package = "codspeed-criterion-compat", version = "2.10.1" }
 crossterm = "0.29.0"
 float-cmp = "0.10.0"
