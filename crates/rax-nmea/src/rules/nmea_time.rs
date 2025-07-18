@@ -98,7 +98,6 @@ mod tests {
     use chrono::Timelike;
     use clerk::{LogLevel, init_log_with_level};
     use rax::str_parser::IStrFlowRule;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 

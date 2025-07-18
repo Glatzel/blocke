@@ -1,8 +1,6 @@
 use std::collections::VecDeque;
-use std::io;
 
 use crossterm::event::KeyEvent;
-use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use rax_nmea::data::{Identifier, Talker};
 

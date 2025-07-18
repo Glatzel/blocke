@@ -72,7 +72,6 @@ impl<'a> IStrFlowRule<'a> for NmeaCoord {
 mod tests {
 
     use clerk::{LogLevel, init_log_with_level};
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
