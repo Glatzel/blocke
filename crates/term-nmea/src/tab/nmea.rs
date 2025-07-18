@@ -24,7 +24,7 @@ impl super::ITab for TabNmea {
         let p = Paragraph::new(
             raw_nmea
                 .iter()
-                .skip(count - visible_lines)
+                .skip(count.saturating_sub(visible_lines))
                 .map(|f| Line::from(f.2.as_str()))
                 .collect::<Vec<Line>>(),
         );
