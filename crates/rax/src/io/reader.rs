@@ -68,7 +68,7 @@ impl<R: BufRead> IRaxReader for RaxReader<R> {
 mod tests {
     use std::io::Cursor;
 
-    use clerk::{init_log_with_level,LogLevel};
+    use clerk::{LogLevel, init_log_with_level};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;

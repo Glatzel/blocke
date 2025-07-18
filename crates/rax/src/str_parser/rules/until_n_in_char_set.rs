@@ -73,7 +73,7 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
 mod tests {
     use std::str::FromStr;
 
-    use clerk::{init_log_with_level,LogLevel};
+    use clerk::{LogLevel, init_log_with_level};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;

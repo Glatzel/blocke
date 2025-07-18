@@ -51,7 +51,6 @@ impl super::ITab for TabCoord {
                 let (wgs84_lon, wgs84_lat) = (wgs84_lon.clone(), wgs84_lat.clone());
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (_bd09_lon, _bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
-                
             }
         }
     }

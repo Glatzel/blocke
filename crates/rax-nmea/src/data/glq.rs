@@ -44,8 +44,7 @@ impl fmt::Debug for Glq {
 #[cfg(test)]
 mod test {
 
-    use clerk::{init_log_with_level, LogLevel};
-
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     #[test]
