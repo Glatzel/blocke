@@ -81,11 +81,12 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - run: cargo install cargo-codspeed --locked
-      - run: ./scripts/setup.ps1
-        shell: pwsh
 
       - name: Build the benchmark target(s)
-        run: cargo codspeed build
+        run: |
+          ./scripts/setup.ps1
+          cargo codspeed build
+        shell: pwsh
 
       - name: Run the benchmarks
         uses: CodSpeedHQ/action@v3
