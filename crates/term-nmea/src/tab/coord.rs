@@ -120,7 +120,11 @@ impl TabCoord {
         area: ratatui::layout::Rect,
     ) -> miette::Result<()> {
         let input = Paragraph::new(SETTINGS.get().unwrap().tab_coord.custom_cs.clone())
-            .block(Block::default().title("Custom Coordinate System").borders(Borders::ALL))
+            .block(
+                Block::default()
+                    .title("Custom Coordinate System")
+                    .borders(Borders::ALL),
+            )
             .style(Style::default().fg(Color::Yellow))
             .wrap(Wrap { trim: true });
         f.render_widget(input, area);
