@@ -5,7 +5,7 @@ use proj::Context;
 use pyxis::crypto;
 use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::{Color, Modifier, Style};
-use ratatui::widgets::{Block, Borders, Cell, Paragraph, Row, Table};
+use ratatui::widgets::{Block, Borders, Cell, Paragraph, Row, Table, Wrap};
 use rax::str_parser::StrParserContext;
 use rax_nmea::data::{Gga, INmeaData, Identifier, Talker};
 
@@ -120,11 +120,9 @@ impl TabCoord {
     ) -> miette::Result<()> {
         let input = Paragraph::new(to_crs)
             .block(Block::default().title("Projected CS").borders(Borders::ALL))
-            .style(Style::default().fg(Color::Yellow));
+            .style(Style::default().fg(Color::Yellow))
+            .wrap(Wrap { trim: true });
         f.render_widget(input, area);
-
-        // Put the cursor where the user is typing
-        f.set_cursor_position((area.x + to_crs.len() as u16 + 1, area.y + 1));
 
         Ok(())
     }
