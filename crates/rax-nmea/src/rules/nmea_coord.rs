@@ -71,14 +71,13 @@ impl<'a> IStrFlowRule<'a> for NmeaCoord {
 #[cfg(test)]
 mod tests {
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
 
     #[test]
     fn test_nmea_coord_east() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         // 12319.123,E,rest
         let input = "12319.123,E,rest";
@@ -92,7 +91,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_west() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "12319.123,W,foo";
 
@@ -104,7 +103,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_north() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "4807.038,N,bar";
 
@@ -116,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_south() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "4807.038,S,xyz";
 
@@ -128,7 +127,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_invalid_sign() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "12319.123,X,rest";
 
@@ -139,7 +138,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_invalid_number() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "notanumber,E,rest";
 
@@ -150,7 +149,7 @@ mod tests {
 
     #[test]
     fn test_nmea_coord_missing_comma() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaCoord();
         let input = "12319.123Erest";
 

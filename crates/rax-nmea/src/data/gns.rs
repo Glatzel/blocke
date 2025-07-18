@@ -193,16 +193,15 @@ impl Debug for Gns {
 
 #[cfg(test)]
 mod test {
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use float_cmp::assert_approx_eq;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::data::{PosMode, Talker};
 
     #[test]
     fn test_gns_parsing1() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPGNS,112257.00,3844.24011,N,00908.43828,W,AN,03,10.5,,*57";
         let mut ctx = StrParserContext::new();
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;
@@ -223,7 +222,7 @@ mod test {
     }
     #[test]
     fn test_gns_parsing2() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GNGNS,181604.00,,,,,NN,00,99.99,,,,*59";
         let mut ctx = StrParserContext::new();
         let gns = Gns::new(ctx.init(s.to_string()), Talker::GN)?;

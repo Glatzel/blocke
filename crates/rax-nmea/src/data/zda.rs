@@ -89,13 +89,12 @@ impl fmt::Debug for Zda {
 
 #[cfg(test)]
 mod test {
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     #[test]
     fn test_new_zda() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPZDA,160012.71,11,03,2004,-1,00*7D";
         let mut ctx = StrParserContext::new();
         let zda = Zda::new(ctx.init(s.to_string()), Talker::GN)?;

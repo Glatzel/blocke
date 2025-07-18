@@ -44,13 +44,12 @@ impl fmt::Debug for Glq {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     #[test]
     fn test_new_glq() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$EIGLQ,RMC*26";
         let mut ctx = StrParserContext::new();
         let glq = Glq::new(ctx.init(s.to_string()), Talker::GP)?;

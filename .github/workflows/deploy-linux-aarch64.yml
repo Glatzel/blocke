@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.8.10
+        with:
+          run-install: false
       - name: cross-build
         run: ./scripts/cross-build-linux-aarch64 -Release
         shell: pwsh

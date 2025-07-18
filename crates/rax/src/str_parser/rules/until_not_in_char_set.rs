@@ -86,15 +86,14 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilNotInCharSet<'a, N> {
 mod tests {
     use std::str::FromStr;
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     use crate::str_parser::filters::DIGITS;
 
     #[test]
     fn test_until_not_in_char_set_discard() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -107,7 +106,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_keep_left() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::KeepLeft,
@@ -120,7 +119,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_keep_right() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::KeepRight,
@@ -133,7 +132,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_all_in_set() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -146,7 +145,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_first_char_not_in_set() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::KeepLeft,
@@ -159,7 +158,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNotInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -172,7 +171,7 @@ mod tests {
 
     #[test]
     fn test_until_not_in_char_set_unicode() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter: CharSetFilter<2> = CharSetFilter::from_str("好你")?;
         let rule = UntilNotInCharSet {
             filter: &filter,

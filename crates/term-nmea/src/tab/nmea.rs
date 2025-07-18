@@ -16,7 +16,7 @@ impl super::ITab for TabNmea {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-    ) {
+    ) -> miette::Result<()> {
         let count = raw_nmea.len();
 
         let visible_lines = area.height as usize;
@@ -30,6 +30,7 @@ impl super::ITab for TabNmea {
         );
 
         f.render_widget(p, area);
+        Ok(())
     }
 
     fn hint(&mut self) -> &'static [&'static str] { &["`b` Lock to Bottom", "`↑↓` Scroll"] }

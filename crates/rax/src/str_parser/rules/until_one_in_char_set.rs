@@ -87,15 +87,14 @@ impl<'a, const N: usize> IStrFlowRule<'a> for UntilOneInCharSet<'a, N> {
 
 #[cfg(test)]
 mod tests {
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS, DIGITS};
 
     #[test]
     fn test_until_one_in_char_set_discard() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -108,7 +107,7 @@ mod tests {
 
     #[test]
     fn test_until_one_in_char_set_keep_left() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
             mode: UntilMode::KeepLeft,
@@ -121,7 +120,7 @@ mod tests {
 
     #[test]
     fn test_until_one_in_char_set_keep_right_first_char() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &ASCII_LETTERS,
             mode: UntilMode::KeepRight,
@@ -134,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_until_one_in_char_set_keep_right_not_first_char() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
             mode: UntilMode::KeepRight,
@@ -147,7 +146,7 @@ mod tests {
 
     #[test]
     fn test_until_one_in_char_set_no_match() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -160,7 +159,7 @@ mod tests {
 
     #[test]
     fn test_until_one_in_char_set_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilOneInCharSet {
             filter: &DIGITS,
             mode: UntilMode::Discard,

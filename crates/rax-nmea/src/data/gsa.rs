@@ -154,15 +154,14 @@ impl fmt::Debug for Gsa {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use float_cmp::assert_approx_eq;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
     #[test]
     fn test_new_gsa_with_system_id() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GNGSA,A,3,05,07,13,14,15,17,19,23,24,,,,1.0,0.7,0.7,1*38";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GN)?;
@@ -180,7 +179,7 @@ mod test {
     }
     #[test]
     fn test_new_gsa_without_system_id() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPGSA,A,3,05,07,08,10,15,17,18,19,30,,,,1.2,0.9,0.8*3B";
         let mut ctx = StrParserContext::new();
         let gsa = Gsa::new(ctx.init(s.to_string()), Talker::GP)?;

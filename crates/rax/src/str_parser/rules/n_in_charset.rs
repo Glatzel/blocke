@@ -49,15 +49,14 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for NInCharSet<'a, N, 
 mod tests {
     use std::str::FromStr;
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
 
     #[test]
     fn test_n_in_charset_match() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NInCharSet::<3, 62>(&ASCII_LETTERS_DIGITS);
         let input = "abc123";
         let (matched, rest) = rule.apply(input);
@@ -67,7 +66,7 @@ mod tests {
 
     #[test]
     fn test_n_in_charset_no_match() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NInCharSet::<3, 10>(&DIGITS);
         let input = "12abc";
         let (matched, rest) = rule.apply(input);
@@ -77,7 +76,7 @@ mod tests {
 
     #[test]
     fn test_n_in_charset_too_short() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NInCharSet::<4, 62>(&ASCII_LETTERS_DIGITS);
         let input = "ab";
         let (matched, rest) = rule.apply(input);
@@ -87,7 +86,7 @@ mod tests {
 
     #[test]
     fn test_n_in_charset_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NInCharSet::<1, 62>(&ASCII_LETTERS_DIGITS);
         let input = "";
         let (matched, rest) = rule.apply(input);
@@ -97,7 +96,7 @@ mod tests {
 
     #[test]
     fn test_n_in_charset_unicode() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter: CharSetFilter<2> = CharSetFilter::from_str("你好")?;
         let rule = NInCharSet::<2, 2>(&filter);
         let input = "你好世界";

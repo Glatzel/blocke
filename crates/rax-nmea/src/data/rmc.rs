@@ -117,14 +117,13 @@ impl fmt::Debug for Rmc {
 
 #[cfg(test)]
 mod test {
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use float_cmp::assert_approx_eq;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_new_rmc1() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPRMC,110125,A,5505.337580,N,03858.653666,E,148.8,84.6,310317,8.9,E,D*2E";
         let mut ctx = StrParserContext::new();
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;
@@ -143,7 +142,7 @@ mod test {
     }
     #[test]
     fn test_new_rmc2() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPRMC,,V,,,,,,,,,,N*53";
         let mut ctx = StrParserContext::new();
         let rmc = Rmc::new(ctx.init(s.to_string()), Talker::GN)?;

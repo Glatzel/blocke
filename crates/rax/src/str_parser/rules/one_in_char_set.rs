@@ -42,15 +42,14 @@ impl<'a, const N: usize> IStrFlowRule<'a> for OneOfCharSet<'a, N> {
 mod tests {
     use std::str::FromStr;
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     use crate::str_parser::filters::{ASCII_LETTERS_DIGITS, DIGITS};
 
     #[test]
     fn test_char_match() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "a123";
         let (matched, rest) = rule.apply(input);
@@ -60,7 +59,7 @@ mod tests {
 
     #[test]
     fn test_char_no_match() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = OneOfCharSet(&DIGITS);
         let input = "abc";
         let (matched, rest) = rule.apply(input);
@@ -70,7 +69,7 @@ mod tests {
 
     #[test]
     fn test_char_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = OneOfCharSet(&ASCII_LETTERS_DIGITS);
         let input = "";
         let (matched, rest) = rule.apply(input);
@@ -80,7 +79,7 @@ mod tests {
 
     #[test]
     fn test_char_unicode() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter: CharSetFilter<1> = CharSetFilter::from_str("你")?;
         let rule = OneOfCharSet(&filter);
         let input = "你好";

@@ -41,14 +41,13 @@ impl<'a, const N: usize> IStrFlowRule<'a> for ByteCount<N> {
 #[cfg(test)]
 mod tests {
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
 
     #[test]
     fn test_count_exact_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<4>;
         let input = "test";
         let result = rule.apply(input);
@@ -57,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_count_less_than_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<2>;
         let input = "hello";
         let result = rule.apply(input);
@@ -66,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_count_more_than_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<10>;
         let input = "short";
         let result = rule.apply(input);
@@ -75,7 +74,7 @@ mod tests {
 
     #[test]
     fn test_count_zero() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<0>;
         let input = "abc";
         let result = rule.apply(input);
@@ -84,7 +83,7 @@ mod tests {
 
     #[test]
     fn test_count_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<0>;
         let input = "";
         let result = rule.apply(input);
@@ -93,7 +92,7 @@ mod tests {
 
     #[test]
     fn test_count_non_ascii() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = ByteCount::<2>;
         let input = "你好世界";
 

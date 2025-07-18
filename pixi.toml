@@ -1,0 +1,7 @@
+[workspace]
+channels = ["https://repo.prefix.dev/glatzel", "conda-forge"]
+platforms = ["win-64", "linux-64", "osx-arm64"]
+[target.win-64.dependencies]
+pkg-config = "==0.29.2"
+[dependencies]
+proj = { version = "==9.6.2", channel = "https://repo.prefix.dev/glatzel" }

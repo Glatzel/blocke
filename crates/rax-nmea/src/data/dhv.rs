@@ -89,13 +89,12 @@ impl fmt::Debug for Dhv {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
-    use tracing_subscriber::filter::LevelFilter;
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
     #[test]
     fn test_new_dhv() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GNDHV,021150.000,0.03,0.006,-0.042,-0.026,0.06*65";
         let mut ctx = StrParserContext::new();
         let dhv = Dhv::new(ctx.init(s.to_string()), Talker::GN)?;

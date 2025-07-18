@@ -154,15 +154,14 @@ mod test {
     use std::fs::File;
     use std::io;
 
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use miette::IntoDiagnostic;
     use rax::io::{IRaxReader, RaxReader};
-    use tracing_subscriber::filter::LevelFilter;
 
     use crate::Dispatcher;
     #[test]
     fn test_dispatcher() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
 
         for f in [
             "data/nmea1.log",

@@ -114,14 +114,13 @@ impl fmt::Debug for Grs {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use float_cmp::assert_approx_eq;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_grs() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let input = "$GPGRS,220320.0,0,-0.8,-0.2,-0.1,-0.2,0.8,0.6,,,,,,,*55";
         let mut ctx = StrParserContext::new();
         let grs = Grs::new(ctx.init(input.to_string()), Talker::GP)?;

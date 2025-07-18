@@ -7,9 +7,11 @@ version.workspace = true
 chrono = { workspace = true }
 clap = { workspace = true }
 clap-verbosity-flag = { workspace = true }
-clerk = { workspace = true, features = ["log"] }
+clerk = { workspace = true, features = ["log", "serde"] }
 crossterm = { workspace = true }
 miette = { workspace = true, features = ["fancy"] }
+proj = { workspace = true }
+pyxis = { workspace = true }
 ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
 rax-nmea = { workspace = true }
