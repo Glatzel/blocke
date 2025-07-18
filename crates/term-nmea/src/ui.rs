@@ -6,7 +6,7 @@ use ratatui::widgets::{Block, Borders, Paragraph, Tabs};
 
 use crate::app::App;
 
-pub fn draw(f: &mut Frame, app: &mut App) {
+pub fn draw(f: &mut Frame, app: &mut App) -> miette::Result<()> {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -33,11 +33,12 @@ pub fn draw(f: &mut Frame, app: &mut App) {
 
     //content
     f.render_widget(tabs, chunks[0]);
-    app.draw(f, chunks[1]);
+    app.draw(f, chunks[1])?;
 
     //footer
     let footer = Paragraph::new(app.hint())
         .block(Block::default().borders(Borders::TOP))
         .style(Style::default().fg(Color::Gray));
     f.render_widget(footer, chunks[2]);
+    Ok(())
 }

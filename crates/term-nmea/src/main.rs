@@ -56,7 +56,12 @@ async fn main() -> miette::Result<()> {
     // Main TUI loop
     loop {
         // Redraw the UI
-        terminal.draw(|f| ui::draw(f, &mut app)).into_diagnostic()?;
+        terminal
+            .draw(|f| match ui::draw(f, &mut app) {
+                Ok(_) => (),
+                Err(e) => clerk::error!("{e}"),
+            })
+            .into_diagnostic()?;
 
         // Handle input and serial updates concurrently
         tokio::select! {

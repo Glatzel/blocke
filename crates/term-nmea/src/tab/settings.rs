@@ -1,8 +1,6 @@
 use std::collections::VecDeque;
-use std::io;
 
 use crossterm::event::KeyEvent;
-use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use rax_nmea::data::{Identifier, Talker};
 
@@ -18,11 +16,12 @@ impl super::ITab for TabSettings {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         _raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-    ) {
+    ) -> miette::Result<()> {
         let toml_str =
             toml::to_string_pretty(SETTINGS.get().unwrap()).expect("TOML serialize error: {e}");
         let paragraph = Paragraph::new(toml_str).block(Block::default());
         f.render_widget(paragraph, area);
+        Ok(())
     }
     fn hint(&mut self) -> &'static [&'static str] { &[] }
 }

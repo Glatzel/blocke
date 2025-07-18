@@ -18,7 +18,7 @@ impl super::ITab for TabInfo {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-    ) {
+    ) -> miette::Result<()> {
         // Get last sentences
         let (gga, rmc, gsa, gst) = Self::find_last_sentence(&mut self.ctx, raw_nmea);
         let lon = gga
@@ -124,6 +124,7 @@ impl super::ITab for TabInfo {
             .column_spacing(2);
 
         f.render_widget(table, area);
+        Ok(())
     }
     fn hint(&mut self) -> &'static [&'static str] { &[] }
 }

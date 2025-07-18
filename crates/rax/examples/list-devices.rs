@@ -1,4 +1,4 @@
-use clerk::tracing::level_filters::LevelFilter;
+use clerk::LogLevel;
 use rax::device::{DeviceFilter, list_devices};
 
 fn main() -> miette::Result<()> {

@@ -13,7 +13,7 @@ use crate::settings::SETTINGS;
 
 pub struct TabCoord {
     parser: StrParserContext,
-    _proj_context: Context,
+    proj_context: Context,
 }
 impl Default for TabCoord {
     fn default() -> Self {
@@ -30,7 +30,7 @@ impl Default for TabCoord {
             .expect("Error to set proj log level.");
         Self {
             parser: StrParserContext::default(),
-            _proj_context: ctx,
+            proj_context: ctx,
         }
     }
 }
@@ -42,7 +42,7 @@ impl super::ITab for TabCoord {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-    ) {
+    ) -> miette::Result<()> {
         let gga = raw_nmea
             .iter()
             .rev()
@@ -54,19 +54,24 @@ impl super::ITab for TabCoord {
                 let (wgs84_lon, wgs84_lat) = (wgs84_lon.clone(), wgs84_lat.clone());
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
-                let (projected_x, projected_y) = (123.0, 456.0);
-                let label = "Projected\n(UTM)"; // Your multiline string
-                let first_col_width = label
-                    .lines()
-                    .map(|line| line.chars().count()) // count characters per line
-                    .max()
-                    .unwrap_or(0);
+
+                let label = "+proj=tmerc +lat_0=0 +lon_0=118.5 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs +type=crs";
+
+                let (projected_x, projected_y) = self
+                    .proj_context
+                    .normalize_for_visualization(&self.proj_context.create_crs_to_crs(
+                        "EPSG:4326",
+                        label,
+                        &proj::Area::default(),
+                    )?)?
+                    .convert(&(wgs84_lon, wgs84_lat))?;
+
                 // Prepare rows: label and value pairs
                 let rows = [
                     ("WGS84", wgs84_lon, wgs84_lat),
                     ("GCJ02", cgj02_lon, gcj02_lat),
                     ("BD09", bd09_lon, bd09_lat),
-                    (label, projected_x, projected_y),
+                    ("Projected", projected_x, projected_y),
                 ];
 
                 // Build Table rows for ratatui
@@ -87,7 +92,7 @@ impl super::ITab for TabCoord {
                 let table = Table::new(
                     table_rows,
                     &[
-                        Constraint::Length(first_col_width as u16),
+                        Constraint::Length(10),
                         Constraint::Percentage(45),
                         Constraint::Percentage(45),
                     ],
@@ -105,6 +110,7 @@ impl super::ITab for TabCoord {
                 f.render_widget(table, area);
             }
         }
+        Ok(())
     }
     fn hint(&mut self) -> &'static [&'static str] { &[] }
 }

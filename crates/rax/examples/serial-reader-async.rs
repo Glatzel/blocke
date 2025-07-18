@@ -1,4 +1,4 @@
-use clerk::tracing::level_filters::LevelFilter;
+use clerk::LogLevel;
 use miette::IntoDiagnostic;
 use rax::io::{AsyncIRaxReader, AsyncRaxReader};
 use tokio::io::BufReader;

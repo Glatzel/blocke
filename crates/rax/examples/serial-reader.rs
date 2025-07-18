@@ -1,7 +1,7 @@
 use std::io::BufReader;
 use std::time::Duration;
 
-use clerk::tracing::level_filters::LevelFilter;
+use clerk::LogLevel;
 use miette::IntoDiagnostic;
 use rax::io::IRaxReader;
 fn main() -> miette::Result<()> {
