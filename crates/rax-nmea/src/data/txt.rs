@@ -104,7 +104,6 @@ impl fmt::Debug for Txt {
 #[cfg(test)]
 mod test {
     use clerk::{LogLevel, init_log_with_level};
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

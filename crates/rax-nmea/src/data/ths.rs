@@ -53,7 +53,6 @@ impl fmt::Debug for Ths {
 mod test {
 
     use clerk::{LogLevel, init_log_with_level};
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]

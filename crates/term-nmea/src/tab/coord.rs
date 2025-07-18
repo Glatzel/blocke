@@ -46,11 +46,10 @@ impl TabCoord {
             .iter()
             .rev()
             .find(|f| f.1 == Identifier::GGA)
-            .map(|f| Gga::new(self.parser.init(f.2.to_string()), f.0).ok())
-            .flatten();
+            .and_then(|f| Gga::new(self.parser.init(f.2.to_string()), f.0).ok());
         if let Some(gga) = gga {
             if let (Some(wgs84_lon), Some(wgs84_lat)) = (gga.lon(), gga.lat()) {
-                let (wgs84_lon, wgs84_lat) = (wgs84_lon.clone(), wgs84_lat.clone());
+                let (wgs84_lon, wgs84_lat) = (*wgs84_lon, *wgs84_lat);
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
 

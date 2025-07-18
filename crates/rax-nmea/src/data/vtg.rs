@@ -92,7 +92,6 @@ impl fmt::Debug for Vtg {
 mod test {
     use clerk::{LogLevel, init_log_with_level};
     use float_cmp::assert_approx_eq;
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
