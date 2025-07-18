@@ -78,7 +78,7 @@ impl Settings {
             .ok_or_else(|| miette::miette!("SETTINGS not initialized"))?;
 
         // Save settings to the file
-        let toml_str = toml::to_string_pretty(&*settings)
+        let toml_str = toml::to_string_pretty(settings)
             .map_err(|e| io::Error::other(format!("TOML serialize error: {e}")))
             .into_diagnostic()?;
         fs::write(Self::path(), toml_str).into_diagnostic()
