@@ -5,7 +5,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use rax_nmea::data::{Identifier, Talker};
 
-use crate::settings::{Settings, SETTINGS};
+use crate::settings::SETTINGS;
 
 #[derive(Default)]
 pub struct TabSettings {}
