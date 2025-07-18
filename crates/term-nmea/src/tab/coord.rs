@@ -3,6 +3,9 @@ use std::collections::VecDeque;
 use crossterm::event::KeyEvent;
 use proj::Context;
 use pyxis::crypto;
+use ratatui::layout::Constraint;
+use ratatui::style::{Color, Modifier, Style};
+use ratatui::widgets::{Cell, Row, Table};
 use rax::str_parser::StrParserContext;
 use rax_nmea::data::{Gga, INmeaData, Identifier, Talker};
 
@@ -36,8 +39,8 @@ impl super::ITab for TabCoord {
     fn handle_mouse(&mut self, _mouse: crossterm::event::MouseEvent) {}
     fn draw(
         &mut self,
-        _f: &mut ratatui::Frame,
-        _area: ratatui::layout::Rect,
+        f: &mut ratatui::Frame,
+        area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
         let gga = raw_nmea
@@ -50,7 +53,56 @@ impl super::ITab for TabCoord {
             if let (Some(wgs84_lon), Some(wgs84_lat)) = (gga.lon(), gga.lat()) {
                 let (wgs84_lon, wgs84_lat) = (wgs84_lon.clone(), wgs84_lat.clone());
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
-                let (_bd09_lon, _bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
+                let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
+                let (projected_x, projected_y) = (123.0, 456.0);
+                let label = "Projected\n(UTM)"; // Your multiline string
+                let first_col_width = label
+                    .lines()
+                    .map(|line| line.chars().count()) // count characters per line
+                    .max()
+                    .unwrap_or(0);
+                // Prepare rows: label and value pairs
+                let rows = [
+                    ("WGS84", wgs84_lon, wgs84_lat),
+                    ("GCJ02", cgj02_lon, gcj02_lat),
+                    ("BD09", bd09_lon, bd09_lat),
+                    (label, projected_x, projected_y),
+                ];
+
+                // Build Table rows for ratatui
+                let table_rows = rows.iter().enumerate().map(|(i, r)| {
+                    let bg = if i % 2 == 0 {
+                        Color::White
+                    } else {
+                        Color::Gray
+                    };
+                    Row::new(vec![
+                        Cell::from(r.0),
+                        Cell::from(r.1.to_string()),
+                        Cell::from(r.2.to_string()),
+                    ])
+                    .style(Style::default().bg(bg))
+                });
+
+                let table = Table::new(
+                    table_rows,
+                    &[
+                        Constraint::Length(first_col_width as u16),
+                        Constraint::Percentage(45),
+                        Constraint::Percentage(45),
+                    ],
+                )
+                .header(
+                    Row::new(vec!["CS", "X | Longitude", "Y | Latitude"]).style(
+                        Style::default()
+                            .fg(Color::Green)
+                            .bg(Color::Gray)
+                            .add_modifier(Modifier::BOLD),
+                    ),
+                )
+                .column_spacing(2);
+
+                f.render_widget(table, area);
             }
         }
     }

@@ -1,4 +1,5 @@
 use std::collections::VecDeque;
+use std::io;
 
 use crossterm::event::KeyEvent;
 use ratatui::text::{Line, Span};
@@ -18,18 +19,10 @@ impl super::ITab for TabSettings {
         area: ratatui::layout::Rect,
         _raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
-        let settings = SETTINGS.get().unwrap();
-        let lines = vec![
-            Line::from(vec![Span::raw(format!("Port: {}", settings.port))]),
-            Line::from(vec![Span::raw(format!("Baudrate: {}", settings.baud_rate))]),
-            Line::from(vec![Span::raw(format!("Capacity: {}", settings.capacity))]),
-            // Add more fields as needed
-        ];
-
-        let paragraph = Paragraph::new(lines).block(Block::default());
-
+        let toml_str =
+            toml::to_string_pretty(SETTINGS.get().unwrap()).expect("TOML serialize error: {e}");
+        let paragraph = Paragraph::new(toml_str).block(Block::default());
         f.render_widget(paragraph, area);
     }
-
     fn hint(&mut self) -> &'static [&'static str] { &[] }
 }
