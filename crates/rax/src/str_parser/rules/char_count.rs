@@ -63,14 +63,14 @@ impl<'a, const N: usize> IStrFlowRule<'a> for CharCount<N> {
 #[cfg(test)]
 mod tests {
 
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
     #[test]
     fn test_count_exact_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<4>;
         let input = "test";
         let (prefix, rest) = rule.apply(input);
@@ -80,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_count_less_than_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<2>;
         let input = "hello";
         let (prefix, rest) = rule.apply(input);
@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn test_count_more_than_length() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<10>;
         let input = "short";
         let (prefix, rest) = rule.apply(input);
@@ -100,7 +100,7 @@ mod tests {
 
     #[test]
     fn test_count_zero() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<0>;
         let input = "abc";
         let (prefix, rest) = rule.apply(input);
@@ -110,7 +110,7 @@ mod tests {
 
     #[test]
     fn test_count_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<0>;
         let input = "";
         let (prefix, rest) = rule.apply(input);
@@ -120,7 +120,7 @@ mod tests {
 
     #[test]
     fn test_count_non_ascii() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = CharCount::<2>;
         let input = "你好世界";
         // Should return first 2 chars ("你", "好") and the rest ("世界")

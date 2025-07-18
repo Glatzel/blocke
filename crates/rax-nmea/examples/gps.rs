@@ -1,14 +1,14 @@
 use std::io::BufReader;
 use std::time::Duration;
 
-use clerk::tracing::level_filters::LevelFilter;
+use clerk::LogLevel;
 use miette::IntoDiagnostic;
 use rax::io::IRaxReader;
 use rax::str_parser::StrParserContext;
 use rax_nmea::Dispatcher;
 use rax_nmea::data::*;
 fn main() -> miette::Result<()> {
-    clerk::init_log_with_level(LevelFilter::WARN);
+    clerk::init_log_with_level(LogLevel::WARN);
     let path = "COM5";
     let port = serialport::new(path, 9600)
         .timeout(Duration::from_millis(3000))

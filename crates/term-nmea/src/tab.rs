@@ -1,17 +1,17 @@
 use std::collections::VecDeque;
 
+pub use coord::TabCoord;
 use crossterm::event::{KeyEvent, MouseEvent};
+pub use info::TabInfo;
+pub use nmea::TabNmea;
 use ratatui::Frame;
 use rax_nmea::data::{Identifier, Talker};
+pub use settings::TabSettings;
 
-pub use crate::tab::info::TabInfo;
-pub use crate::tab::nmea::TabNmea;
-pub use crate::tab::settings::TabSettings;
-
+mod coord;
 mod info;
 mod nmea;
 mod settings;
-
 pub trait ITab: Default {
     fn handle_key(&mut self, key: KeyEvent);
     fn handle_mouse(&mut self, mouse: MouseEvent);
@@ -26,6 +26,7 @@ pub trait ITab: Default {
 #[derive(Clone, Debug, Copy)]
 pub enum Tab {
     Info,
+    Coord,
     Nmea,
     Settings,
 }
@@ -33,7 +34,8 @@ impl Tab {
     pub fn index(&self) -> usize {
         match self {
             Tab::Info => 0,
-            Tab::Nmea => 1,
+            Tab::Coord => 1,
+            Tab::Nmea => 2,
             Tab::Settings => 2,
         }
     }

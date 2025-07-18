@@ -44,13 +44,13 @@ impl fmt::Debug for Gpq {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
+    use clerk::{LogLevel, init_log_with_level};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_new_gpq() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$EIGPQ,RMC*3A";
         let mut ctx = StrParserContext::new();
         let gpq = Gpq::new(ctx.init(s.to_string()), Talker::GP)?;

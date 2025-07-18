@@ -96,7 +96,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
 #[cfg(test)]
 mod tests {
     use chrono::Timelike;
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use rax::str_parser::IStrFlowRule;
     use tracing_subscriber::filter::LevelFilter;
 
@@ -104,7 +104,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_valid() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("123456.789,foo,bar");
         let dt = dt.expect("Should parse valid UTC time");
@@ -118,7 +118,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_no_fraction() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("235959,rest");
         let dt = dt.expect("Should parse valid time");
@@ -132,7 +132,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_invalid_hour() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("xx3456,foo");
         assert!(dt.is_none());
@@ -141,7 +141,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_invalid_minute() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("12xx56,foo");
         assert!(dt.is_none());
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_invalid_second() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("1234xx,foo");
         assert!(dt.is_none());
@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_empty() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply(",foo");
         assert!(dt.is_none());
@@ -168,7 +168,7 @@ mod tests {
 
     #[test]
     fn test_nmea_utc_no_comma() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = NmeaTime();
         let (dt, rest) = rule.apply("123456");
         assert!(dt.is_none());

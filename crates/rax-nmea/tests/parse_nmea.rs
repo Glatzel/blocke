@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io;
 
-use clerk::init_log_with_level;
 use clerk::tracing::level_filters::LevelFilter;
+use clerk::{LogLevel, init_log_with_level};
 use miette::IntoDiagnostic;
 use rax::io::{IRaxReader, RaxReader};
 use rax::str_parser::StrParserContext;
@@ -10,7 +10,7 @@ use rax_nmea::Dispatcher;
 use rax_nmea::data::*;
 #[test]
 fn test_parse_nmea() -> miette::Result<()> {
-    init_log_with_level(LevelFilter::WARN);
+    init_log_with_level(LogLevel::WARN);
     for f in [
         "data/nmea1.log",
         "data/nmea2.log",

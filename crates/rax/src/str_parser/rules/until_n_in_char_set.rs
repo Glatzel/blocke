@@ -73,7 +73,7 @@ impl<'a, const N: usize, const M: usize> IStrFlowRule<'a> for UntilNInCharSet<'a
 mod tests {
     use std::str::FromStr;
 
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_discard() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNInCharSet::<2, 10> {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_keep_left() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNInCharSet::<2, 10> {
             filter: &DIGITS,
             mode: UntilMode::KeepLeft,
@@ -109,7 +109,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_keep_right() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNInCharSet::<2, 10> {
             filter: &DIGITS,
             mode: UntilMode::KeepRight,
@@ -123,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_not_enough_matches() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNInCharSet::<4, 10> {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -137,7 +137,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilNInCharSet::<1, 10> {
             filter: &DIGITS,
             mode: UntilMode::Discard,
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn test_until_n_in_char_set_unicode_keep_left() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter: CharSetFilter<3> = CharSetFilter::from_str("你世好")?;
         let rule = UntilNInCharSet::<2, 3> {
             filter: &filter,

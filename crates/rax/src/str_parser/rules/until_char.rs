@@ -63,14 +63,14 @@ impl<'a, const C: char> IStrFlowRule<'a> for UntilChar<C> {
 
 #[cfg(test)]
 mod tests {
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
     #[test]
     fn test_until_basic_not_include() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::Discard,
         };
@@ -82,7 +82,7 @@ mod tests {
 
     #[test]
     fn test_until_basic_include() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::KeepLeft,
         };
@@ -94,7 +94,7 @@ mod tests {
 
     #[test]
     fn test_until_keep_right() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::KeepRight,
         };
@@ -105,7 +105,7 @@ mod tests {
     }
     #[test]
     fn test_until_first() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::Discard,
         };
@@ -116,7 +116,7 @@ mod tests {
     }
     #[test]
     fn test_until_no_delimiter() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::Discard,
         };
@@ -128,7 +128,7 @@ mod tests {
 
     #[test]
     fn test_until_delimiter_at_start() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::KeepLeft,
         };
@@ -140,7 +140,7 @@ mod tests {
 
     #[test]
     fn test_until_empty_input() {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let rule = UntilChar::<';'> {
             mode: super::UntilMode::Discard,
         };

@@ -1,4 +1,16 @@
 {
     "rust-analyzer.cargo.features": "all",
-    "rust-analyzer.check.features": "all"
+    "rust-analyzer.check.features": "all",
+    "rust-analyzer.cargo.extraEnv": {
+        "Path": "${workspaceFolder}/.pixi/envs/default/Library/bin;${env:PATH}",
+        "PKG_CONFIG_PATH": "${workspaceFolder}/.pixi/envs/default/proj/x64-windows-static/lib/pkgconfig"
+    },
+    "rust-analyzer.server.extraEnv": {
+        "Path": "${workspaceFolder}/.pixi/envs/default/Library/bin;${env:PATH}",
+        "PKG_CONFIG_PATH": "${workspaceFolder}/.pixi/envs/default/proj/x64-windows-static/lib/pkgconfig"
+    },
+    "rust-analyzer.runnables.extraEnv": {
+        "Path": "${workspaceFolder}/.pixi/envs/default/Library/bin;${env:PATH}",
+        "PKG_CONFIG_PATH": "${workspaceFolder}/.pixi/envs/default/proj/x64-windows-static/lib/pkgconfig"
+    }
 }

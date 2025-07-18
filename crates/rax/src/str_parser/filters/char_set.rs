@@ -74,13 +74,13 @@ pub const ASCII_LETTERS_DIGITS: CharSetFilter<62> = CharSetFilter::new([
 
 #[cfg(test)]
 mod tests {
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_char_set_filter() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter = CharSetFilter::<3>::from_str("abc")?;
         assert!(filter.filter(&'a'));
         assert!(filter.filter(&'b'));
@@ -91,7 +91,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_from_str() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter: CharSetFilter<3> = CharSetFilter::from_str("abc")?;
         assert!(filter.filter(&'a'));
         assert!(filter.filter(&'b'));
@@ -106,7 +106,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_invalid_length() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("abcd");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -119,7 +119,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_too_short() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("ab");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -132,7 +132,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_empty() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -145,7 +145,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_invalid_chars() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("abce");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     fn test_char_set_filter_unicode() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let filter = CharSetFilter::<3>::from_str("あいう")?;
         assert!(filter.filter(&'あ'));
         assert!(filter.filter(&'い'));
@@ -170,7 +170,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_unicode_invalid_length() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("あいうえ");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -183,7 +183,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_unicode_too_short() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("あい");
         assert!(result.is_err());
         if let Err(e) = result {
@@ -196,7 +196,7 @@ mod tests {
     }
     #[test]
     fn test_char_set_filter_unicode_empty() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let result = CharSetFilter::<3>::from_str("");
         assert!(result.is_err());
         if let Err(e) = result {

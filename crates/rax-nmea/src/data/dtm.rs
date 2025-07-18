@@ -103,13 +103,13 @@ impl fmt::Debug for Dtm {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_new_dtm() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPDTM,999,,0.08,N,0.07,E,-47.7,W84*1B";
         let mut ctx = StrParserContext::new();
         let dhv = Dtm::new(ctx.init(s.to_string()), Talker::GP)?;

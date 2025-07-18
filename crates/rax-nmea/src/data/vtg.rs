@@ -90,14 +90,14 @@ impl fmt::Debug for Vtg {
 
 #[cfg(test)]
 mod test {
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use float_cmp::assert_approx_eq;
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_new_vtg() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPVTG,83.7,T,83.7,M,146.3,N,271.0,K,D*22";
         let mut ctx = StrParserContext::new();
         let vtg = Vtg::new(ctx.init(s.to_string()), Talker::GN)?;

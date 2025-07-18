@@ -2,11 +2,12 @@ use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::{fs, io};
 
+use clap_verbosity_flag::VerbosityFilter;
+use clerk::LogLevel;
 use miette::IntoDiagnostic;
 use serde::{Deserialize, Serialize};
 
 use crate::cli::CliArgs;
-
 pub static SETTINGS: OnceLock<Settings> = OnceLock::new();
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -14,6 +15,7 @@ pub struct Settings {
     pub port: String,
     pub baud_rate: u32,
     pub capacity: usize,
+    pub verbose: LogLevel,
 }
 impl Default for Settings {
     fn default() -> Self {
@@ -21,6 +23,7 @@ impl Default for Settings {
             port: "COM1".into(), // pick sensible defaults for your platform
             baud_rate: 9_600,
             capacity: 1000,
+            verbose: LogLevel::ERROR,
         }
     }
 }
@@ -53,6 +56,15 @@ impl Settings {
         if let Some(cap) = cli.capacity {
             settings.capacity = cap;
         }
+        settings.verbose = match cli.verbose.filter() {
+            VerbosityFilter::Error => LogLevel::ERROR,
+            VerbosityFilter::Warn => LogLevel::WARN,
+            VerbosityFilter::Info => LogLevel::INFO,
+            VerbosityFilter::Debug => LogLevel::DEBUG,
+            VerbosityFilter::Trace => LogLevel::TRACE,
+            VerbosityFilter::Off => LogLevel::OFF,
+        };
+
         // Initialize the global SETTINGS once with RwLock
         SETTINGS
             .set(settings)

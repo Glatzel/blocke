@@ -52,13 +52,13 @@ impl fmt::Debug for Ths {
 #[cfg(test)]
 mod test {
 
-    use clerk::init_log_with_level;
+    use clerk::{init_log_with_level,LogLevel};
     use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     #[test]
     fn test_parse() -> miette::Result<()> {
-        init_log_with_level(LevelFilter::TRACE);
+        init_log_with_level(LogLevel::TRACE);
         let s = "$GPTHS,77.52,E*34";
         let mut ctx = StrParserContext::new();
         let ths = Ths::new(ctx.init(s.to_string()), Talker::GP)?;
