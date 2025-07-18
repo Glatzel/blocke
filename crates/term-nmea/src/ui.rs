@@ -17,7 +17,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
         .split(f.area());
 
     //header
-    let header = ["Info", "NMEA", "Settings"]
+    let header = ["Info", "Coord", "NMEA", "Settings"]
         .iter()
         .cloned()
         .map(Span::from)

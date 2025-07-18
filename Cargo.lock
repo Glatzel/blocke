@@ -350,6 +350,7 @@ source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.22#6e2c84c736835eb80dc
 [[package]]
 name = "clerk"
 version = "0.0.23"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.23#40cf9af5631429351daa93009669ea10847c8a41"
 dependencies = [
  "chrono",
  "owo-colors",
