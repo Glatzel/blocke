@@ -30,7 +30,7 @@ impl Default for TabCoord {
             .expect("Error to set proj log level.");
         let pj = match &ctx.create_crs_to_crs(
             "EPSG:4326",
-            &SETTINGS.get().unwrap().tab_coord.projected_cs,
+            &SETTINGS.get().unwrap().tab_coord.custom_cs,
             &Area::default(),
         ) {
             Ok(pj) => ctx.normalize_for_visualization(pj).ok(),
@@ -119,7 +119,7 @@ impl TabCoord {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
     ) -> miette::Result<()> {
-        let input = Paragraph::new(SETTINGS.get().unwrap().tab_coord.projected_cs.clone())
+        let input = Paragraph::new(SETTINGS.get().unwrap().tab_coord.custom_cs.clone())
             .block(Block::default().title("Projected CS").borders(Borders::ALL))
             .style(Style::default().fg(Color::Yellow))
             .wrap(Wrap { trim: true });
