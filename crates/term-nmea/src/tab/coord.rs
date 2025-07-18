@@ -55,7 +55,7 @@ impl TabCoord {
 
                 let (projected_x, projected_y) = match self.proj_context.create_crs_to_crs(
                     "EPSG:4326",
-                    &to_crs,
+                    to_crs,
                     &proj::Area::default(),
                 ) {
                     Ok(pj) => self
