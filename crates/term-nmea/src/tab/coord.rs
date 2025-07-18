@@ -3,9 +3,9 @@ use std::collections::VecDeque;
 use crossterm::event::KeyEvent;
 use proj::Context;
 use pyxis::crypto;
-use ratatui::layout::Constraint;
+use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::{Color, Modifier, Style};
-use ratatui::widgets::{Cell, Row, Table};
+use ratatui::widgets::{Block, Borders, Cell, Paragraph, Row, Table};
 use rax::str_parser::StrParserContext;
 use rax_nmea::data::{Gga, INmeaData, Identifier, Talker};
 
@@ -34,14 +34,13 @@ impl Default for TabCoord {
         }
     }
 }
-impl super::ITab for TabCoord {
-    fn handle_key(&mut self, _key: KeyEvent) {}
-    fn handle_mouse(&mut self, _mouse: crossterm::event::MouseEvent) {}
-    fn draw(
+impl TabCoord {
+    fn draw_table(
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
+        to_crs: &str,
     ) -> miette::Result<()> {
         let gga = raw_nmea
             .iter()
@@ -55,17 +54,20 @@ impl super::ITab for TabCoord {
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
 
-                let label = "+proj=tmerc +lat_0=0 +lon_0=118.5 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs +type=crs";
-
-                let (projected_x, projected_y) = self
-                    .proj_context
-                    .normalize_for_visualization(&self.proj_context.create_crs_to_crs(
-                        "EPSG:4326",
-                        label,
-                        &proj::Area::default(),
-                    )?)?
-                    .convert(&(wgs84_lon, wgs84_lat))?;
-
+                let (projected_x, projected_y) = match self.proj_context.create_crs_to_crs(
+                    "EPSG:4326",
+                    &to_crs,
+                    &proj::Area::default(),
+                ) {
+                    Ok(pj) => self
+                        .proj_context
+                        .normalize_for_visualization(&pj)?
+                        .convert(&(wgs84_lon, wgs84_lat))?,
+                    Err(e) => {
+                        clerk::info!("{e}");
+                        (f64::NAN, f64::NAN)
+                    }
+                };
                 // Prepare rows: label and value pairs
                 let rows = [
                     ("WGS84", wgs84_lon, wgs84_lat),
@@ -106,10 +108,48 @@ impl super::ITab for TabCoord {
                     ),
                 )
                 .column_spacing(2);
-
                 f.render_widget(table, area);
             }
         }
+        Ok(())
+    }
+    fn draw_projected_cs(
+        &mut self,
+        f: &mut ratatui::Frame,
+        area: ratatui::layout::Rect,
+        to_crs: &str,
+    ) -> miette::Result<()> {
+        let input = Paragraph::new(to_crs)
+            .block(Block::default().title("Projected CS").borders(Borders::ALL))
+            .style(Style::default().fg(Color::Yellow));
+        f.render_widget(input, area);
+
+        // Put the cursor where the user is typing
+        f.set_cursor_position((area.x + to_crs.len() as u16 + 1, area.y + 1));
+
+        Ok(())
+    }
+}
+impl super::ITab for TabCoord {
+    fn handle_key(&mut self, _key: KeyEvent) {}
+    fn handle_mouse(&mut self, _mouse: crossterm::event::MouseEvent) {}
+    fn draw(
+        &mut self,
+        f: &mut ratatui::Frame,
+        area: ratatui::layout::Rect,
+        raw_nmea: &VecDeque<(Talker, Identifier, String)>,
+    ) -> miette::Result<()> {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([
+                Constraint::Length(5),
+                Constraint::Length(1),
+                Constraint::Min(4),
+            ])
+            .split(area);
+        let to_crs = &SETTINGS.get().unwrap().tab_coord.projected_cs;
+        self.draw_table(f, chunks[0], raw_nmea, to_crs)?;
+        self.draw_projected_cs(f, chunks[2], to_crs)?;
         Ok(())
     }
     fn hint(&mut self) -> &'static [&'static str] { &[] }

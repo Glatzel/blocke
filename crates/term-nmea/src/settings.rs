@@ -9,14 +9,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::cli::CliArgs;
 pub static SETTINGS: OnceLock<Settings> = OnceLock::new();
-
+mod tab_coord;
+pub use tab_coord::TabCoordSettings;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Settings {
     pub port: String,
     pub baud_rate: u32,
     pub capacity: usize,
     pub verbose: LogLevel,
+
+    pub tab_coord: TabCoordSettings,
 }
+
 impl Default for Settings {
     fn default() -> Self {
         Self {
@@ -24,6 +28,10 @@ impl Default for Settings {
             baud_rate: 9_600,
             capacity: 1000,
             verbose: LogLevel::ERROR,
+
+            tab_coord: TabCoordSettings {
+                projected_cs: String::default(),
+            },
         }
     }
 }
