@@ -75,7 +75,7 @@ impl TabCoord {
                     ("WGS84", wgs84_lon, wgs84_lat),
                     ("GCJ02", cgj02_lon, gcj02_lat),
                     ("BD09", bd09_lon, bd09_lat),
-                    ("Projected", projected_x, projected_y),
+                    ("Custom", projected_x, projected_y),
                 ];
 
                 // Build Table rows for ratatui
@@ -96,7 +96,7 @@ impl TabCoord {
                 let table = Table::new(
                     table_rows,
                     &[
-                        Constraint::Length(10),
+                        Constraint::Length(8),
                         Constraint::Percentage(45),
                         Constraint::Percentage(45),
                     ],
