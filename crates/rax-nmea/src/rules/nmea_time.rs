@@ -96,7 +96,7 @@ impl<'a> rax::str_parser::IStrFlowRule<'a> for NmeaTime {
 #[cfg(test)]
 mod tests {
     use chrono::Timelike;
-    use clerk::{init_log_with_level,LogLevel};
+    use clerk::{LogLevel, init_log_with_level};
     use rax::str_parser::IStrFlowRule;
     use tracing_subscriber::filter::LevelFilter;
 

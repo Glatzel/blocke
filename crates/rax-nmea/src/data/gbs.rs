@@ -123,8 +123,7 @@ impl Debug for Gbs {
 }
 #[cfg(test)]
 mod tests {
-    use clerk::{init_log_with_level, LogLevel};
-
+    use clerk::{LogLevel, init_log_with_level};
 
     use super::*;
 

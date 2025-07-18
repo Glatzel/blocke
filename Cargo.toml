@@ -21,6 +21,7 @@ crossterm = "0.29.0"
 float-cmp = "0.10.0"
 miette = "7.6.0"
 proj = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.28" }
+pyxis = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.28" }
 ratatui = "0.29.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serialport = "4.7.2"
@@ -30,7 +31,6 @@ tokio-serial = "5.4.5"
 toml = "0.8"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-pyxis={ git = "https://github.com/Glatzel/pyxis", tag = "v0.0.28" }
 
 [profile.release]
 codegen-units = 1
