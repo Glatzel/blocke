@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEvent};
 use rax_nmea::data::{Identifier, Talker};
 
-use crate::settings::Settings;
+use crate::settings::SETTINGS;
 use crate::tab::{ITab, Tab, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
@@ -18,7 +18,7 @@ pub struct App {
 impl App {
     pub fn new() -> miette::Result<Self> {
         Ok(Self {
-            raw_nmea: VecDeque::with_capacity(Settings::capacity()),
+            raw_nmea: VecDeque::with_capacity(SETTINGS.get().unwrap().capacity),
             tab: Tab::Info,
             tab_info: TabInfo::default(),
             tab_nmea: TabNmea::default(),
@@ -102,7 +102,7 @@ impl App {
         }
     }
     pub fn update(&mut self, talker: Talker, identifier: Identifier, sentence: String) {
-        if self.raw_nmea.len() > Settings::capacity() {
+        if self.raw_nmea.len() > SETTINGS.get().unwrap().capacity {
             self.raw_nmea.pop_front();
         }
         self.raw_nmea.push_back((talker, identifier, sentence));

@@ -5,7 +5,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use rax_nmea::data::{Identifier, Talker};
 
-use crate::settings::Settings;
+use crate::settings::{Settings, SETTINGS};
 
 #[derive(Default)]
 pub struct TabSettings {}
@@ -18,7 +18,7 @@ impl super::ITab for TabSettings {
         area: ratatui::layout::Rect,
         _raw_nmea: &VecDeque<(Talker, Identifier, String)>,
     ) {
-        let settings = Settings::reader(); // RwLockReadGuard
+        let settings = SETTINGS.get().unwrap();
         let lines = vec![
             Line::from(vec![Span::raw(format!("Port: {}", settings.port))]),
             Line::from(vec![Span::raw(format!("Baudrate: {}", settings.baud_rate))]),
