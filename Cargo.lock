@@ -1355,8 +1355,8 @@ dependencies = [
 
 [[package]]
 name = "proj"
-version = "0.0.28"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.28#43e35cf6110cb8ed7d40088d0527f759e29dc3b9"
+version = "0.0.29"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.29#341ef4a15bc15cebc0106599e6201dc453ec6909"
 dependencies = [
  "clerk 0.0.22",
  "envoy",
@@ -1369,7 +1369,7 @@ dependencies = [
 [[package]]
 name = "proj-sys"
 version = "9.6.2"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.28#43e35cf6110cb8ed7d40088d0527f759e29dc3b9"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.29#341ef4a15bc15cebc0106599e6201dc453ec6909"
 dependencies = [
  "bindgen",
  "dunce",
@@ -1379,8 +1379,8 @@ dependencies = [
 
 [[package]]
 name = "pyxis"
-version = "0.0.28"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.28#43e35cf6110cb8ed7d40088d0527f759e29dc3b9"
+version = "0.0.29"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.29#341ef4a15bc15cebc0106599e6201dc453ec6909"
 dependencies = [
  "clerk 0.0.22",
  "num-traits",

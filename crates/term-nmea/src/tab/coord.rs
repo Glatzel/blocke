@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use crossterm::event::KeyEvent;
-use proj::Context;
+use proj::{Area, Context, Proj};
 use pyxis::crypto;
 use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::{Color, Modifier, Style};
@@ -13,11 +13,11 @@ use crate::settings::SETTINGS;
 
 pub struct TabCoord {
     parser: StrParserContext,
-    proj_context: Context,
+    pj: Proj,
 }
-impl Default for TabCoord {
+impl<'a> Default for TabCoord {
     fn default() -> Self {
-        let ctx = Context::default();
+        let ctx = Context::new();
         let level = match SETTINGS.get().unwrap().verbose {
             clerk::LogLevel::ERROR => proj::LogLevel::Error,
             clerk::LogLevel::WARN => proj::LogLevel::Debug,
@@ -26,11 +26,24 @@ impl Default for TabCoord {
             clerk::LogLevel::TRACE => proj::LogLevel::Trace,
             clerk::LogLevel::OFF => proj::LogLevel::None,
         };
-        ctx.set_log_level(level)
+        ctx.clone()
+            .set_log_level(level)
             .expect("Error to set proj log level.");
+        let pj = ctx
+            .clone()
+            .normalize_for_visualization(
+                &ctx.create_crs_to_crs(
+                    "EPSG:4326",
+                    &SETTINGS.get().unwrap().tab_coord.projected_cs,
+                    &Area::default(),
+                )
+                .unwrap(),
+            )
+            .unwrap();
+
         Self {
             parser: StrParserContext::default(),
-            proj_context: ctx,
+            pj,
         }
     }
 }
@@ -40,7 +53,6 @@ impl TabCoord {
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
         raw_nmea: &VecDeque<(Talker, Identifier, String)>,
-        to_crs: &str,
     ) -> miette::Result<()> {
         let gga = raw_nmea
             .iter()
@@ -53,20 +65,7 @@ impl TabCoord {
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
 
-                let (projected_x, projected_y) = match self.proj_context.create_crs_to_crs(
-                    "EPSG:4326",
-                    to_crs,
-                    &proj::Area::default(),
-                ) {
-                    Ok(pj) => self
-                        .proj_context
-                        .normalize_for_visualization(&pj)?
-                        .convert(&(wgs84_lon, wgs84_lat))?,
-                    Err(e) => {
-                        clerk::info!("{e}");
-                        (f64::NAN, f64::NAN)
-                    }
-                };
+                let (projected_x, projected_y) = self.pj.convert(&(wgs84_lon, wgs84_lat))?;
                 // Prepare rows: label and value pairs
                 let rows = [
                     ("WGS84", wgs84_lon, wgs84_lat),
@@ -116,9 +115,8 @@ impl TabCoord {
         &mut self,
         f: &mut ratatui::Frame,
         area: ratatui::layout::Rect,
-        to_crs: &str,
     ) -> miette::Result<()> {
-        let input = Paragraph::new(to_crs)
+        let input = Paragraph::new(SETTINGS.get().unwrap().tab_coord.projected_cs.clone())
             .block(Block::default().title("Projected CS").borders(Borders::ALL))
             .style(Style::default().fg(Color::Yellow))
             .wrap(Wrap { trim: true });
@@ -144,9 +142,8 @@ impl super::ITab for TabCoord {
                 Constraint::Min(4),
             ])
             .split(area);
-        let to_crs = &SETTINGS.get().unwrap().tab_coord.projected_cs;
-        self.draw_table(f, chunks[0], raw_nmea, to_crs)?;
-        self.draw_projected_cs(f, chunks[2], to_crs)?;
+        self.draw_table(f, chunks[0], raw_nmea)?;
+        self.draw_projected_cs(f, chunks[2])?;
         Ok(())
     }
     fn hint(&mut self) -> &'static [&'static str] { &[] }
