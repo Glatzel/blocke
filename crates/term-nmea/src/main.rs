@@ -11,7 +11,7 @@ use ratatui::backend::CrosstermBackend;
 use tokio::sync::mpsc;
 use tokio::task;
 
-use crate::settings::Settings;
+use crate::settings::{SETTINGS, Settings};
 mod app;
 mod cli;
 mod logging;
@@ -19,6 +19,7 @@ mod serial;
 mod settings;
 mod tab;
 mod ui;
+
 /// Entry point of the async TUI application
 #[tokio::main]
 async fn main() -> miette::Result<()> {
@@ -47,8 +48,8 @@ async fn main() -> miette::Result<()> {
 
     // Spawn async task to read from serial port
     tokio::spawn(serial::start_serial_reader(
-        Settings::port(),
-        Settings::baud_rate(),
+        SETTINGS.get().unwrap().port.clone(),
+        SETTINGS.get().unwrap().baud_rate,
         tx,
     ));
 

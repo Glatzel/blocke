@@ -1639,7 +1639,6 @@ dependencies = [
  "clerk",
  "crossterm 0.29.0",
  "miette",
- "once_cell",
  "ratatui",
  "rax",
  "rax-nmea",
