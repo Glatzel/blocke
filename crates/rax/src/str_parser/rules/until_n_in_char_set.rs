@@ -74,7 +74,6 @@ mod tests {
     use std::str::FromStr;
 
     use clerk::{LogLevel, init_log_with_level};
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
     use crate::str_parser::filters::DIGITS;
