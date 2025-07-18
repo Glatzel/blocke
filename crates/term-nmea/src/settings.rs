@@ -30,7 +30,7 @@ impl Default for Settings {
             verbose: LogLevel::ERROR,
 
             tab_coord: TabCoordSettings {
-                projected_cs: String::default(),
+                custom_cs: String::default(),
             },
         }
     }
