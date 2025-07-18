@@ -36,7 +36,7 @@ impl Tab {
             Tab::Info => 0,
             Tab::Coord => 1,
             Tab::Nmea => 2,
-            Tab::Settings => 2,
+            Tab::Settings => 3,
         }
     }
 }
