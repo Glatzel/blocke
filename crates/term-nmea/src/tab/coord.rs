@@ -39,7 +39,7 @@ impl Default for TabCoord {
 
         Self {
             parser: StrParserContext::default(),
-            pj: pj,
+            pj,
         }
     }
 }
@@ -64,8 +64,7 @@ impl TabCoord {
                 let (projected_x, projected_y) = self
                     .pj
                     .clone()
-                    .map(|f| f.convert(&(wgs84_lon, wgs84_lat)).ok())
-                    .flatten()
+                    .and_then(|f| f.convert(&(wgs84_lon, wgs84_lat)).ok())
                     .unwrap_or_else(|| {
                         clerk::warn!("Proj projection failed.");
                         (f64::NAN, f64::NAN)
