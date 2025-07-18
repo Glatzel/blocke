@@ -75,7 +75,6 @@ impl<'a> IStrFlowRule<'a> for UntilStr {
 #[cfg(test)]
 mod tests {
     use clerk::{LogLevel, init_log_with_level};
-    use tracing_subscriber::filter::LevelFilter;
 
     use super::*;
 
