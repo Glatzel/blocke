@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use crossterm::event::KeyEvent;
-use ratatui::widgets::{Block, Paragraph};
+use ratatui::widgets::{Block, Paragraph, Wrap};
 use rax_nmea::data::{Identifier, Talker};
 
 use crate::settings::SETTINGS;
