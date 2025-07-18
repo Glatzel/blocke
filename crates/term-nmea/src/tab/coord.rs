@@ -15,7 +15,7 @@ pub struct TabCoord {
     parser: StrParserContext,
     pj: Proj,
 }
-impl<'a> Default for TabCoord {
+impl Default for TabCoord {
     fn default() -> Self {
         let ctx = Context::new();
         let level = match SETTINGS.get().unwrap().verbose {
@@ -26,11 +26,9 @@ impl<'a> Default for TabCoord {
             clerk::LogLevel::TRACE => proj::LogLevel::Trace,
             clerk::LogLevel::OFF => proj::LogLevel::None,
         };
-        ctx.clone()
-            .set_log_level(level)
+        ctx.set_log_level(level)
             .expect("Error to set proj log level.");
         let pj = ctx
-            .clone()
             .normalize_for_visualization(
                 &ctx.create_crs_to_crs(
                     "EPSG:4326",
