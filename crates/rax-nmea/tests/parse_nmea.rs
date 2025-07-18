@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io;
 
-use clerk::tracing::level_filters::LevelFilter;
 use clerk::{LogLevel, init_log_with_level};
 use miette::IntoDiagnostic;
 use rax::io::{IRaxReader, RaxReader};

@@ -101,7 +101,11 @@ impl App {
         };
         clerk::trace!("Switch to Tab: {}", self.current_tab_name());
     }
-    pub fn draw(&mut self, f: &mut ratatui::Frame, area: ratatui::layout::Rect) -> miette::Result<()>{
+    pub fn draw(
+        &mut self,
+        f: &mut ratatui::Frame,
+        area: ratatui::layout::Rect,
+    ) -> miette::Result<()> {
         match self.tab {
             Tab::Info => self.tab_info.draw(f, area, &self.raw_nmea),
             Tab::Coord => self.tab_coord.draw(f, area, &self.raw_nmea),
