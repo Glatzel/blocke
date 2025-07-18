@@ -1,4 +1,3 @@
-
 Set-Location $PSScriptRoot/..
 pixi install
 
