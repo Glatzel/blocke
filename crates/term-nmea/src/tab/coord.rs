@@ -13,7 +13,7 @@ use crate::settings::SETTINGS;
 
 pub struct TabCoord {
     parser: StrParserContext,
-    pj: Proj,
+    pj: Option<Proj>,
 }
 impl Default for TabCoord {
     fn default() -> Self {
@@ -28,20 +28,18 @@ impl Default for TabCoord {
         };
         ctx.set_log_level(level)
             .expect("Error to set proj log level.");
-        let pj = ctx
-            .normalize_for_visualization(
-                &ctx.create_crs_to_crs(
-                    "EPSG:4326",
-                    &SETTINGS.get().unwrap().tab_coord.projected_cs,
-                    &Area::default(),
-                )
-                .unwrap(),
-            )
-            .unwrap();
+        let pj = match &ctx.create_crs_to_crs(
+            "EPSG:4326",
+            &SETTINGS.get().unwrap().tab_coord.projected_cs,
+            &Area::default(),
+        ) {
+            Ok(pj) => ctx.normalize_for_visualization(pj).ok(),
+            Err(_) => None,
+        };
 
         Self {
             parser: StrParserContext::default(),
-            pj,
+            pj: pj,
         }
     }
 }
@@ -63,7 +61,15 @@ impl TabCoord {
                 let (cgj02_lon, gcj02_lat) = crypto::wgs84_to_gcj02(wgs84_lon, wgs84_lat);
                 let (bd09_lon, bd09_lat) = crypto::gcj02_to_bd09(cgj02_lon, gcj02_lat);
 
-                let (projected_x, projected_y) = self.pj.convert(&(wgs84_lon, wgs84_lat))?;
+                let (projected_x, projected_y) = self
+                    .pj
+                    .clone()
+                    .map(|f| f.convert(&(wgs84_lon, wgs84_lat)).ok())
+                    .flatten()
+                    .unwrap_or_else(|| {
+                        clerk::warn!("Proj projection failed.");
+                        (f64::NAN, f64::NAN)
+                    });
                 // Prepare rows: label and value pairs
                 let rows = [
                     ("WGS84", wgs84_lon, wgs84_lat),
