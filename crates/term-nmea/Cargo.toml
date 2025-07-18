@@ -10,6 +10,7 @@ clap-verbosity-flag = { workspace = true }
 clerk = { workspace = true, features = ["log"] }
 crossterm = { workspace = true }
 miette = { workspace = true, features = ["fancy"] }
+proj = { workspace = true }
 ratatui = { workspace = true }
 rax = { workspace = true, features = ["async"] }
 rax-nmea = { workspace = true }
