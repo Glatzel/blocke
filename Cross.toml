@@ -7,6 +7,5 @@ pre-build = [
   "apt-get update",
   "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH",
   "curl -fsSL https://pixi.sh/install.sh | sh",
-  "pixi install",
-  "export PKG_CONFIG_PATH=\"$(realpath ./.pixi/envs/default/proj/arm64-linux-release/lib/pkgconfig)\"",
+  "pixi install"
 ]
