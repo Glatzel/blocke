@@ -1,6 +1,6 @@
 param([switch]$Release)
 Set-Location $PSScriptRoot/..
-$env:Path="/root/.pixi/bin"+":"+"$env:Path"
+
 cargo install cross
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
 if ($Release) {
