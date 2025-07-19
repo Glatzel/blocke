@@ -4,7 +4,7 @@ pre-build = [
   "dpkg --add-architecture $CROSS_DEB_ARCH",
   # Install the dev package (brings in libutil, librt, pthread, etc. for arm64)
   "apt-get update",
-  "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH",
+  "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH libstdc++-dev:$CROSS_DEB_ARCH",
   "curl -fsSL https://pixi.sh/install.sh | sh",
   "~/.pixi/bin/pixi global install proj -c https://repo.prefix.dev/glatzel",
 ]
