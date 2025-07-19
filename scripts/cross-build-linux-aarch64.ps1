@@ -7,7 +7,7 @@ sudo dpkg --add-architecture arm64
       gcc-aarch64-linux-gnu `
       g++-aarch64-linux-gnu `
       qemu-user-static `
-      libudev:arm64
+      libudev-dev:arm64
 $env:PKG_CONFIG_PATH='/usr/lib/aarch64-linux-gnu/pkgconfig'
 $env:PKG_CONFIG_ALLOW_CROSS='1'
 $env:PKG_CONFIG_LIBDIR='/usr/lib/aarch64-linux-gnu/pkgconfig'
