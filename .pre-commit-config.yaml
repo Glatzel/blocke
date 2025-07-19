@@ -17,6 +17,7 @@ repos:
       # rust
       - id: cargo-clippy
       - id: cargo-fmt
+      - id: cargo-machete 
 
       # misc
       - id: taplo
