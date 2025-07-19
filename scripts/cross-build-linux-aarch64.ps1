@@ -8,7 +8,9 @@ sudo dpkg --add-architecture arm64
       g++-aarch64-linux-gnu `
       libproj-dev:arm64 `
       pkg-config:arm64 `
-      qemu-user-static
+      qemu-user-static `
+      libudev:arm64 `
+      libc6-dev:arm64
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
 if ($Release) {
     cross build --target aarch64-unknown-linux-gnu --all-features --release --bins
