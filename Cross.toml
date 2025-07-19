@@ -4,11 +4,5 @@ pre-build = [
   "dpkg --add-architecture $CROSS_DEB_ARCH",
   # Install the dev package (brings in libutil, librt, pthread, etc. for arm64)
   "apt-get update",
-  "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH",
-<<<<<<< HEAD
-  ""
-=======
-  "curl -fsSL https://pixi.sh/install.sh | sh",
-  "~/.pixi/bin/pixi install",
->>>>>>> 0c7f19eaf6bbf21c4e1db804e40d37de1ae33d6a
+  "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH"
 ]
