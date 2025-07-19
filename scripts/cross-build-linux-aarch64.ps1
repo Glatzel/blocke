@@ -13,6 +13,7 @@ sudo dpkg --add-architecture arm64
       libc6-dev:arm64
 $env:PKG_CONFIG_PATH='/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig'
 $env:PKG_CONFIG_ALLOW_CROSS=1
+$env:PKG_CONFIG_LIBDIR='/usr/lib/aarch64-linux-gnu/pkgconfig'
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
 if ($Release) {
     cross build --target aarch64-unknown-linux-gnu --all-features --release --bins
