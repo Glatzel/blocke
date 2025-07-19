@@ -1835,7 +1835,6 @@ dependencies = [
  "tokio",
  "tokio-serial",
  "toml",
- "tracing",
  "tracing-subscriber",
 ]
 
