@@ -7,5 +7,5 @@ pre-build = [
   "apt-get install --assume-yes libudev-dev:$CROSS_DEB_ARCH libc6-dev:$CROSS_DEB_ARCH",
   "curl -fsSL https://pixi.sh/install.sh | sh",
   "~/.pixi/bin/pixi global install proj -c https://repo.prefix.dev/glatzel",
-"export PKG_CONFIG_PATH='~/.pixi/envs/proj/proj/arm64-linux-release/lib/pkgconfig'"
+  "export PKG_CONFIG_PATH='~/.pixi/envs/proj/proj/arm64-linux-release/lib/pkgconfig'",
 ]
