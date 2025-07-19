@@ -1,7 +1,7 @@
 param([switch]$Release)
 Set-Location $PSScriptRoot/..
 cargo install cross
-$env:PKG_CONFIG_PATH = ./.pixi/envs/default/proj/arm64-linux-release/lib/pkgconfig
+$env:PKG_CONFIG_PATH = "./.pixi/envs/default/proj/arm64-linux-release/lib/pkgconfig"
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
 if ($Release) {
     cross build --target aarch64-unknown-linux-gnu --all-features --release --bins
