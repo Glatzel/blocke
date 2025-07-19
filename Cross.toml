@@ -9,3 +9,5 @@ pre-build = [
   "~/.pixi/bin/pixi global install proj -c https://repo.prefix.dev/glatzel",
   "export PKG_CONFIG_PATH='~/.pixi/envs/proj/proj/arm64-linux-release/lib/pkgconfig'",
 ]
+[target.aarch64-unknown-linux-gnu.env]
+volume=["PKG_CONFIG_PATH='~/.pixi/envs/proj/proj/arm64-linux-release/lib/pkgconfig'"]
