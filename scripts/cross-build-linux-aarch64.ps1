@@ -1,6 +1,7 @@
 param([switch]$Release)
 Set-Location $PSScriptRoot/..
 rustup target add aarch64-unknown-linux-gnu
+sudo sed -i 's/^# deb/deb/' /etc/apt/sources.list
 sudo dpkg --add-architecture arm64
     sudo apt-get update
     sudo apt-get install -y `
