@@ -6,7 +6,8 @@ aria2c -c -x16 -s16 `
     https://repo.prefix.dev/glatzel/linux-aarch64/proj-9.6.2-he8cfe8b_2.conda `
     -o proj.zip
 7z x ./temp/proj.zip -otemp
-tar --use-compress-program=unzstd -xf ./temp/pkg-proj*.tar -C ./temp
+zstd -d ./temp/pkg-proj*.tar.zst -o - | tar -xf - -C ./temp
+
 $env:PKG_CONFIG_PATH = Resolve-Path ./temp/proj/arm64-linux-release/lib/pkgconfig
 cargo install cross
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
