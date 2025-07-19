@@ -8,7 +8,7 @@ aria2c -c -x16 -s16 `
 7z x ./temp/proj.zip -otemp
 7z x ./temp/pkg-proj*.tar.zst -otemp
 
-
+cargo install cross
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
 if ($Release) {
     cross build --target aarch64-unknown-linux-gnu --all-features --release --bins
