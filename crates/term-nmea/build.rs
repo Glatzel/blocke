@@ -16,6 +16,6 @@ fn main() {
             );
         }
     } else {
-        println!("cargo:warning=Skipping build script for target {}", target);
+        println!("cargo:warning=Skipping build script for target {target}");
     }
 }
