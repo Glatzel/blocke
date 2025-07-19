@@ -20,8 +20,8 @@ criterion = { package = "codspeed-criterion-compat", version = "2.10.1" }
 crossterm = "0.29.0"
 float-cmp = "0.10.0"
 miette = "7.6.0"
-proj = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.30" }
-pyxis = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.29" }
+proj = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.31" }
+pyxis = { git = "https://github.com/Glatzel/pyxis", tag = "v0.0.31" }
 ratatui = "0.29.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serialport = "4.7.2"

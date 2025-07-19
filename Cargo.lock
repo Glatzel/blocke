@@ -153,7 +153,7 @@ dependencies = [
  "bitflags 2.9.1",
  "cexpr",
  "clang-sys",
- "itertools 0.13.0",
+ "itertools 0.10.5",
  "log",
  "prettyplease",
  "proc-macro2",
@@ -344,11 +344,6 @@ checksum = "b94f61472cee1439c0b966b47e3aca9ae07e45d070759512cd390ea2bebc6675"
 
 [[package]]
 name = "clerk"
-version = "0.0.22"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.22#6e2c84c736835eb80dc85b411d5be227b777e9e0"
-
-[[package]]
-name = "clerk"
 version = "0.0.23"
 source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.23#40cf9af5631429351daa93009669ea10847c8a41"
 dependencies = [
@@ -424,7 +419,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "117725a109d387c937a1533ce01b450cbde6b88abceea8473c4d7a85853cda3c"
 dependencies = [
  "lazy_static",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -629,8 +624,8 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "envoy"
-version = "0.0.22"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.22#6e2c84c736835eb80dc85b411d5be227b777e9e0"
+version = "0.0.23"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.23#40cf9af5631429351daa93009669ea10847c8a41"
 
 [[package]]
 name = "equivalent"
@@ -645,7 +640,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "778e2ac28f6c47af28e4907f13ffd1e1ddbd400980a9abd7c8df189bf578a5ad"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -909,7 +904,7 @@ checksum = "e04d7f318608d35d4b61ddd75cbdaee86b023ebe2bd5a66ee0915f0bf93095a9"
 dependencies = [
  "hermit-abi",
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1355,10 +1350,10 @@ dependencies = [
 
 [[package]]
 name = "proj"
-version = "0.0.30"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.30#1a2432085ecde516f766d1e5289b6ca415d5cce3"
+version = "0.0.31"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
- "clerk 0.0.22",
+ "clerk",
  "envoy",
  "miette",
  "num_enum",
@@ -1369,7 +1364,7 @@ dependencies = [
 [[package]]
 name = "proj-sys"
 version = "9.6.2"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.30#1a2432085ecde516f766d1e5289b6ca415d5cce3"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
  "bindgen",
  "dunce",
@@ -1379,10 +1374,10 @@ dependencies = [
 
 [[package]]
 name = "pyxis"
-version = "0.0.29"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.29#341ef4a15bc15cebc0106599e6201dc453ec6909"
+version = "0.0.31"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
- "clerk 0.0.22",
+ "clerk",
  "num-traits",
 ]
 
@@ -1427,7 +1422,7 @@ name = "rax"
 version = "0.0.26"
 dependencies = [
  "async-trait",
- "clerk 0.0.23",
+ "clerk",
  "codspeed-criterion-compat",
  "miette",
  "serialport",
@@ -1442,7 +1437,7 @@ name = "rax-nmea"
 version = "0.0.26"
 dependencies = [
  "chrono",
- "clerk 0.0.23",
+ "clerk",
  "codspeed-criterion-compat",
  "float-cmp",
  "miette",
@@ -1548,7 +1543,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1561,7 +1556,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.9.4",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1816,7 +1811,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rustix 1.0.8",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1827,7 +1822,7 @@ dependencies = [
  "chrono",
  "clap",
  "clap-verbosity-flag",
- "clerk 0.0.23",
+ "clerk",
  "crossterm 0.29.0",
  "miette",
  "proj",
@@ -2236,7 +2231,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
