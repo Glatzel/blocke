@@ -61,7 +61,7 @@ jobs:
           fail_ci_if_error: true
 
   cross-build-linux-aarch64:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up pixi
