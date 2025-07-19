@@ -7,6 +7,7 @@ aria2c -c -x16 -s16 `
     -o proj.zip
 7z x ./temp/proj.zip -otemp
 7z x ./temp/pkg-proj*.tar.zst -otemp
+7z x ./temp/pkg-proj*.tar -otemp
 $env:PKG_CONFIG_PATH = Resolve-Path ./temp/proj/arm64-linux-release/lib/pkgconfig
 cargo install cross
 if ($IsWindows) { rustup toolchain add stable-x86_64-unknown-linux-gnu --profile minimal --force-non-host }
