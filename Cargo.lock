@@ -361,6 +361,11 @@ version = "0.0.24"
 source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.24#3467e10006453ffa8d480c819286811cd7f20602"
 
 [[package]]
+name = "clerk"
+version = "0.0.24"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.24#3467e10006453ffa8d480c819286811cd7f20602"
+
+[[package]]
 name = "codspeed"
 version = "2.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1355,8 +1360,8 @@ dependencies = [
 
 [[package]]
 name = "proj"
-version = "0.0.33"
-source = "git+https://github.com/Glatzel/pyxis?branch=cross#77f953d4dc9df08ab7a67aa8d0f5ff9891981972"
+version = "0.0.31"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
  "clerk 0.0.24",
  "envoy",
@@ -1369,7 +1374,7 @@ dependencies = [
 [[package]]
 name = "proj-sys"
 version = "9.6.2"
-source = "git+https://github.com/Glatzel/pyxis?branch=cross#77f953d4dc9df08ab7a67aa8d0f5ff9891981972"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
  "bindgen",
  "dunce",
