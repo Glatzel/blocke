@@ -3,8 +3,8 @@ $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 if ($IsLinux) {
     Set-Location $PSScriptRoot/..
-    sudo dpkg --add-architecture arm64
     sudo apt-get update
+    sudo dpkg --add-architecture arm64
     sudo apt-get install -y g++-aarch64-linux-gnu
     wget https://launchpad.net/ubuntu/+archive/primary/+files/librust-libudev-dev_0.3.0-1_arm64.deb
     sudo dpkg -i --force-architecture --force-depends librust-libudev-dev_0.3.0-1_arm64.deb
