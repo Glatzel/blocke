@@ -3,10 +3,9 @@ $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 if ($IsLinux) {
     Set-Location $PSScriptRoot/..
-    cargo tree
     sudo apt-get update
     sudo dpkg --add-architecture arm64
-    sudo apt-get install -y musl-tools musl-dev gcc-aarch64-linux-musl
+    # sudo apt-get install -y musl-tools musl-dev gcc-aarch64-linux-musl
     rustup target add aarch64-unknown-linux-musl
     pixi global install proj -c https://repo.prefix.dev/glatzel --platform linux-aarch64
 
