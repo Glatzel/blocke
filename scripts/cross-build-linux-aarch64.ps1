@@ -4,6 +4,31 @@ $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 
 if ($IsLinux) {
+    # Define version and download URL
+    $ZIG_VERSION = "0.11.0"
+    $ZIG_TAR = "zig-linux-x86_64-$ZIG_VERSION.tar.xz"
+    $ZIG_DIR = "zig-linux-x86_64-$ZIG_VERSION"
+    $ZIG_URL = "https://ziglang.org/download/$ZIG_VERSION/$ZIG_TAR"
+
+    # Download Zig
+    if (-not (Test-Path $ZIG_TAR)) {
+        Write-Host "Downloading Zig $ZIG_VERSION..."
+        Invoke-WebRequest -Uri $ZIG_URL -OutFile $ZIG_TAR
+    }
+
+    # Extract Zig
+    if (-not (Test-Path $ZIG_DIR)) {
+        Write-Host "Extracting Zig..."
+        tar -xf $ZIG_TAR
+    }
+
+    # Add to PATH temporarily (for this session)
+    $zigFullPath = Resolve-Path "./$ZIG_DIR"
+    $env:PATH = "$zigFullPath" + ":" + $env:PATH
+
+    # Confirm installation
+    zig version
+
     Set-Location "$PSScriptRoot/.."
 
     sudo apt update
