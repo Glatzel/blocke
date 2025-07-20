@@ -24,4 +24,3 @@ if ($IsLinux) {
     Copy-Item "$ROOT/target/aarch64-unknown-linux-gnu/release/term-nmea" ./dist
     pixi run rattler-build build --target-platform linux-aarch64
 }
-
