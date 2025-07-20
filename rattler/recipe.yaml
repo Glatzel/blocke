@@ -1,5 +1,5 @@
 context:
-  name: cargo-bloat
+  name: blocke
 package:
   version: 0.0.1
   name: ${{ name }}
@@ -16,4 +16,4 @@ about:
   description: |
     [exposed]
 
-    ${{ name }} = "${{ name }}"
+    term-nmea = "term-nmea"
