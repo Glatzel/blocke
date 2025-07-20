@@ -1,0 +1,19 @@
+context:
+  name: cargo-bloat
+package:
+  version: 0.0.1
+  name: ${{ name }}
+build:
+  number: 0
+  script:
+    - if: win
+      then:
+        - pwsh -f %RECIPE_DIR%\build-${{ name }}.ps1
+    - if: unix
+      then:
+        - pwsh -f $RECIPE_DIR/build-${{ name }}.ps1
+about:
+  description: |
+    [exposed]
+
+    ${{ name }} = "${{ name }}"

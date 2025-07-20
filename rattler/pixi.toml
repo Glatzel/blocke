@@ -1,0 +1,6 @@
+[workspace]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-arm64"]
+
+[dependencies]
+rattler-build = "==0.44.0" 

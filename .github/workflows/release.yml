@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v1.2.3)'
+        type: string
+        required:  true
+
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+  
+jobs:
+  term-nmea:
+    
+  release:
+    permissions:
+      contents: write
+    # needs: [rattler-pyxis, rattler-python, rattler-python-cuda, nukpg, cargo-doc, python-doc]
+    uses: Glatzel/template/.github/workflows/release.yml@main
+    with:
+      override: true
+      tag: ${{inputs.tag}}
+      have-changelog: true
+      assets: true
