@@ -6,8 +6,8 @@ if ($IsLinux) {
     cargo tree
     sudo apt-get update
     sudo dpkg --add-architecture arm64
-    sudo apt-get install -y g++-aarch64-linux-gnu
-    rustup target add aarch64-unknown-linux-gnu
+    sudo apt-get install -y musl-tools musl-dev gcc-aarch64-linux-musl
+    rustup target add aarch64-unknown-linux-musl
     pixi global install proj -c https://repo.prefix.dev/glatzel --platform linux-aarch64
 
     # Set PKG_CONFIG_PATH to vcpkg's pkgconfig directory
@@ -15,11 +15,11 @@ if ($IsLinux) {
     $env:PKG_CONFIG_PATH = "$p" + ":" + "/usr/lib/aarch64-linux-gnu/pkgconfig" + ":" + "$env:PKG_CONFIG_PATH"
     $env:PKG_CONFIG_ALLOW_CROSS = 1
     if ($Release) {
-        cargo build --target aarch64-unknown-linux-gnu --all-features --release --bins
+        cargo build --target aarch64-unknown-linux-musl --all-features --release --bins
     }
     else {
-        cargo build --target aarch64-unknown-linux-gnu --all-features
-        cargo build --target aarch64-unknown-linux-gnu --all-features --examples
+        cargo build --target aarch64-unknown-linux-musl --all-features
+        cargo build --target aarch64-unknown-linux-musl --all-features --examples
     }
 }
 else { exit 1 }
