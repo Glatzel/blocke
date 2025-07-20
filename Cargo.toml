@@ -9,6 +9,7 @@ version = "0.0.1"
 [workspace.dependencies]
 rax = { path = "./crates/rax" }
 rax-nmea = { path = "./crates/rax-nmea" }
+term-nmea = { path = "./crates/term-nmea" }
 
 async-trait = { version = "0.1" }
 chrono = { version = "0.4.40", features = ["serde"] }
