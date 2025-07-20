@@ -6,8 +6,10 @@ if ($IsLinux) {
     sudo apt-get update
     sudo dpkg --add-architecture arm64
     sudo apt-get install -y g++-aarch64-linux-gnu
-    wget 	http://ports.ubuntu.com/pool/main/s/systemd/libudev-dev_255.4-1ubuntu8.10_arm64.deb
+    wget http://ports.ubuntu.com/pool/main/s/systemd/libudev-dev_255.4-1ubuntu8.10_arm64.deb
     sudo dpkg -i --force-architecture --force-depends libudev-dev_255.4-1ubuntu8.10_arm64.deb
+    wget http://archive.ubuntu.com/ubuntu/pool/main/c/cross-toolchain-base/libc6-dev-arm64-cross_2.39-0ubuntu8cross1_all.deb
+    sudo dpkg -i --force-architecture --force-depends libc6-dev-arm64-cross_2.39-0ubuntu8cross1_all.deb
     rustup target add aarch64-unknown-linux-gnu
     pixi global install proj -c https://repo.prefix.dev/glatzel --platform linux-aarch64
 
