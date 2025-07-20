@@ -7,8 +7,7 @@ if ($IsLinux) {
     sudo dpkg --add-architecture arm64
     sudo apt-get install -y `
         g++-aarch64-linux-gnu `
-        libudev-dev:arm64 `
-        libc6-dev:arm64
+        librust-libudev-dev
     rustup target add aarch64-unknown-linux-gnu
     pixi global install proj -c https://repo.prefix.dev/glatzel --platform linux-aarch64
 
