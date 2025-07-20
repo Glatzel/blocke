@@ -6,7 +6,7 @@ if ($IsLinux) {
     sudo apt-get update
     # sudo dpkg --add-architecture arm64
     sudo apt-get install -y g++-aarch64-linux-gnu
-    rustup target add aarch64-unknown-linux-musl
+    rustup target add musl-dev
     pixi global install proj -c https://repo.prefix.dev/glatzel --platform linux-aarch64
 
     # Set PKG_CONFIG_PATH to vcpkg's pkgconfig directory
