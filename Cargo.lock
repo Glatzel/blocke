@@ -356,6 +356,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "clerk"
+version = "0.0.24"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.24#3467e10006453ffa8d480c819286811cd7f20602"
+
+[[package]]
 name = "codspeed"
 version = "2.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -624,8 +629,8 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "envoy"
-version = "0.0.23"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.23#40cf9af5631429351daa93009669ea10847c8a41"
+version = "0.0.24"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.24#3467e10006453ffa8d480c819286811cd7f20602"
 
 [[package]]
 name = "equivalent"
@@ -1350,10 +1355,10 @@ dependencies = [
 
 [[package]]
 name = "proj"
-version = "0.0.31"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
+version = "0.0.32"
+source = "git+https://github.com/Glatzel/pyxis?branch=cross#68c6b06aea6a064106e4d63a788f66739c94ee80"
 dependencies = [
- "clerk",
+ "clerk 0.0.24",
  "envoy",
  "miette",
  "num_enum",
@@ -1364,7 +1369,7 @@ dependencies = [
 [[package]]
 name = "proj-sys"
 version = "9.6.2"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
+source = "git+https://github.com/Glatzel/pyxis?branch=cross#68c6b06aea6a064106e4d63a788f66739c94ee80"
 dependencies = [
  "bindgen",
  "dunce",
@@ -1377,7 +1382,7 @@ name = "pyxis"
 version = "0.0.31"
 source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
 dependencies = [
- "clerk",
+ "clerk 0.0.23",
  "num-traits",
 ]
 
@@ -1422,7 +1427,7 @@ name = "rax"
 version = "0.0.26"
 dependencies = [
  "async-trait",
- "clerk",
+ "clerk 0.0.23",
  "codspeed-criterion-compat",
  "miette",
  "serialport",
@@ -1437,7 +1442,7 @@ name = "rax-nmea"
 version = "0.0.26"
 dependencies = [
  "chrono",
- "clerk",
+ "clerk 0.0.23",
  "codspeed-criterion-compat",
  "float-cmp",
  "miette",
@@ -1822,7 +1827,7 @@ dependencies = [
  "chrono",
  "clap",
  "clap-verbosity-flag",
- "clerk",
+ "clerk 0.0.23",
  "crossterm 0.29.0",
  "miette",
  "proj",
