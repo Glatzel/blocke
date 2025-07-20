@@ -12,7 +12,5 @@ if ($IsMacOS) {
 }
 
 if ($IsLinux) {
-    sudo apt update
-    sudo apt-get install libudev-dev
     $env:PKG_CONFIG_PATH = Resolve-Path $PSScriptRoot/../.pixi/envs/default/proj/x64-linux-release/lib/pkgconfig
 }
