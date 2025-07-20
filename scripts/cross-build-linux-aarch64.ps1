@@ -5,7 +5,7 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 if ($IsLinux) {
     # Define version and download URL
-    $ZIG_VERSION = "0.11.0"
+    $ZIG_VERSION = "0.14.1"
     $ZIG_TAR = "zig-linux-x86_64-$ZIG_VERSION.tar.xz"
     $ZIG_DIR = "zig-linux-x86_64-$ZIG_VERSION"
     $ZIG_URL = "https://ziglang.org/download/$ZIG_VERSION/$ZIG_TAR"
