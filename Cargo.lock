@@ -344,11 +344,6 @@ checksum = "b94f61472cee1439c0b966b47e3aca9ae07e45d070759512cd390ea2bebc6675"
 
 [[package]]
 name = "clerk"
-version = "0.0.23"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.23#40cf9af5631429351daa93009669ea10847c8a41"
-
-[[package]]
-name = "clerk"
 version = "0.0.24"
 source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.24#3467e10006453ffa8d480c819286811cd7f20602"
 dependencies = [
@@ -1356,9 +1351,9 @@ dependencies = [
 [[package]]
 name = "proj"
 version = "0.0.33"
-source = "git+https://github.com/Glatzel/pyxis?branch=cross#440e9e5c7ebb7d16d19414acfaca851c4d735d60"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.33#eb8330b8fae1eb31561c7ff2b81540c98efc7ebb"
 dependencies = [
- "clerk 0.0.24",
+ "clerk",
  "envoy",
  "miette",
  "num_enum",
@@ -1369,7 +1364,7 @@ dependencies = [
 [[package]]
 name = "proj-sys"
 version = "9.6.2"
-source = "git+https://github.com/Glatzel/pyxis?branch=cross#440e9e5c7ebb7d16d19414acfaca851c4d735d60"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.33#eb8330b8fae1eb31561c7ff2b81540c98efc7ebb"
 dependencies = [
  "bindgen",
  "dunce",
@@ -1379,10 +1374,10 @@ dependencies = [
 
 [[package]]
 name = "pyxis"
-version = "0.0.31"
-source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.31#0fafe0be372c047316b781652abc55fa82fbd9bb"
+version = "0.0.33"
+source = "git+https://github.com/Glatzel/pyxis?tag=v0.0.33#eb8330b8fae1eb31561c7ff2b81540c98efc7ebb"
 dependencies = [
- "clerk 0.0.23",
+ "clerk",
  "num-traits",
 ]
 
@@ -1427,7 +1422,7 @@ name = "rax"
 version = "0.0.26"
 dependencies = [
  "async-trait",
- "clerk 0.0.24",
+ "clerk",
  "codspeed-criterion-compat",
  "miette",
  "serialport",
@@ -1442,7 +1437,7 @@ name = "rax-nmea"
 version = "0.0.26"
 dependencies = [
  "chrono",
- "clerk 0.0.24",
+ "clerk",
  "codspeed-criterion-compat",
  "float-cmp",
  "miette",
@@ -1826,7 +1821,7 @@ dependencies = [
  "chrono",
  "clap",
  "clap-verbosity-flag",
- "clerk 0.0.24",
+ "clerk",
  "crossterm 0.29.0",
  "miette",
  "proj",
