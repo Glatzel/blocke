@@ -22,5 +22,6 @@ if ($IsLinux) {
     New-Item ./dist -ItemType Directory -ErrorAction SilentlyContinue
     &./scripts/cross-build-linux-aarch64.ps1 -Release
     Copy-Item "$ROOT/target/aarch64-unknown-linux-gnu/release/term-nmea" ./dist
+    Set-Location $PSScriptRoot
     pixi run rattler-build build --target-platform linux-aarch64
 }
