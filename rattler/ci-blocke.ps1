@@ -5,7 +5,7 @@ Set-Location $ROOT
 Remove-Item ./dist/ -Recurse -ErrorAction SilentlyContinue
 New-Item ./dist -ItemType Directory -ErrorAction SilentlyContinue
 &./scripts/setup.ps1
-Cargo build -r --bins
+cargo build -r --bins
 if ($IsWindows) {
     Copy-Item "$ROOT/target/release/term-nmea.exe" ./dist
 }
