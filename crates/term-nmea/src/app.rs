@@ -2,11 +2,14 @@ use std::collections::VecDeque;
 
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, MouseEvent};
 use rax_nmea::data::{Identifier, Talker};
-
+mod status;
+pub use crate::app::status::STATUS;
 use crate::settings::SETTINGS;
 use crate::tab::{ITab, Tab, TabCoord, TabInfo, TabNmea, TabSettings};
 
 pub struct App {
+    pub status: usize,
+
     pub raw_nmea: VecDeque<(Talker, Identifier, String)>,
 
     pub tab: Tab,
@@ -19,7 +22,10 @@ pub struct App {
 impl App {
     pub fn new() -> miette::Result<Self> {
         Ok(Self {
+            status: 0,
+
             raw_nmea: VecDeque::with_capacity(SETTINGS.get().unwrap().capacity),
+
             tab: Tab::Info,
             tab_info: TabInfo::default(),
             tab_coord: TabCoord::default(),
@@ -118,6 +124,7 @@ impl App {
             self.raw_nmea.pop_front();
         }
         self.raw_nmea.push_back((talker, identifier, sentence));
+        self.status = (self.status + 1) % 4
     }
     pub fn hint(&mut self) -> String {
         const GLOBAL_HINT: [&str; 2] = ["`←/→` Tab", "`esc` Quit"];
