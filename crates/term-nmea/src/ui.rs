@@ -36,9 +36,13 @@ pub fn draw(f: &mut Frame, app: &mut App) -> miette::Result<()> {
     app.draw(f, chunks[1])?;
 
     //footer
-    let footer = Paragraph::new(app.hint())
-        .block(Block::default().borders(Borders::TOP))
-        .style(Style::default().fg(Color::Gray));
+    let footer = Paragraph::new(format!(
+        "{} | {}",
+        app.hint(),
+        crate::app::STATUS[app.status]
+    ))
+    .block(Block::default().borders(Borders::TOP))
+    .style(Style::default().fg(Color::Gray));
     f.render_widget(footer, chunks[2]);
     Ok(())
 }
