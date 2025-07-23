@@ -1,7 +1,7 @@
 context:
   name: blocke
 package:
-  version: 0.0.1
+  version: 0.0.2
   name: ${{ name }}
 build:
   number: 0
