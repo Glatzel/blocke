@@ -82,7 +82,7 @@ impl Settings {
         Ok(())
     }
     pub fn path() -> PathBuf {
-        if let Some(proj_dirs) =ProjectDirs::from("", "", "term-nmea") {
+        if let Some(proj_dirs) = ProjectDirs::from("", "", "term-nmea") {
             proj_dirs.config_dir().join("term-nmea.toml")
         } else {
             clerk::warn!("Cannot determine config directory. Using local file.");

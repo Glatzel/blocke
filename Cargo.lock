@@ -1467,7 +1467,7 @@ dependencies = [
 
 [[package]]
 name = "rax"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "async-trait",
  "clerk",
@@ -1482,7 +1482,7 @@ dependencies = [
 
 [[package]]
 name = "rax-nmea"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "clerk",
@@ -1874,7 +1874,7 @@ dependencies = [
 
 [[package]]
 name = "term-nmea"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "async-trait",
  "chrono",
