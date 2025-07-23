@@ -7,6 +7,8 @@ environments:
     packages:
       linux-64:
       - conda: https://repo.prefix.dev/glatzel/linux-64/proj-9.6.2-hb0f4dca_2.conda
+      linux-aarch64:
+      - conda: https://repo.prefix.dev/glatzel/linux-aarch64/proj-9.6.2-he8cfe8b_2.conda
       osx-arm64:
       - conda: https://repo.prefix.dev/glatzel/osx-arm64/proj-9.6.2-h60d57d3_2.conda
       win-64:
@@ -122,6 +124,10 @@ packages:
   sha256: 97117cdb45fdb4bca4a6eef9d28f23d1796198f9dfd44d765dec7f42e86dabf1
   size: 78043015
   timestamp: 1751289080427
+- conda: https://repo.prefix.dev/glatzel/linux-aarch64/proj-9.6.2-he8cfe8b_2.conda
+  sha256: ac155d9223e5792c6be915fbc6d68c0fd753222359123f602c9961599f90734d
+  size: 82062593
+  timestamp: 1751289464419
 - conda: https://repo.prefix.dev/glatzel/osx-arm64/proj-9.6.2-h60d57d3_2.conda
   sha256: 59f97a432b0013d81aeb00575fb7ce441dc66951844f48e4adfc61ac26d2515e
   size: 46824329
