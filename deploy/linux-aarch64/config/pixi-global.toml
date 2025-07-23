@@ -5,6 +5,7 @@ channels = ["https://repo.prefix.dev/glatzel", "conda-forge"]
 
 [envs.base.dependencies]
 aria2 = "*"
+blocke = "*"
 bottom = "*"
 curl = "*"
 edit = "*"
@@ -21,6 +22,7 @@ btm = "btm"
 curl = "curl"
 edit = "edit"
 jq = "jq"
+term-nmea = "term-nmea"
 wget = "wget"
 yazi = "yazi"
 zstd = "zstd"
