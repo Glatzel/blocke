@@ -4,6 +4,7 @@ use std::{fs, io};
 
 use clap_verbosity_flag::VerbosityFilter;
 use clerk::LogLevel;
+use directories::ProjectDirs;
 use miette::IntoDiagnostic;
 use serde::{Deserialize, Serialize};
 
@@ -81,26 +82,34 @@ impl Settings {
         Ok(())
     }
     pub fn path() -> PathBuf {
-        // Locate config file next to the binary
-
-        std::env::current_exe()
-            .map(|exe| exe.with_file_name("term-nmea.toml"))
-            .unwrap_or_else(|e| {
-                clerk::warn!("Cannot determine executable path: {e}. Using defaults.");
-                PathBuf::from("term-nmea.toml")
-            })
+        if let Some(proj_dirs) =ProjectDirs::from("", "", "term-nmea") {
+            proj_dirs.config_dir().join("term-nmea.toml")
+        } else {
+            clerk::warn!("Cannot determine config directory. Using local file.");
+            PathBuf::from("term-nmea.toml")
+        }
     }
 
     pub fn save() -> miette::Result<()> {
-        // Get the global SETTINGS static
         let settings = SETTINGS
             .get()
             .ok_or_else(|| miette::miette!("SETTINGS not initialized"))?;
 
-        // Save settings to the file
         let toml_str = toml::to_string_pretty(settings)
             .map_err(|e| io::Error::other(format!("TOML serialize error: {e}")))
             .into_diagnostic()?;
-        fs::write(Self::path(), toml_str).into_diagnostic()
+
+        let path = Self::path();
+
+        // Create parent directory if it doesn't exist
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| io::Error::other(format!("Failed to create config directory: {e}")))
+                .into_diagnostic()?;
+        }
+
+        fs::write(path, toml_str)
+            .map_err(|e| io::Error::other(format!("Failed to write config: {e}")))
+            .into_diagnostic()
     }
 }
