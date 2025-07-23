@@ -13,6 +13,7 @@ p7zip = "*"
 wget = "*"
 yazi = "*"
 zstd = "*"
+blocke="*"
 
 [envs.base.exposed]
 7z = "7z"
@@ -24,3 +25,4 @@ jq = "jq"
 wget = "wget"
 yazi = "yazi"
 zstd = "zstd"
+term-nmea="term-nmea"
