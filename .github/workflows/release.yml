@@ -28,7 +28,7 @@ jobs:
         with:
           run-install: false
       - name: build
-        run: ./rattler/ci-blocke.ps1
+        run: ./rattler/pyxis-trail/ci-pyxis-trail.ps1
         shell: pwsh
 
       - name: upload
