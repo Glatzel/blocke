@@ -36,7 +36,7 @@ jobs:
         with:
           name: blocke-${{matrix.machine}}
           path: |
-            ./rattler/output/*/*.conda
+            ./rattler/*/output/*/*.conda
           if-no-files-found: error
 
   release:
