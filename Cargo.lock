@@ -1430,6 +1430,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyxis-trail"
+version = "0.0.2"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "clap",
+ "clap-verbosity-flag",
+ "clerk",
+ "crossterm 0.29.0",
+ "directories",
+ "miette",
+ "proj",
+ "pyxis",
+ "ratatui",
+ "rax",
+ "rax-nmea",
+ "serde",
+ "tempfile",
+ "tokio",
+ "tokio-serial",
+ "toml",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1870,31 +1895,6 @@ dependencies = [
  "once_cell",
  "rustix 1.0.8",
  "windows-sys 0.59.0",
-]
-
-[[package]]
-name = "term-nmea"
-version = "0.0.2"
-dependencies = [
- "async-trait",
- "chrono",
- "clap",
- "clap-verbosity-flag",
- "clerk",
- "crossterm 0.29.0",
- "directories",
- "miette",
- "proj",
- "pyxis",
- "ratatui",
- "rax",
- "rax-nmea",
- "serde",
- "tempfile",
- "tokio",
- "tokio-serial",
- "toml",
- "tracing-subscriber",
 ]
 
 [[package]]

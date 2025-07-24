@@ -1,6 +1,6 @@
 [package]
 edition.workspace = true
-name = "term-nmea"
+name = "pyxis-trail"
 version.workspace = true
 
 [dependencies]

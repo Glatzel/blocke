@@ -82,11 +82,11 @@ impl Settings {
         Ok(())
     }
     pub fn path() -> PathBuf {
-        if let Some(proj_dirs) = ProjectDirs::from("", "", "term-nmea") {
-            proj_dirs.config_dir().join("term-nmea.toml")
+        if let Some(proj_dirs) = ProjectDirs::from("", "", "pyxis-trail") {
+            proj_dirs.config_dir().join("pyxis-trail.toml")
         } else {
             clerk::warn!("Cannot determine config directory. Using local file.");
-            PathBuf::from("term-nmea.toml")
+            PathBuf::from("pyxis-trail.toml")
         }
     }
 
