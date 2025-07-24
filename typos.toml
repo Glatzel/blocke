@@ -2,5 +2,4 @@ files.extend-exclude = ["CHANGELOG.md"]
 [default.extend-identifiers]
 THS = "THS"
 Ths = "Ths"
-ratatui = "ratatui"
 ths = "ths"
