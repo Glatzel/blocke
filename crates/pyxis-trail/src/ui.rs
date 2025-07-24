@@ -24,7 +24,7 @@ pub fn draw(f: &mut Frame, app: &mut App) -> miette::Result<()> {
         .collect::<Vec<_>>();
     let tabs = Tabs::new(header)
         .select(app.tab.index())
-        .block(Block::default().title("Term-NMEA").borders(Borders::ALL))
+        .block(Block::default().title("pyxis-trail").borders(Borders::ALL))
         .highlight_style(
             Style::default()
                 .fg(Color::LightBlue)

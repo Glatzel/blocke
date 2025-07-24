@@ -36,7 +36,10 @@ pub fn init(verbosity: &Verbosity) {
 }
 fn generate_log_filename() -> PathBuf {
     let now = Local::now();
-    let filename = format!("log/log-term-nmea-{}.log", now.format("%Y-%m-%d-%H-%M-%S"));
+    let filename = format!(
+        "log/log-pyxis-trail-{}.log",
+        now.format("%Y-%m-%d-%H-%M-%S")
+    );
 
     let exe_dir = std::env::current_exe()
         .ok()
@@ -56,7 +59,7 @@ mod tests {
         let path = generate_log_filename();
         let filename = path.file_name().unwrap().to_string_lossy();
 
-        assert!(filename.starts_with("log-term-nmea-"));
+        assert!(filename.starts_with("log-pyxis-trail-"));
         assert!(filename.ends_with(".log"));
 
         // Check that directory is correct
@@ -90,7 +93,7 @@ mod tests {
             .filter(|e| {
                 e.file_name()
                     .to_string_lossy()
-                    .starts_with("log-term-nmea-")
+                    .starts_with("log-pyxis-trail-")
             })
             .collect();
 
