@@ -1,27 +1,18 @@
 [package]
-edition = "2024"
+edition.workspace = true
 name = "on-board-led"
 version = "0.1.0"
 
 [dependencies]
-esp-backtrace = {  version = "0.17.0" , features = [
+esp-backtrace = { workspace = true, features = [
     "esp32c3",
     "panic-handler",
     "exception-handler",
     "println",
 ] }
-esp-bootloader-esp-idf = "0.1.0"
-esp-hal = {  version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
-esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community" , features = ["esp32c3"] }
-esp-println = {  version = "0.15.0", features = ["esp32c3"] }
-smart-leds = "0.4"
-smart-leds-trait ="0.3.1"
-
-[profile.dev]
-opt-level = 3
-
-[profile.release]
-codegen-units = 1
-debug = false
-lto = "fat"
-opt-level = 3
+esp-bootloader-esp-idf = { workspace = true }
+esp-hal = { workspace = true, features = ["esp32c3", "unstable"] }
+esp-hal-smartled = { workspace = true, features = ["esp32c3"] }
+esp-println = { workspace = true, features = ["esp32c3"] }
+smart-leds = { workspace = true }
+smart-leds-trait = { workspace = true }

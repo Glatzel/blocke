@@ -1,0 +1,26 @@
+[workspace]
+edition = "2024"
+resolver = "2"
+
+members = ["./esp32-c3-zero/*"]
+[workspace.package]
+edition = "2024"
+
+
+[workspace.dependencies]
+esp-println =  "0.15.0"
+esp-backtrace = "0.17.0"
+esp-bootloader-esp-idf = "0.1.0"
+esp-hal = "1.0.0-rc.0"
+esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community" }
+smart-leds = "0.4"
+smart-leds-trait = "0.3.1"
+
+[profile.dev]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = "fat"
+opt-level = 3
