@@ -5,9 +5,9 @@ use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
-use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
+use esp_hal_smartled::{smart_led_buffer, SmartLedsAdapter};
 use esp_println::println;
-use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
+use smart_leds::{brightness, colors, SmartLedsWrite, RGB8};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
