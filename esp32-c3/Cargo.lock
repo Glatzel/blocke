@@ -628,7 +628,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "esp32-c3-zero-on-board-led"
+name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
  "esp-backtrace",

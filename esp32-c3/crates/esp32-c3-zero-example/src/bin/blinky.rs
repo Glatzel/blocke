@@ -1,9 +1,6 @@
 #![no_std]
 #![no_main]
 
-#[cfg(not(debug_assertions))]
-use core::panic::PanicInfo;
-
 #[cfg(debug_assertions)]
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
@@ -12,14 +9,13 @@ use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
-use smart_leds::hsv::{Hsv, hsv2rgb};
-use smart_leds::{SmartLedsWrite, brightness};
+use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[cfg(not(debug_assertions))]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
+fn panic(info: &core::panic::PanicInfo) -> ! {
     println!("PANIC: {}", info);
     loop {}
 }
@@ -34,21 +30,13 @@ fn main() -> ! {
         let rmt = Rmt::new(peripherals.RMT, frequency).expect("Failed to initialize RMT0");
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
-    let level = 255;
-    let mut hue: u8 = 0;
+    let level = 10;
+    let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.
+    println!("blinky");
     loop {
-        let color = hsv2rgb(Hsv {
-            hue,
-            sat: 255,
-            val: 255,
-        });
-
         led.write(brightness([color].into_iter(), level)).unwrap();
-        delay.delay_millis(10);
-
-        hue = hue.wrapping_add(1);
-        if hue == 0 {
-            println!("one rainbow cycle finished");
-        }
+        delay.delay_millis(500);
+        led.write([colors::BLACK]).unwrap();
+        delay.delay_millis(500);
     }
 }
