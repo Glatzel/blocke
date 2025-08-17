@@ -1,9 +1,8 @@
 #![no_std]
 #![no_main]
-
+#![allow(portable_atomic_unsafe_assume_single_core)]
 #[cfg(debug_assertions)]
 use esp_backtrace as _;
-
 use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;

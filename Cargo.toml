@@ -5,7 +5,6 @@ resolver = "2"
 [workspace.package]
 edition = "2024"
 
-
 [workspace.dependencies]
 esp-backtrace = "0.17.0"
 esp-bootloader-esp-idf = "0.1.0"

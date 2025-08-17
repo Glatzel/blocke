@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-
+#![allow(portable_atomic_unsafe_assume_single_core)]
 #[cfg(not(debug_assertions))]
 use core::panic::PanicInfo;
 
