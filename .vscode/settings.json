@@ -1,4 +1,7 @@
 {
     "rust-analyzer.check.allTargets": false,
-    "rust-analyzer.cargo.allTargets": false
+    "rust-analyzer.cargo.allTargets": false,
+    "rust-analyzer.diagnostics.disabled": [
+        "E0601"
+    ]
 }
