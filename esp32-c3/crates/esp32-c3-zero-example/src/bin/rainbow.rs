@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-
 #[cfg(debug_assertions)]
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
