@@ -1,5 +1,0 @@
-files.extend-exclude = ["CHANGELOG.md"]
-[default.extend-identifiers]
-THS = "THS"
-Ths = "Ths"
-ths = "ths"
