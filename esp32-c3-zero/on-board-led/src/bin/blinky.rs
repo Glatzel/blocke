@@ -28,6 +28,5 @@ fn main() -> ! {
         delay.delay_millis(500);
         led.write([colors::BLACK]).unwrap();
         delay.delay_millis(500);
-        println!("toggle");
     }
 }

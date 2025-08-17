@@ -17,4 +17,3 @@ esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", featur
 ] }
 esp-println = { version = "0.15.0", features = ["esp32c3"] }
 smart-leds = "0.4"
-smart-leds-trait = "0.3.1"
