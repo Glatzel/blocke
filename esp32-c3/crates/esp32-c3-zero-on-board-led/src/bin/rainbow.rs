@@ -1,6 +1,10 @@
 #![no_std]
 #![no_main]
 
+#[cfg(not(debug_assertions))]
+use core::panic::PanicInfo;
+
+#[cfg(debug_assertions)]
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::main;
@@ -12,6 +16,13 @@ use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
 
 esp_bootloader_esp_idf::esp_app_desc!();
+
+#[cfg(not(debug_assertions))]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    println!("PANIC: {}", info);
+    loop {}
+}
 
 #[main]
 fn main() -> ! {

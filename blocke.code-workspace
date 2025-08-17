@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "esp32-c3"
+		}
+	],
+	"settings": {
+		"rust-analyzer.check.allTargets": false,
+		"rust-analyzer.cargo.allTargets": false
+	}
+}

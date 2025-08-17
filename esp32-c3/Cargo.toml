@@ -1,10 +1,9 @@
 [workspace]
-members = ["./crates/esp32-c3-zero/*"]
+members = ["./crates/*"]
 resolver = "2"
 
 [workspace.package]
 edition = "2024"
-
 
 [workspace.dependencies]
 esp-backtrace = "0.17.0"
