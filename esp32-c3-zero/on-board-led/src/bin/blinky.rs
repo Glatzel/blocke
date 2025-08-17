@@ -23,6 +23,7 @@ fn main() -> ! {
     };
     let level = 10;
     let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.
+    println("blinky");
     loop {
         led.write(brightness([color].into_iter(), level)).unwrap();
         delay.delay_millis(500);
