@@ -14,7 +14,6 @@ esp-hal = "1.0.0-rc.0"
 esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community" }
 esp-println = "0.15.0"
 smart-leds = "0.4"
-smart-leds-trait = "0.3.1"
 
 [profile.dev]
 opt-level = 3

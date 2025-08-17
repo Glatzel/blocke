@@ -932,7 +932,6 @@ dependencies = [
  "esp-hal-smartled",
  "esp-println",
  "smart-leds",
- "smart-leds-trait",
 ]
 
 [[package]]
