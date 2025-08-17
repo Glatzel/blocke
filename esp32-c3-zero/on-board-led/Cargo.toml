@@ -5,10 +5,10 @@ version = "0.1.0"
 
 [dependencies]
 esp-backtrace = { workspace = true, features = [
-    "esp32c3",
-    "panic-handler",
-    "exception-handler",
-    "println",
+  "esp32c3",
+  "panic-handler",
+  "exception-handler",
+  "println",
 ] }
 esp-bootloader-esp-idf = { workspace = true }
 esp-hal = { workspace = true, features = ["esp32c3", "unstable"] }
