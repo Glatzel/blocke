@@ -27,7 +27,7 @@ fn main() -> ! {
         delay.delay_millis(1000);
         green.set_low();
         delay.delay_millis(1000);
-        
+
         blue.set_high();
         delay.delay_millis(1000);
         blue.set_low();
