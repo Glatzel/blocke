@@ -1,17 +1,19 @@
 #![no_std]
 #![no_main]
 
+use core::f32;
+
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
-use esp_hal::ledc::channel::ChannelIFace;
 use esp_hal::ledc::channel::config::PinConfig;
+use esp_hal::ledc::channel::{ChannelHW, ChannelIFace};
 use esp_hal::ledc::timer::TimerIFace;
 use esp_hal::ledc::{Ledc, channel, timer};
 use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
-
+use micromath::F32Ext;
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
@@ -29,47 +31,50 @@ fn main() -> ! {
     let mut lstimer0 = ledc.timer::<esp_hal::ledc::LowSpeed>(timer::Number::Timer0);
     lstimer0
         .configure(timer::config::Config {
-            duty: timer::config::Duty::Duty13Bit,
+            duty: timer::config::Duty::Duty14Bit,
             clock_source: timer::LSClockSource::APBClk,
-            frequency: Rate::from_khz(1),
+            frequency: Rate::from_khz(5),
         })
         .unwrap();
 
     let mut channel0 = ledc.channel(channel::Number::Channel0, red);
+    channel0
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel1 = ledc.channel(channel::Number::Channel1, green);
+    channel1
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel2 = ledc.channel(channel::Number::Channel2, blue);
+    channel2
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
 
-    let mut pos = 0u8;
+    const PERIOD: u32 = 2000; //milisecond
+    const POS_COUNT: u32 = 200;
+    const DELAY: u32 = PERIOD / POS_COUNT; //milisecond
+    const START_PHASE: f32 = -core::f32::consts::FRAC_PI_2;
+    let mut pos = 0;
     loop {
-        pos = (pos + 1) % 200;
-
-        let level = if pos % 200 < 100 {
-            pos % 200
-        } else {
-            200 - pos
-        };
-        channel0
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap(); // channel0
-        channel1
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap(); // channel0
-        channel2
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap();
-        delay.delay_millis(100);
-        println!("level: {level}");
+        pos = (pos + 1) % POS_COUNT;
+        let phase = (pos as f32) / (POS_COUNT as f32) * 2.0 * f32::consts::PI + START_PHASE;
+        let level = (phase.sin() + 1.0) * ((1 << 14) - 1) as f32;
+        channel0.set_duty_hw(level as u32);
+        channel1.set_duty_hw(level as u32);
+        channel2.set_duty_hw(level as u32);
+        println!("level: {}", level / ((1 << 14) - 1) as f32);
+        delay.delay_millis(DELAY);
     }
 }
