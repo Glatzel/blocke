@@ -16,11 +16,22 @@ use esp_println::println;
 use micromath::F32Ext;
 esp_bootloader_esp_idf::esp_app_desc!();
 
-const PERIOD_MS: usize = 2000;
-const POS_COUNT: usize = 200;
-const DELAY_MS: u32 = (PERIOD_MS / POS_COUNT) as u32;
-const PWM_BITS: u32 = 14;
+const PERIOD_MS: u16 = 2000;
+const POS_COUNT: u16 = 200;
+const DELAY_MS: u32 = PERIOD_MS as u32 / POS_COUNT as u32;
+const PWM_BITS: u8 = 14;
 const PWM_MAX: u32 = (1 << PWM_BITS) - 1;
+
+fn generate_levels() -> [u16; POS_COUNT as usize] {
+    let mut levels = [0; POS_COUNT as usize];
+    for i in 0..POS_COUNT as usize {
+        let phase = (i as f32) / (POS_COUNT as f32) * 2.0 * core::f32::consts::PI
+            - core::f32::consts::FRAC_PI_2;
+        levels[i] = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
+    }
+    levels
+}
+
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
@@ -67,19 +78,17 @@ fn main() -> ! {
         })
         .unwrap();
 
-    let mut Levels = [0; POS_COUNT];
-    for i in 0..POS_COUNT {
-        let phase = (i as f32) / (POS_COUNT as f32) * 2.0 * core::f32::consts::PI
-            - core::f32::consts::FRAC_PI_2;
-        Levels[i] = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
-    }
+    let levels = generate_levels();
+
     loop {
-        for &level in Levels.iter() {
+        for &level in levels.iter().cycle() {
             channel0.set_duty_hw(level as u32);
             channel1.set_duty_hw(level as u32);
             channel2.set_duty_hw(level as u32);
             println!("level: {}", level as f32 / PWM_MAX as f32);
-            delay.delay_millis(DELAY_MS);
+            delay.delay_millis(DELAY_MS as u32);
         }
     }
 }
+
+

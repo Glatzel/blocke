@@ -16,9 +16,11 @@ micromath = "2.1.0"
 
 [profile.dev]
 opt-level = 3
+overflow-checks = true
 
 [profile.release]
 codegen-units = 1
 debug = false
 lto = "fat"
 opt-level = 3
+overflow-checks = false
