@@ -24,10 +24,10 @@ const PWM_MAX: u32 = (1 << PWM_BITS) - 1;
 
 fn generate_levels() -> [u16; POS_COUNT as usize] {
     let mut levels = [0; POS_COUNT as usize];
-    for i in 0..POS_COUNT as usize {
+    for (i, level) in levels.iter_mut().enumerate() {
         let phase = (i as f32) / (POS_COUNT as f32) * 2.0 * core::f32::consts::PI
             - core::f32::consts::FRAC_PI_2;
-        levels[i] = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
+        *level = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
     }
     levels
 }
