@@ -86,7 +86,7 @@ fn main() -> ! {
             channel1.set_duty_hw(level as u32);
             channel2.set_duty_hw(level as u32);
             println!("level: {}", level as f32 / PWM_MAX as f32);
-            delay.delay_millis(DELAY_MS as u32);
+            delay.delay_millis(DELAY_MS);
         }
     }
 }
