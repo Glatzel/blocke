@@ -30,21 +30,21 @@
 		#g1 polyline[c_partid="line"]:not([stroke-width]),
 		#g1 polyline:not([c_partid]){
 			vector-effect: non-scaling-stroke !important;
-		} 
+		}
 		#g1 ellipse[c_partid="ellipse"]:not([stroke-width]),
 		#g1 ellipse:not([c_partid]){
 			vector-effect: non-scaling-stroke !important;
-		} 
+		}
 		#g1 path[c_partid="bezier"]:not([stroke-width]),
 		#g1 path:not([c_partid]){
 			vector-effect: non-scaling-stroke !important;
-		} 
+		}
 		.netlabel-cross[for='netname'] {
 			clip-path: polygon(0 0, 0 0);
 		}
 		.netlabel-cross[for='netlabel'] {
 			clip-path: initial;
-		}  
+		}
 	.fm-verdana { font-family: Verdana !important; }
 .fm-timesnewroman { font-family: "Times New Roman" !important; }
 .fm-arial { font-family: Arial !important; }
