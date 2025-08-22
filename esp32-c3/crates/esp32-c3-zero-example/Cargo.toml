@@ -14,5 +14,5 @@ esp-bootloader-esp-idf = { workspace = true }
 esp-hal = { workspace = true, features = ["esp32c3", "unstable"] }
 esp-hal-smartled = { workspace = true, features = ["esp32c3"] }
 esp-println = { workspace = true, features = ["esp32c3"] }
-smart-leds = { workspace = true }
 micromath = { workspace = true }
+smart-leds = { workspace = true }
