@@ -2,15 +2,9 @@
 
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
-
 $ROOT = git rev-parse --show-toplevel
 Set-Location $ROOT
-foreach ($f in Get-ChildItem "Cargo.lock" -Recurse) {
-    # skip target folder
-    if ($f -contains "target") { continue }
-
-    Set-Location $f.Directory.ToString()
-    Write-Output "Cargo machete in: $pwd"
-    cargo machete
+if ($args) {
+    pixi run --no-progress --manifest-path ./lefthook/pixi.toml typos --force-exclude $args
 }
 Set-Location $ROOT

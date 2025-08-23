@@ -1,18 +1,17 @@
 # This File is automatically synchronized from https://github.com/Glatzel/template
 
+if (-not $args) { exit 0 }
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 $ROOT = git rev-parse --show-toplevel
 Set-Location $ROOT
-foreach ($f in Get-ChildItem "Cargo.lock" -Recurse) {
-    # skip target folder
-    if ($f -contains "target") { continue }
-
-    Set-Location $f.Directory.ToString()
-    Write-Output "Cargo fmt in: $pwd"
+foreach ($file in $args) {
+    $dir = (Split-Path (Resolve-Path $file) -Parent)
+    Set-Location $dir
+    Write-Output "Cargo clippy in: $pwd"
     if (Test-Path ./scripts/setup.ps1) {
         &./scripts/setup.ps1
-        Set-Location $f.Directory.ToString()
+        Set-Location $dir
     }
     cargo +stable clippy --fix --all-features
     cargo +stable clippy --all-features -- -Dwarnings
