@@ -16,7 +16,7 @@ use esp_println::println;
 use micromath::F32Ext;
 esp_bootloader_esp_idf::esp_app_desc!();
 
-const PERIOD_MS: u16 = 2000;
+const PERIOD_MS: u16 = 1000;
 const POS_COUNT: u16 = 200;
 const DELAY_MS: u32 = PERIOD_MS as u32 / POS_COUNT as u32;
 const PWM_BITS: u8 = 14;
@@ -49,7 +49,7 @@ fn main() -> ! {
         .configure(timer::config::Config {
             duty: timer::config::Duty::Duty14Bit,
             clock_source: timer::LSClockSource::APBClk,
-            frequency: Rate::from_khz(5),
+            frequency: Rate::from_khz(4),
         })
         .unwrap();
 
