@@ -1,18 +1,36 @@
 #![no_std]
 #![no_main]
 
+use core::f32;
+
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
-use esp_hal::ledc::channel::ChannelIFace;
 use esp_hal::ledc::channel::config::PinConfig;
+use esp_hal::ledc::channel::{ChannelHW, ChannelIFace};
 use esp_hal::ledc::timer::TimerIFace;
 use esp_hal::ledc::{Ledc, channel, timer};
 use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
-
+use micromath::F32Ext;
 esp_bootloader_esp_idf::esp_app_desc!();
+
+const PERIOD_MS: u16 = 1000;
+const POS_COUNT: u16 = 200;
+const DELAY_MS: u32 = PERIOD_MS as u32 / POS_COUNT as u32;
+const PWM_BITS: u8 = 14;
+const PWM_MAX: u32 = (1 << PWM_BITS) - 1;
+
+fn generate_levels() -> [u16; POS_COUNT as usize] {
+    let mut levels = [0; POS_COUNT as usize];
+    for (i, level) in levels.iter_mut().enumerate() {
+        let phase = (i as f32) / (POS_COUNT as f32) * 2.0 * core::f32::consts::PI
+            - core::f32::consts::FRAC_PI_2;
+        *level = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
+    }
+    levels
+}
 
 #[main]
 fn main() -> ! {
@@ -29,47 +47,46 @@ fn main() -> ! {
     let mut lstimer0 = ledc.timer::<esp_hal::ledc::LowSpeed>(timer::Number::Timer0);
     lstimer0
         .configure(timer::config::Config {
-            duty: timer::config::Duty::Duty13Bit,
+            duty: timer::config::Duty::Duty14Bit,
             clock_source: timer::LSClockSource::APBClk,
-            frequency: Rate::from_khz(1),
+            frequency: Rate::from_khz(4),
         })
         .unwrap();
 
     let mut channel0 = ledc.channel(channel::Number::Channel0, red);
+    channel0
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel1 = ledc.channel(channel::Number::Channel1, green);
+    channel1
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel2 = ledc.channel(channel::Number::Channel2, blue);
+    channel2
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
 
-    let mut pos = 0u8;
+    let levels = generate_levels();
+
     loop {
-        pos = (pos + 1) % 200;
-
-        let level = if pos % 200 < 100 {
-            pos % 200
-        } else {
-            200 - pos
-        };
-        channel0
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap(); // channel0
-        channel1
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap(); // channel0
-        channel2
-            .configure(channel::config::Config {
-                timer: &lstimer0,
-                duty_pct: level,
-                pin_config: PinConfig::OpenDrain,
-            })
-            .unwrap();
-        delay.delay_millis(100);
-        println!("level: {level}");
+        for &level in levels.iter().cycle() {
+            channel0.set_duty_hw(level as u32);
+            channel1.set_duty_hw(level as u32);
+            channel2.set_duty_hw(level as u32);
+            println!("level: {}", level as f32 / PWM_MAX as f32);
+            delay.delay_millis(DELAY_MS);
+        }
     }
 }
