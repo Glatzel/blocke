@@ -6,9 +6,7 @@ use esp_hal::delay::Delay;
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use esp_println::println;
-use i2c_character_display::{
-    CharacterDisplayAIP31068, CharacterDisplayDualHD44780, CharacterDisplayPCF8574T, LcdDisplayType,
-};
+use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
