@@ -16,3 +16,5 @@ esp-hal-smartled = { workspace = true, features = ["esp32c3"] }
 esp-println = { workspace = true, features = ["esp32c3"] }
 micromath = { workspace = true }
 smart-leds = { workspace = true }
+i2c-character-display = { workspace = true }
+embedded-hal = { workspace = true }
