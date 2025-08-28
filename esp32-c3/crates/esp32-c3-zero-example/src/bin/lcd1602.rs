@@ -3,6 +3,7 @@
 
 use esp_backtrace as _;
 use esp_hal::delay::Delay;
+use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use esp_println::println;
@@ -14,6 +15,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
+    let _oe = Output::new(peripherals.GPIO2, Level::High, OutputConfig::default());
 
     let i2c = I2c::new(peripherals.I2C0, Config::default())
         .unwrap()
@@ -25,13 +27,6 @@ fn main() -> ! {
     if let Err(e) = lcd.init() {
         panic!("Error initializing LCD: {}", e);
     };
-    println!("123");
-    loop {
-        lcd.backlight(true)
-            .unwrap()
-            .home()
-            .unwrap()
-            .show_cursor(true)
-            .unwrap();
-    }
+    lcd.backlight(true).unwrap().print("Hello World!").unwrap();
+    loop {}
 }
