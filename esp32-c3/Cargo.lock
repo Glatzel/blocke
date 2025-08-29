@@ -710,16 +710,13 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
  "embedded-hal 1.0.0",
- "embedded-hal-bus",
  "esp-backtrace",
  "esp-bootloader-esp-idf",
  "esp-hal",
  "esp-hal-smartled",
  "esp-println",
- "heapless 0.9.1",
  "i2c-character-display",
  "micromath",
- "sht4x",
  "smart-leds",
 ]
 
@@ -922,13 +919,10 @@ dependencies = [
  "esp-backtrace",
  "esp-bootloader-esp-idf",
  "esp-hal",
- "esp-hal-smartled",
  "esp-println",
  "heapless 0.9.1",
  "i2c-character-display",
- "micromath",
  "sht4x",
- "smart-leds",
 ]
 
 [[package]]
