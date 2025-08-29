@@ -17,4 +17,5 @@ i2c-character-display = { workspace = true }
 embedded-hal = { workspace = true }
 sht4x = { workspace = true }
 embedded-hal-bus = { workspace = true }
-heapless= { workspace = true }
+heapless = { workspace = true }
+panic-halt = { workspace = true }

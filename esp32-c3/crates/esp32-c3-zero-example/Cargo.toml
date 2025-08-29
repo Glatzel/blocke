@@ -18,3 +18,4 @@ micromath = { workspace = true }
 smart-leds = { workspace = true }
 i2c-character-display = { workspace = true }
 embedded-hal = { workspace = true }
+panic-halt = { workspace = true }

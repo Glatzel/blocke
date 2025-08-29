@@ -18,6 +18,7 @@ i2c-character-display = { version = "0.5"}
 sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"
 heapless = "0.9.1"
+panic-halt = "1.0.0"
 
 [profile.dev]
 opt-level = 3

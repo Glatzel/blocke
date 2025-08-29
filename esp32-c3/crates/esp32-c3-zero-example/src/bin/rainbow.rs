@@ -32,7 +32,7 @@ fn main() -> ! {
             val: 255,
         });
 
-        led.write(brightness([color].into_iter(), level)).unwrap();
+        led.write(brightness([color].into_iter(), level)).?();
         delay.delay_millis(10);
 
         hue = hue.wrapping_add(1);

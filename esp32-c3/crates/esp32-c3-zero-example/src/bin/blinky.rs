@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;
@@ -9,7 +8,7 @@ use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
-
+use {esp_backtrace as _, panic_halt as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
@@ -26,9 +25,9 @@ fn main() -> ! {
     let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.
     println!("blinky");
     loop {
-        led.write(brightness([color].into_iter(), level)).unwrap();
+        led.write(brightness([color].into_iter(), level))?;
         delay.delay_millis(500);
-        led.write([colors::BLACK]).unwrap();
+        led.write([colors::BLACK])?;
         delay.delay_millis(500);
     }
 }

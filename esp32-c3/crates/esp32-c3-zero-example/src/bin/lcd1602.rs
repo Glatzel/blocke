@@ -17,7 +17,7 @@ fn main() -> ! {
     let _oe = Output::new(peripherals.GPIO2, Level::High, OutputConfig::default());
 
     let i2c = I2c::new(peripherals.I2C0, Config::default())
-        .unwrap()
+        .?()
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
 
@@ -26,6 +26,6 @@ fn main() -> ! {
     if let Err(e) = lcd.init() {
         panic!("Error initializing LCD: {}", e);
     };
-    lcd.backlight(true).unwrap().print("Hello World!").unwrap();
+    lcd.backlight(true).?().print("Hello World!").?();
     loop {}
 }
