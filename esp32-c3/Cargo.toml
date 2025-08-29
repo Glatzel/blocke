@@ -14,7 +14,7 @@ esp-println = "0.15.0"
 micromath = "2.1.0"
 smart-leds = "0.4"
 embedded-hal = "1.0.0"
-i2c-character-display = { version = "0.5", features = ["defmt"] }
+i2c-character-display = { version = "0.5"}
 sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"
 heapless = "0.9.1"
