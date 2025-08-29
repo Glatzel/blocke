@@ -69,6 +69,6 @@ fn main() -> ! {
             );
             lcd.write_str(&buf_humid).unwrap();
         }
-        delay.delay_millis(3000);
+        delay.delay_millis(5000);
     }
 }
