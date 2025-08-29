@@ -659,7 +659,6 @@ dependencies = [
 name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "embedded-hal 1.0.0",
  "esp-backtrace",
  "esp-bootloader-esp-idf",
@@ -866,7 +865,6 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 name = "hygrothermograph"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "embedded-hal 1.0.0",
  "embedded-hal-bus",
  "esp-backtrace",

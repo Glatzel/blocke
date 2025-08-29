@@ -1,18 +1,18 @@
-
-use esp_backtrace as _;
+#![no_std]
+#![no_main]
 use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
+use panic_halt as _;
 use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
-use anyhow::{bail, Result};
+
 esp_bootloader_esp_idf::esp_app_desc!();
-
-
-fn main() ->Result<()> {
+#[main]
+fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
 
@@ -30,7 +30,7 @@ fn main() ->Result<()> {
             val: 255,
         });
 
-        led.write(brightness([color].into_iter(), level))?;
+        led.write(brightness([color].into_iter(), level)).unwrap();
         delay.delay_millis(10);
 
         hue = hue.wrapping_add(1);

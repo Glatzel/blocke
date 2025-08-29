@@ -1,6 +1,5 @@
 #![no_std]
 #![no_main]
-
 use core::f32;
 
 use esp_hal::delay::Delay;
@@ -13,7 +12,8 @@ use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
 use micromath::F32Ext;
-use {esp_backtrace as _, panic_halt as _};
+use panic_halt as _;
+
 esp_bootloader_esp_idf::esp_app_desc!();
 
 const PERIOD_MS: u16 = 1000;
@@ -31,7 +31,6 @@ fn generate_levels() -> [u16; POS_COUNT as usize] {
     }
     levels
 }
-
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
@@ -45,30 +44,38 @@ fn main() -> ! {
     let blue = Output::new(peripherals.GPIO2, Level::Low, OutputConfig::default());
 
     let mut lstimer0 = ledc.timer::<esp_hal::ledc::LowSpeed>(timer::Number::Timer0);
-    lstimer0.configure(timer::config::Config {
-        duty: timer::config::Duty::Duty14Bit,
-        clock_source: timer::LSClockSource::APBClk,
-        frequency: Rate::from_khz(4),
-    })?;
+    lstimer0
+        .configure(timer::config::Config {
+            duty: timer::config::Duty::Duty14Bit,
+            clock_source: timer::LSClockSource::APBClk,
+            frequency: Rate::from_khz(4),
+        })
+        .unwrap();
 
     let mut channel0 = ledc.channel(channel::Number::Channel0, red);
-    channel0.configure(channel::config::Config {
-        timer: &lstimer0,
-        duty_pct: 0,
-        pin_config: PinConfig::OpenDrain,
-    })?;
+    channel0
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel1 = ledc.channel(channel::Number::Channel1, green);
-    channel1.configure(channel::config::Config {
-        timer: &lstimer0,
-        duty_pct: 0,
-        pin_config: PinConfig::OpenDrain,
-    })?;
+    channel1
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
     let mut channel2 = ledc.channel(channel::Number::Channel2, blue);
-    channel2.configure(channel::config::Config {
-        timer: &lstimer0,
-        duty_pct: 0,
-        pin_config: PinConfig::OpenDrain,
-    })?;
+    channel2
+        .configure(channel::config::Config {
+            timer: &lstimer0,
+            duty_pct: 0,
+            pin_config: PinConfig::OpenDrain,
+        })
+        .unwrap();
 
     let levels = generate_levels();
 
