@@ -30,12 +30,13 @@ jobs:
       matrix:
         chip: [esp32-c3]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./${{matrix.chip}}
     steps:
       - uses: actions/checkout@v5
       - run: ./scripts/setup.ps1
         shell: pwsh
-        working-directory: ./${{matrix.chip}}
       - run: cargo build
-        working-directory: ./${{matrix.chip}}
       - run: cargo build --release
-        working-directory: ./${{matrix.chip}}
