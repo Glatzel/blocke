@@ -36,6 +36,7 @@ jobs:
         working-directory: ./${{matrix.chip}}
     steps:
       - uses: actions/checkout@v5
+      - run: ls ./scripts
       - run: ./scripts/setup.ps1
         shell: pwsh
       - run: cargo build
