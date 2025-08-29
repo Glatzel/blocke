@@ -25,5 +25,7 @@ fn main() -> ! {
         panic!("Error initializing LCD: {}", e);
     };
     lcd.backlight(true).unwrap().print("Hello World!").unwrap();
-    loop {}
+    loop {
+        riscv::asm::wfi();
+    }
 }
