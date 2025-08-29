@@ -38,4 +38,3 @@ jobs:
         working-directory: ./${{matrix.chip}}
       - run: cargo build --release
         working-directory: ./${{matrix.chip}}
-
