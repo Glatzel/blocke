@@ -9,7 +9,6 @@ use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
-use esp_println::println;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use panic_handler as _;
@@ -65,7 +64,7 @@ fn main() -> ! {
             write!(buf_humid, "Hum:  {:.2}%", humidity).unwrap();
             lcd.write_str(&buf_temp).unwrap();
             check_result!(
-                lcd.set_cursor(0, 1),
+                lcd.set_cursor(0, 2),
                 "Error: Failed to set cursor to line 2"
             );
             lcd.write_str(&buf_humid).unwrap();

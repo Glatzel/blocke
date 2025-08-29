@@ -13,11 +13,7 @@ macro_rules! check_result {
         match $expr {
             Ok(val) => val,
             Err(e) => {
-                // ANSI escape code for red text: \x1b[31m
-                // \x1b[0m resets the color
-                println!("\x1b[31mAn error occurred.\x1b[0m");
-                println!("\x1b[31m{}\x1b[0m", e);
-                loop {}
+                panic!("\x1b[31m{}\x1b[0m", e);
             }
         }
     };
@@ -26,11 +22,7 @@ macro_rules! check_result {
         match $expr {
             Ok(val) => val,
             Err(e) => {
-                // ANSI escape code for red text: \x1b[31m
-                // \x1b[0m resets the color
-                println!("\x1b[31m{}\x1b[0m", $msg);
-                println!("\x1b[31m{}\x1b[0m", e);
-                loop {}
+                panic!("{}: {}", $msg, e);
             }
         }
     };
