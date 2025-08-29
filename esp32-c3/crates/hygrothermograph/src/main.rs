@@ -1,23 +1,19 @@
-#![no_std]
-#![no_main]
-
 use core::cell::RefCell;
 use core::fmt::Write;
 
+use anyhow::{Result, bail};
 use embedded_hal_bus::i2c as i2c_bus;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
-use esp_hal::main;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
+use panic_halt as _;
 use sht4x::{Precision, Sht4x};
-use {esp_backtrace as _, panic_halt as _};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
-#[main]
-fn main() -> ! {
+fn main() -> Result<()> {
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let mut delay = Delay::new();
 
@@ -36,7 +32,7 @@ fn main() -> ! {
         LcdDisplayType::Lcd16x2,
         delay,
     );
-    lcd.init()?;
+    lcd.init().un;
 
     //init SHT40
     let mut sht40 = Sht4x::new(i2c_bus::RefCellDevice::new(&i2c_ref_cell));

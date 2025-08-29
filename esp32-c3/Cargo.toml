@@ -19,6 +19,7 @@ sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"
 heapless = "0.9.1"
 panic-halt = "1.0.0"
+anyhow = "1.0.99"
 
 [profile.dev]
 opt-level = 3
