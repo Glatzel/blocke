@@ -64,7 +64,7 @@ fn main() -> ! {
             write!(buf_humid, "Hum:  {:.2}%", humidity).unwrap();
             lcd.write_str(&buf_temp).unwrap();
             check_result!(
-                lcd.set_cursor(0, 2),
+                lcd.set_cursor(0, 1),
                 "Error: Failed to set cursor to line 2"
             );
             lcd.write_str(&buf_humid).unwrap();
