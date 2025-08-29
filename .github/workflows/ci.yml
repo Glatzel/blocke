@@ -32,8 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: ./${{matrix.chip}}/scripts/setup.ps1
-        shell: pwsh
+      - run: pwsh -f ./${{matrix.chip}}/scripts/setup.ps1
       - run: cargo build
         working-directory: ./${{matrix.chip}}
       - run: cargo build --release
