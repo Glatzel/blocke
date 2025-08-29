@@ -15,9 +15,11 @@ esp-backtrace = { version = "0.17.0", features = [
     "println",
 ] }
 esp-bootloader-esp-idf = "0.1.0"
-esp-hal = "1.0.0-rc.0"
-esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community" }
-esp-println = "0.15.0"
+esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
+esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
+    "esp32c3",
+] }
+esp-println = { version = "0.15.0", features = ["esp32c3"] }
 micromath = "2.1.0"
 smart-leds = "0.4"
 embedded-hal = "1.0.0"
@@ -37,5 +39,3 @@ debug = false
 lto = "fat"
 opt-level = 3
 overflow-checks = false
-
-
