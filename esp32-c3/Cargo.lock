@@ -660,14 +660,13 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
  "embedded-hal 1.0.0",
- "esp-backtrace",
  "esp-bootloader-esp-idf",
  "esp-hal",
  "esp-hal-smartled",
  "esp-println",
  "i2c-character-display",
  "micromath",
- "panic-halt",
+ "panic-handler",
  "smart-leds",
 ]
 
@@ -867,13 +866,12 @@ version = "0.1.0"
 dependencies = [
  "embedded-hal 1.0.0",
  "embedded-hal-bus",
- "esp-backtrace",
  "esp-bootloader-esp-idf",
  "esp-hal",
  "esp-println",
  "heapless 0.9.1",
  "i2c-character-display",
- "panic-halt",
+ "panic-handler",
  "sht4x",
 ]
 
@@ -1041,6 +1039,14 @@ name = "panic-halt"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a513e167849a384b7f9b746e517604398518590a9142f4846a32e3c2a4de7b11"
+
+[[package]]
+name = "panic-handler"
+version = "0.1.0"
+dependencies = [
+ "esp-backtrace",
+ "panic-halt",
+]
 
 [[package]]
 name = "paste"

@@ -12,43 +12,12 @@ use esp_hal::main;
 use esp_println::println;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
-use panic_halt as _;
+use panic_handler as _;
+use panic_handler::check_result;
 use sht4x::{Precision, Sht4x};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
-/// A simple macro to handle Results from the LCD library.
-/// On Err, it halts the processor. On Ok, it returns the value.
-/// This version takes a message to provide context, which is useful for
-/// debugging.
-macro_rules! check {
-    ($expr:expr) => {
-        // Rule for when no message is provided
-        match $expr {
-            Ok(val) => val,
-            Err(e) => {
-                // ANSI escape code for red text: \x1b[31m
-                // \x1b[0m resets the color
-                println!("\x1b[31mAn error occurred.\x1b[0m");
-                println!("\x1b[31m{}\x1b[0m", e);
-                loop {}
-            }
-        }
-    };
-    ($expr:expr, $msg:expr) => {
-        // Rule for when a message is provided
-        match $expr {
-            Ok(val) => val,
-            Err(e) => {
-                // ANSI escape code for red text: \x1b[31m
-                // \x1b[0m resets the color
-                println!("\x1b[31m{}\x1b[0m", $msg);
-                println!("\x1b[31m{}\x1b[0m", e);
-                loop {}
-            }
-        }
-    };
-}
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
@@ -76,8 +45,8 @@ fn main() -> ! {
     let mut sht40 = Sht4x::new(i2c_bus::RefCellDevice::new(&i2c_ref_cell));
     let _serial = sht40.serial_number(&mut delay);
 
-    check!(lcd.backlight(true), "Error: Failed to initialize LCD");
-    check!(
+    check_result!(lcd.backlight(true), "Error: Failed to initialize LCD");
+    check_result!(
         lcd.print("Hello !"),
         "Error: Failed to print initial message"
     );
@@ -95,7 +64,7 @@ fn main() -> ! {
             let mut buf_humid: String<16> = String::new();
             write!(buf_humid, "Hum:  {:.2}%", humidity).unwrap();
             lcd.write_str(&buf_temp).unwrap();
-            check!(
+            check_result!(
                 lcd.set_cursor(0, 1),
                 "Error: Failed to set cursor to line 2"
             );
