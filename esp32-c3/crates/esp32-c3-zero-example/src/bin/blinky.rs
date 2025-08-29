@@ -1,17 +1,14 @@
 #![no_std]
 #![no_main]
-
-use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
+use panic_handler as _;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
-
 esp_bootloader_esp_idf::esp_app_desc!();
-
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());

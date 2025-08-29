@@ -6,15 +6,28 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-esp-backtrace = "0.17.0"
+panic-handler = { path = "./crates/panic-handler" }
+
+esp-backtrace = { version = "0.17.0", features = [
+    "esp32c3",
+    "panic-handler",
+    "exception-handler",
+    "println",
+] }
 esp-bootloader-esp-idf = "0.1.0"
-esp-hal = "1.0.0-rc.0"
-esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community" }
-esp-println = "0.15.0"
+esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
+esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
+    "esp32c3",
+] }
+esp-println = { version = "0.15.0", features = ["esp32c3"] }
 micromath = "2.1.0"
 smart-leds = "0.4"
-embedded-hal = "1.0.0"
-i2c-character-display = { version = "0.5", features = ["defmt"] }
+i2c-character-display = { version = "0.5" }
+sht4x = "0.2.0"
+embedded-hal-bus = "0.3.0"
+heapless = "0.9.1"
+panic-halt = "1.0.0"
+riscv = "0.14.0"
 
 [profile.dev]
 opt-level = 3

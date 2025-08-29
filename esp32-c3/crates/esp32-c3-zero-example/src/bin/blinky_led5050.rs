@@ -1,13 +1,11 @@
 #![no_std]
 #![no_main]
-
-use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::main;
+use panic_handler as _;
 
 esp_bootloader_esp_idf::esp_app_desc!();
-
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());

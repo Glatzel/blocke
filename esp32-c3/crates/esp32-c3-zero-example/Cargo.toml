@@ -4,17 +4,12 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 
 [dependencies]
-esp-backtrace = { workspace = true, features = [
-  "esp32c3",
-  "panic-handler",
-  "exception-handler",
-  "println",
-] }
 esp-bootloader-esp-idf = { workspace = true }
-esp-hal = { workspace = true, features = ["esp32c3", "unstable"] }
-esp-hal-smartled = { workspace = true, features = ["esp32c3"] }
-esp-println = { workspace = true, features = ["esp32c3"] }
+esp-hal = { workspace = true }
+esp-hal-smartled = { workspace = true }
+esp-println = { workspace = true }
 micromath = { workspace = true }
 smart-leds = { workspace = true }
 i2c-character-display = { workspace = true }
-embedded-hal = { workspace = true }
+panic-handler = { workspace = true }
+riscv = { workspace = true }

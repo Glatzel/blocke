@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
+    paths-ignore:
+      - "*.md"
+  schedule:
+    - cron: 0 16 * * *
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        chip: [esp32-c3]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{matrix.chip}}
+    steps:
+      - uses: actions/checkout@v5
+      - run: ./scripts/setup.ps1
+        shell: pwsh
+      - run: cargo build
+      - run: cargo build --release

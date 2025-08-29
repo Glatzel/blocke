@@ -1,9 +1,7 @@
 #![no_std]
 #![no_main]
-
 use core::f32;
 
-use esp_backtrace as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::ledc::channel::config::PinConfig;
@@ -14,6 +12,8 @@ use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
 use micromath::F32Ext;
+use panic_handler as _;
+
 esp_bootloader_esp_idf::esp_app_desc!();
 
 const PERIOD_MS: u16 = 1000;
@@ -31,7 +31,6 @@ fn generate_levels() -> [u16; POS_COUNT as usize] {
     }
     levels
 }
-
 #[main]
 fn main() -> ! {
     let peripherals = esp_hal::init(esp_hal::Config::default());
