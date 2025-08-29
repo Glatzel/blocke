@@ -11,6 +11,5 @@ esp-println = { workspace = true }
 micromath = { workspace = true }
 smart-leds = { workspace = true }
 i2c-character-display = { workspace = true }
-embedded-hal = { workspace = true }
 panic-handler = { workspace = true }
 riscv = { workspace = true }

@@ -22,7 +22,6 @@ esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", featur
 esp-println = { version = "0.15.0", features = ["esp32c3"] }
 micromath = "2.1.0"
 smart-leds = "0.4"
-embedded-hal = "1.0.0"
 i2c-character-display = { version = "0.5" }
 sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"

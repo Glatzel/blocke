@@ -659,7 +659,6 @@ dependencies = [
 name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
- "embedded-hal 1.0.0",
  "esp-bootloader-esp-idf",
  "esp-hal",
  "esp-hal-smartled",
@@ -865,11 +864,9 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 name = "hygrothermograph"
 version = "0.1.0"
 dependencies = [
- "embedded-hal 1.0.0",
  "embedded-hal-bus",
  "esp-bootloader-esp-idf",
  "esp-hal",
- "esp-println",
  "heapless 0.9.1",
  "i2c-character-display",
  "panic-handler",
