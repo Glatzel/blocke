@@ -482,18 +482,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "esp-backtrace"
-version = "0.17.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f270a29a3c4e492399b13e157b10151a7616cba69c4d554076ea93ed1bd2916"
-dependencies = [
- "cfg-if",
- "esp-config 0.5.0",
- "esp-println",
- "heapless 0.8.0",
-]
-
-[[package]]
 name = "esp-bootloader-esp-idf"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1035,7 +1023,6 @@ checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 name = "mischief"
 version = "0.1.0"
 dependencies = [
- "esp-backtrace",
  "panic-halt",
 ]
 

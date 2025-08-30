@@ -2,10 +2,6 @@
 
 use core::fmt::Write;
 extern crate alloc;
-#[cfg(all(feature = "esp32", debug_assertions))]
-use esp_backtrace as _;
-#[cfg(any(not(feature = "esp32"), not(debug_assertions)))]
-use panic_halt as _;
 
 #[derive(Debug)]
 pub struct Report {

@@ -22,6 +22,12 @@ embedded-hal-bus = "0.3.0"
 heapless = "0.9.1"
 riscv = "0.14.0"
 esp-alloc = "0.8.0"
+panic-halt = "1.0.0"
+esp-backtrace = { version = "0.17.0", features = [
+    "esp32c3",
+    "panic-handler",
+    "exception-handler"
+] }
 
 [profile.dev]
 opt-level = 3
