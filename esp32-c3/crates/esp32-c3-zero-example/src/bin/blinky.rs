@@ -26,7 +26,9 @@ fn app() -> mischief::Result<()> {
 
     let mut led = {
         let frequency = Rate::from_mhz(80);
-        let rmt = Rmt::new(peripherals.RMT, frequency).into_mischief().wrap_err("Failed to initialize RMT0")?;
+        let rmt = Rmt::new(peripherals.RMT, frequency)
+            .into_mischief()
+            .wrap_err("Failed to initialize RMT0")?;
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
     let level = 10;

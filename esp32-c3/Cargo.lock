@@ -1036,6 +1036,7 @@ checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 [[package]]
 name = "mischief"
 version = "0.0.26"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.26#f6b553cce9a824ab1ece42c40eb34c361ab9c732"
 dependencies = [
  "owo-colors",
 ]
