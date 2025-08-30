@@ -37,9 +37,11 @@ fn app() -> mischief::Result<()> {
         .into_mischief()
         .wrap_err("Error initializing LCD")?;
     lcd.backlight(true)
-        .into_mischief()?
+        .into_mischief()
+        .wrap_err("Error enable backlight.")?
         .print("Hello World!")
-        .into_mischief()?;
+        .into_mischief()
+        .wrap_err("Error show text.")?;
     loop {
         riscv::asm::wfi();
     }

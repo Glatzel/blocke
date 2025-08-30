@@ -6,7 +6,9 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-mischief = { path="../../toolbox/rust/crates/mischief", default-features = false }
+mischief = { git = "https://github.com/Glatzel/toolbox", branch = "v0.0.26", default-features = false, features = [
+    "fancy",
+] }
 pain = { path = "./crates/pain" }
 
 embedded-hal-bus = "0.3.0"

@@ -77,9 +77,11 @@ fn app() -> mischief::Result<()> {
             write!(buf_humid, "Hum:  {:.2}%", humidity).into_mischief()?;
             lcd.write_str(&buf_temp).into_mischief()?;
 
-            lcd.set_cursor(0, 1).map_err(|_| "").into_mischief()?;
+            lcd.set_cursor(0, 1)
+                .map_err(|_| "Error: Failed to set cursor to line 2")
+                .into_mischief()?;
             lcd.write_str(&buf_humid).into_mischief()?;
         }
-        delay.delay_millis(5000);
+        delay.delay_millis(5000); 
     }
 }
