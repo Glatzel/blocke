@@ -18,6 +18,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
 fn main() -> ! {
+    heap_allocator!(size:64 * 1024);
     app().unwrap();
     loop {
         riscv::asm::wfi();

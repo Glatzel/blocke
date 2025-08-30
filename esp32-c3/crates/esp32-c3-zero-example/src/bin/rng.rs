@@ -5,7 +5,7 @@ use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rng::Rng;
 use esp_println::println;
-use {esp_alloc as _, pain as _};
+use pain as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]

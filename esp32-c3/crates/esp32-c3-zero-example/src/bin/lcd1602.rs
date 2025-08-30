@@ -1,15 +1,20 @@
 #![no_std]
 #![no_main]
+
+use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use mischief::{IntoMischief, WrapErr};
-use {esp_alloc as _, pain as _};
+use pain as _;
+
 esp_bootloader_esp_idf::esp_app_desc!();
+
 #[main] // esp-hal handles entry
 fn main() -> ! {
+    heap_allocator!(size:64 * 1024);
     app().unwrap();
     loop {
         riscv::asm::wfi();

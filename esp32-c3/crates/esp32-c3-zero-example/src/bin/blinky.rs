@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::main;
 use esp_hal::rmt::Rmt;
@@ -12,6 +13,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 use {esp_alloc as _, pain as _};
 #[main]
 fn main() -> ! {
+    heap_allocator!(size:64 * 1024);
     app().unwrap();
     loop {
         riscv::asm::wfi();

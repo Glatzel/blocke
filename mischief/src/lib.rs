@@ -10,6 +10,7 @@ use std::fmt::Write;
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 #[cfg(not(feature = "std"))]
+#[cfg(not(feature = "std"))]
 use alloc::collections::LinkedList;
 #[cfg(not(feature = "std"))]
 use alloc::string::String;
