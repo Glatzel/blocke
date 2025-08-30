@@ -680,6 +680,7 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
  "esp-alloc",
+ "esp-backtrace",
  "esp-bootloader-esp-idf",
  "esp-hal",
  "esp-hal-smartled",

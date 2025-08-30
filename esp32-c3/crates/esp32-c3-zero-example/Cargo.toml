@@ -14,3 +14,9 @@ i2c-character-display = { workspace = true }
 riscv = { workspace = true }
 mischief= { workspace = true }
 esp-alloc = { workspace = true }
+esp-backtrace = { version = "0.17.0", features = [
+    "esp32c3",
+    "panic-handler",
+    "exception-handler",
+    "println",
+], optional = true }
