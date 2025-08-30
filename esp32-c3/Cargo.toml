@@ -6,7 +6,7 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-mischief = { git = "https://github.com/Glatzel/toolbox", branch = "v0.0.26", default-features = false, features = [
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.26", default-features = false, features = [
     "fancy",
 ] }
 pain = { path = "./crates/pain" }
