@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 use core::f32;
-
+use esp_alloc as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::ledc::channel::config::PinConfig;

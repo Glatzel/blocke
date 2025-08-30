@@ -13,3 +13,4 @@ smart-leds = { workspace = true }
 i2c-character-display = { workspace = true }
 riscv = { workspace = true }
 mischief= { workspace = true }
+esp-alloc = { workspace = true }

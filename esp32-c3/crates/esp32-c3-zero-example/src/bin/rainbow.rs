@@ -9,7 +9,7 @@ use esp_println::println;
 use mischief as _;
 use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
-
+use esp_alloc as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {

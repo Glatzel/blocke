@@ -21,6 +21,7 @@ sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"
 heapless = "0.9.1"
 riscv = "0.14.0"
+esp-alloc = "0.8.0"
 
 [profile.dev]
 opt-level = 3

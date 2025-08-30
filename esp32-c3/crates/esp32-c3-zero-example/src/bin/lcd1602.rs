@@ -6,7 +6,7 @@ use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use mischief::IntoMischief;
-
+use esp_alloc as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main] // esp-hal handles entry
 fn main() -> ! {

@@ -9,6 +9,7 @@ use esp_println::println;
 use mischief::IntoMischief;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 esp_bootloader_esp_idf::esp_app_desc!();
+use esp_alloc as _;
 #[main]
 fn main() -> ! {
     app().unwrap();

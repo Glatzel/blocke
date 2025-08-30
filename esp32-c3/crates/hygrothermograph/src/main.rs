@@ -5,6 +5,7 @@ use core::cell::RefCell;
 use core::fmt::Write;
 
 use embedded_hal_bus::i2c as i2c_bus;
+use esp_alloc as _;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
@@ -13,7 +14,6 @@ use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use mischief::{self as _, IntoMischief};
 use sht4x::{Precision, Sht4x};
-
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]

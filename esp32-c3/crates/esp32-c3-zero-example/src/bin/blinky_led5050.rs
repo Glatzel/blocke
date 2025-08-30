@@ -4,7 +4,7 @@ use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::main;
 use mischief as _;
-
+use esp_alloc as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {

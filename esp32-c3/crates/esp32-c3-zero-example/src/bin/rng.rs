@@ -6,7 +6,7 @@ use esp_hal::main;
 use esp_hal::rng::Rng;
 use esp_println::println;
 use mischief as _;
-
+use esp_alloc as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
