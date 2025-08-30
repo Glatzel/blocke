@@ -6,7 +6,7 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-mischief = { path = "../mischief", default-features = false }
+mischief = { path="../../toolbox/rust/crates/mischief", default-features = false }
 pain = { path = "./crates/pain" }
 
 embedded-hal-bus = "0.3.0"
