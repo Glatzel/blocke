@@ -7,4 +7,3 @@ build-std = ["core", "alloc"]
 
 [target.'cfg(debug_assertions)']
 rustflags = ["-C", "link-arg=-Tlinkall.x", "-C", "force-frame-pointers"]
-
