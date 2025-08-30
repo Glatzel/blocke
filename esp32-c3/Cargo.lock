@@ -687,7 +687,7 @@ dependencies = [
  "i2c-character-display",
  "micromath",
  "mischief",
- "panic-handler",
+ "pain",
  "riscv 0.14.0",
  "smart-leds",
 ]
@@ -893,7 +893,7 @@ dependencies = [
  "heapless 0.9.1",
  "i2c-character-display",
  "mischief",
- "panic-handler",
+ "pain",
  "riscv 0.14.0",
  "sht4x",
 ]
@@ -1068,18 +1068,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
-name = "panic-halt"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a513e167849a384b7f9b746e517604398518590a9142f4846a32e3c2a4de7b11"
-
-[[package]]
-name = "panic-handler"
+name = "pain"
 version = "0.1.0"
 dependencies = [
  "esp-backtrace",
  "panic-halt",
 ]
+
+[[package]]
+name = "panic-halt"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a513e167849a384b7f9b746e517604398518590a9142f4846a32e3c2a4de7b11"
 
 [[package]]
 name = "paste"

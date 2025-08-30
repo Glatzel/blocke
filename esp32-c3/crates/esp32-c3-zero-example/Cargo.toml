@@ -14,4 +14,4 @@ i2c-character-display = { workspace = true }
 riscv = { workspace = true }
 mischief= { workspace = true }
 esp-alloc = { workspace = true }
-panic-handler= { workspace = true }
+pain= { workspace = true }

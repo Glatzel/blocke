@@ -8,7 +8,7 @@ use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
 use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
-use {esp_alloc as _, panic_handler as _};
+use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {

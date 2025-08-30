@@ -13,4 +13,4 @@ heapless = { workspace = true }
 mischief = { workspace = true }
 esp-alloc = { workspace = true }
 riscv = { workspace = true }
-panic-handler = { workspace = true }
+pain = { workspace = true }

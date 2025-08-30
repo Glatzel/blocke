@@ -13,7 +13,7 @@ use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use mischief::IntoMischief;
 use sht4x::{Precision, Sht4x};
-use {esp_alloc as _, panic_handler as _};
+use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]

@@ -21,6 +21,7 @@
 #![no_std]
 
 #[cfg(debug_assertions)]
-use esp_backtrace as _;
+extern crate esp_backtrace;
+
 #[cfg(not(debug_assertions))]
-use panic_halt as _;
+extern crate panic_halt; 
