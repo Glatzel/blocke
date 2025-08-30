@@ -3,8 +3,7 @@
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::main;
-use panic_handler as _;
-
+use pain as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {

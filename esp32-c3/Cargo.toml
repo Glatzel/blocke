@@ -6,8 +6,13 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-panic-handler = { path = "./crates/panic-handler" }
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.26", default-features = false, features = [
+    "fancy",
+] }
+pain = { path = "./crates/pain" }
 
+embedded-hal-bus = "0.3.0"
+esp-alloc = "0.8.0"
 esp-backtrace = { version = "0.17.0", features = [
     "esp32c3",
     "panic-handler",
@@ -19,19 +24,20 @@ esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
 esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
     "esp32c3",
 ] }
-esp-println = { version = "0.15.0", features = ["esp32c3"] }
-micromath = "2.1.0"
-smart-leds = "0.4"
-i2c-character-display = { version = "0.5" }
-sht4x = "0.2.0"
-embedded-hal-bus = "0.3.0"
+esp-println = { version = "0.15.0", features = ["esp32c3", "auto"] }
 heapless = "0.9.1"
+i2c-character-display = { version = "0.5" }
+micromath = "2.1.0"
 panic-halt = "1.0.0"
 riscv = "0.14.0"
+sht4x = "0.2.0"
+smart-leds = "0.4"
+
 
 [profile.dev]
 opt-level = 3
 overflow-checks = true
+lto = "fat"
 
 [profile.release]
 codegen-units = 1
@@ -39,3 +45,5 @@ debug = false
 lto = "fat"
 opt-level = 3
 overflow-checks = false
+panic = "abort"
+strip = true
