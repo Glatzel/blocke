@@ -6,7 +6,7 @@ use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
-use panic_handler as _;
+use mischief as _;
 use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
 
