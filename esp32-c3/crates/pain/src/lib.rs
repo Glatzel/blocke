@@ -24,4 +24,4 @@
 extern crate esp_backtrace;
 
 #[cfg(not(debug_assertions))]
-extern crate panic_halt; 
+extern crate panic_halt;
