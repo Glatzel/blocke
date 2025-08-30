@@ -5,7 +5,7 @@ use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
-use mischief::IntoMischief;
+use mischief::{IntoMischief, WrapErr};
 use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main] // esp-hal handles entry
@@ -28,11 +28,9 @@ fn app() -> mischief::Result<()> {
 
     // PCF8574T adapter for a single HD44780 controller
     let mut lcd = CharacterDisplayPCF8574T::new(i2c, LcdDisplayType::Lcd16x2, delay);
-    if let Err(e) = lcd.init() {
-        panic!("Error initializing LCD: {}", e);
-    };
+    lcd.init().into_mischief().wrap_err("Error initializing LCD")?;
     lcd.backlight(true)
-        .unwrap()
+        .into_mischief()?
         .print("Hello World!")
         .into_mischief()?;
     loop {
