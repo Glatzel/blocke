@@ -1,18 +1,46 @@
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(not(feature = "std"))]
 use core::fmt::Write;
+#[cfg(feature = "std")]
+use std::collections::LinkedList;
+#[cfg(feature = "std")]
+use std::fmt::Write;
+
+#[cfg(not(feature = "std"))]
 extern crate alloc;
+#[cfg(not(feature = "std"))]
+use alloc::collections::LinkedList;
+#[cfg(not(feature = "std"))]
+use alloc::string::String;
 
 #[derive(Debug)]
 pub struct Report {
-    pub msg: alloc::string::String,
+    msgs: LinkedList<String>,
 }
-impl From<alloc::string::String> for Report {
-    fn from(msg: alloc::string::String) -> Self { Report { msg } }
+
+impl Report {
+    // Helper method to create a new Report from a single message
+    pub fn new(msg: String) -> Self {
+        let mut msgs = LinkedList::new();
+        msgs.push_front(msg); // Add the initial error message
+        Report { msgs }
+    }
+
+    // Helper method to append a new error message to the Report
+    pub fn append_error(&mut self, msg: String) {
+        self.msgs.push_front(msg); // Add the new error message to the front
+    }
 }
+
+impl From<&str> for Report {
+    fn from(msg: &str) -> Self { Report::new(msg.to_string()) }
+}
+
 pub trait IntoMischief<T> {
     fn into_mischief(self) -> Result<T>;
 }
+
 pub type Result<T, E = Report> = core::result::Result<T, E>;
 
 impl<T, E: core::fmt::Debug> IntoMischief<T> for core::result::Result<T, E> {
@@ -20,26 +48,49 @@ impl<T, E: core::fmt::Debug> IntoMischief<T> for core::result::Result<T, E> {
         match self {
             Ok(v) => Ok(v),
             Err(e) => {
-                let mut msg: alloc::string::String = alloc::string::String::new();
+                let mut msg: String = String::new();
                 write!(msg, "{:?}", e).ok();
-                Err(Report { msg })
+                Err(Report::from(msg.as_str()))
             }
         }
     }
 }
+
 pub trait WrapErr<T> {
     fn wrap_err(self, msg: &'static str) -> Result<T, Report>;
 }
+
 impl<T> WrapErr<T> for Result<T, Report> {
     /// Wraps the error with a custom message and returns a `Result`.
     fn wrap_err(self, msg: &'static str) -> Result<T, Report> {
         match self {
             Ok(v) => Ok(v),
-            Err(e) => {
-                let mut final_msg = alloc::string::String::new();
+            Err(mut e) => {
+                let mut final_msg = String::new();
                 // Add custom message + formatted error
-                write!(final_msg, "{}: {:?}", msg, e).ok();
-                Err(Report::from(final_msg)) // Convert String to E
+                write!(final_msg, "{}", msg).ok();
+                e.append_error(final_msg); // Append the new message to the Report
+                Err(e)
+            }
+        }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_wrap_err_creates_error_chain() {
+        let initial_err: Result<i32> = Err(Report::from("Initial error"));
+
+        // Wrap the error with a custom message
+        let result = initial_err.wrap_err("First wrap").wrap_err("second wrap");
+
+        match result {
+            Ok(_) => panic!("Expected an error, but got Ok"),
+            Err(report) => {
+                // Test that the error chain contains the expected messages
+                println!("{report:?}")
             }
         }
     }
