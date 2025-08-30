@@ -37,6 +37,7 @@ smart-leds = "0.4"
 [profile.dev]
 opt-level = 3
 overflow-checks = true
+lto = "fat"
 
 [profile.release]
 codegen-units = 1
@@ -44,3 +45,5 @@ debug = false
 lto = "fat"
 opt-level = 3
 overflow-checks = false
+panic = "abort"
+strip = true
