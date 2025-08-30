@@ -63,6 +63,7 @@ fn app() -> mischief::Result<()> {
     let mut humidity: f32 = f32::default();
     let mut buf_temp: String<16> = String::new();
     let mut buf_humid: String<16> = String::new();
+    let mut measurement;
     loop {
         lcd.clear()
             .map_err(|_| "")
@@ -70,7 +71,7 @@ fn app() -> mischief::Result<()> {
             .home()
             .map_err(|_| "")
             .into_mischief()?;
-        let measurement = sht40.measure(Precision::Low, &mut delay);
+        measurement = sht40.measure(Precision::Low, &mut delay);
         if let Ok(measurement) = measurement {
             temperature = measurement.temperature_celsius().to_num();
             humidity = measurement.humidity_percent().to_num();
