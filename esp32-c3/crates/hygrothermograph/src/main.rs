@@ -82,6 +82,6 @@ fn app() -> mischief::Result<()> {
                 .into_mischief()?;
             lcd.write_str(&buf_humid).into_mischief()?;
         }
-        delay.delay_millis(5000); 
+        delay.delay_millis(5000);
     }
 }
