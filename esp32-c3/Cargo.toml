@@ -13,7 +13,7 @@ esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
 esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
     "esp32c3",
 ] }
-esp-println = { version = "0.15.0", features = ["esp32c3","auto"] }
+esp-println = { version = "0.15.0", features = ["esp32c3", "auto"] }
 micromath = "2.1.0"
 smart-leds = "0.4"
 i2c-character-display = { version = "0.5" }
