@@ -12,3 +12,4 @@ embedded-hal-bus = { workspace = true }
 heapless = { workspace = true }
 mischief = { workspace = true }
 esp-alloc = { workspace = true }
+riscv = { workspace = true }

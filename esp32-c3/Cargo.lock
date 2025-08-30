@@ -892,6 +892,7 @@ dependencies = [
  "heapless 0.9.1",
  "i2c-character-display",
  "mischief",
+ "riscv 0.14.0",
  "sht4x",
 ]
 
