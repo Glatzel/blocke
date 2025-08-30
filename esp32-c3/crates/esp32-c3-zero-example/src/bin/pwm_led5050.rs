@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 use core::f32;
-use esp_alloc as _;
+
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::ledc::channel::config::PinConfig;
@@ -12,7 +12,7 @@ use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
 use micromath::F32Ext;
-use mischief as _;
+use {esp_alloc as _, mischief as _};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 

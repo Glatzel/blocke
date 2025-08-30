@@ -6,10 +6,9 @@ use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
-use mischief as _;
 use smart_leds::hsv::{Hsv, hsv2rgb};
 use smart_leds::{SmartLedsWrite, brightness};
-use esp_alloc as _;
+use {esp_alloc as _, mischief as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {
