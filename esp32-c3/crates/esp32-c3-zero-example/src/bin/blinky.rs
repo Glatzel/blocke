@@ -14,7 +14,11 @@ use esp_alloc as _;
 fn main() -> ! {
     app().unwrap();
     loop {
+<<<<<<< HEAD
         riscv::asm::wfi();
+=======
+        panic!()
+>>>>>>> 8cbf0c79eb41a2e39a62f4cbd13b044cbc215fbf
     }
 }
 
