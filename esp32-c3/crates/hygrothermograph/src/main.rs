@@ -59,6 +59,7 @@ fn app() -> mischief::Result<()> {
         .into_mischief()?;
     delay.delay_millis(2000);
 
+    // variables in loop
     let mut temperature: f32 = f32::default();
     let mut humidity: f32 = f32::default();
     let mut buf_temp: String<16> = String::new();
