@@ -28,7 +28,9 @@ fn app() -> mischief::Result<()> {
 
     // PCF8574T adapter for a single HD44780 controller
     let mut lcd = CharacterDisplayPCF8574T::new(i2c, LcdDisplayType::Lcd16x2, delay);
-    lcd.init().into_mischief().wrap_err("Error initializing LCD")?;
+    lcd.init()
+        .into_mischief()
+        .wrap_err("Error initializing LCD")?;
     lcd.backlight(true)
         .into_mischief()?
         .print("Hello World!")
