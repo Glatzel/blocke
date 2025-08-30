@@ -19,7 +19,9 @@ esp_bootloader_esp_idf::esp_app_desc!();
 #[main]
 fn main() -> ! {
     app().unwrap();
-    loop {}
+    loop {
+        panic!()
+    }
 }
 fn app() -> mischief::Result<()> {
     let peripherals = esp_hal::init(esp_hal::Config::default());

@@ -13,7 +13,7 @@ use esp_alloc as _;
 #[main]
 fn main() -> ! {
     app().unwrap();
-    loop {}
+    loop {panic!()}
 }
 
 fn app() -> mischief::Result<()> {

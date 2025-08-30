@@ -11,7 +11,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 #[main] // esp-hal handles entry
 fn main() -> ! {
     app().unwrap();
-    loop {}
+    loop {panic!()}
 }
 
 fn app() -> mischief::Result<()> {
