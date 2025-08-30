@@ -1,18 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(not(feature = "std"))]
 use core::fmt::Write;
-#[cfg(feature = "std")]
-use std::collections::LinkedList;
-#[cfg(feature = "std")]
-use std::fmt::Write;
-
-#[cfg(not(feature = "std"))]
 extern crate alloc;
-#[cfg(not(feature = "std"))]
-#[cfg(not(feature = "std"))]
 use alloc::collections::LinkedList;
-#[cfg(not(feature = "std"))]
 use alloc::string::String;
 
 #[derive(Debug)]
