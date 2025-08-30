@@ -12,7 +12,7 @@ use esp_hal::main;
 use esp_hal::time::Rate;
 use esp_println::println;
 use micromath::F32Ext;
-use {esp_alloc as _, mischief as _};
+use {esp_alloc as _, panic_handler as _};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 

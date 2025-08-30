@@ -687,6 +687,7 @@ dependencies = [
  "i2c-character-display",
  "micromath",
  "mischief",
+ "panic-handler",
  "riscv 0.14.0",
  "smart-leds",
 ]
@@ -892,6 +893,7 @@ dependencies = [
  "heapless 0.9.1",
  "i2c-character-display",
  "mischief",
+ "panic-handler",
  "riscv 0.14.0",
  "sht4x",
 ]
