@@ -6,30 +6,30 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-mischief = { path = "../mischief" }
+mischief = { path = "../mischief", default-features = false }
 pain = { path = "./crates/pain" }
 
-esp-bootloader-esp-idf = "0.1.0"
-esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
-esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
-    "esp32c3",
-] }
-esp-println = { version = "0.15.0", features = ["esp32c3", "auto"] }
-micromath = "2.1.0"
-smart-leds = "0.4"
-i2c-character-display = { version = "0.5" }
-sht4x = "0.2.0"
 embedded-hal-bus = "0.3.0"
-heapless = "0.9.1"
-riscv = "0.14.0"
 esp-alloc = "0.8.0"
-panic-halt = "1.0.0"
 esp-backtrace = { version = "0.17.0", features = [
     "esp32c3",
     "panic-handler",
     "exception-handler",
     "println",
 ] }
+esp-bootloader-esp-idf = "0.1.0"
+esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
+esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
+    "esp32c3",
+] }
+esp-println = { version = "0.15.0", features = ["esp32c3", "auto"] }
+heapless = "0.9.1"
+i2c-character-display = { version = "0.5" }
+micromath = "2.1.0"
+panic-halt = "1.0.0"
+riscv = "0.14.0"
+sht4x = "0.2.0"
+smart-leds = "0.4"
 
 [profile.dev]
 opt-level = 3

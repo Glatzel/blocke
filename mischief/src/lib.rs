@@ -34,7 +34,16 @@ impl Report {
 }
 
 impl From<&str> for Report {
-    fn from(msg: &str) -> Self { Report::new(msg.to_string()) }
+    fn from(msg: &str) -> Self {
+        #[cfg(feature = "std")]
+        {
+            Report::new(msg.to_string())
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            Report::new(String::from(msg))
+        }
+    }
 }
 
 pub trait IntoMischief<T> {
@@ -75,7 +84,7 @@ impl<T> WrapErr<T> for Result<T, Report> {
         }
     }
 }
-#[cfg(test)]
+#[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
 
