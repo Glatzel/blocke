@@ -12,5 +12,7 @@ fn main() -> ! {
     heap_allocator!(size:64 * 1024);
     let a = alloc::string::String::from("Hello World!");
     println!("{a}");
-    loop {}
+    loop {
+        riscv::asm::wfi();
+    }
 }
