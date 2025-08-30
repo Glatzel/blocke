@@ -1,0 +1,17 @@
+[package]
+edition = "2024"
+name = "mischief"
+version = "0.1.0"
+
+[dependencies]
+esp-backtrace = { version = "0.17.0", features = [
+    "esp32c3",
+    "panic-handler",
+    "exception-handler",
+    "println",
+], optional = true }
+panic-halt = "1.0.0"
+heapless = "0.9.1"
+
+[features]
+esp32 = ["dep:esp-backtrace"]

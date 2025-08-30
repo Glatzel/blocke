@@ -1,8 +1,0 @@
-[package]
-edition.workspace = true
-name = "panic-handler"
-version = "0.1.0"
-
-[dependencies]
-esp-backtrace = { workspace = true }
-panic-halt = { workspace = true }
