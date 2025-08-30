@@ -20,7 +20,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 fn main() -> ! {
     app().unwrap();
     loop {
-        panic!()
+        riscv::asm::wfi();
     }
 }
 fn app() -> mischief::Result<()> {

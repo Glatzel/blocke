@@ -13,7 +13,9 @@ use esp_alloc as _;
 #[main]
 fn main() -> ! {
     app().unwrap();
-    loop {panic!()}
+    loop {
+        riscv::asm::wfi();
+    }
 }
 
 fn app() -> mischief::Result<()> {
