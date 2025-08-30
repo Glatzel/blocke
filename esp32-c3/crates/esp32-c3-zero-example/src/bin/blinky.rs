@@ -34,6 +34,5 @@ fn app() -> mischief::Result<()> {
         delay.delay_millis(500);
         led.write([colors::BLACK]).into_mischief()?;
         delay.delay_millis(500);
-        panic!("fasdf");
     }
 }
