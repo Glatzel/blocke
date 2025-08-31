@@ -7,3 +7,6 @@ build-std = ["core", "alloc"]
 
 [target.'cfg(debug_assertions)']
 rustflags = ["-C", "link-arg=-Tlinkall.x", "-C", "force-frame-pointers"]
+
+[target.riscv32imc-unknown-none-elf]
+runner = "espflash flash --monitor"

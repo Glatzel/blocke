@@ -890,6 +890,7 @@ dependencies = [
  "esp-alloc",
  "esp-bootloader-esp-idf",
  "esp-hal",
+ "esp-println",
  "heapless 0.9.1",
  "i2c-character-display",
  "mischief",
