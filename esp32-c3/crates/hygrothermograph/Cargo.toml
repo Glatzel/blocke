@@ -14,3 +14,4 @@ mischief = { workspace = true }
 esp-alloc = { workspace = true }
 riscv = { workspace = true }
 pain = { workspace = true }
+esp-println = { workspace = true }
