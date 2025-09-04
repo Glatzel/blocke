@@ -12,7 +12,6 @@ use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
-use mischief::IntoMischief;
 use sht4x::{Precision, Sht4x};
 use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
@@ -34,7 +33,7 @@ fn app() -> mischief::Result<()> {
 
     //init i2c
     let i2c0 = I2c::new(peripherals.I2C0, Config::default())
-        .into_mischief()?
+        .map_err(|e| mischief::Report::from_debug(e))?
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
     let i2c_ref_cell = RefCell::new(i2c0);
@@ -52,11 +51,9 @@ fn app() -> mischief::Result<()> {
     let _serial = sht40.serial_number(&mut delay);
 
     lcd.backlight(true)
-        .map_err(|_| "Error: Failed to initialize LCD")
-        .into_mischief()?;
+        .map_err(|_| mischief::Report::from_debug("Failed to initialize LCD"))?;
     lcd.print("Hello !")
-        .map_err(|_| "Failed to print initial message")
-        .into_mischief()?;
+        .map_err(|_| mischief::Report::from_debug("Failed to print initial message"))?;
     delay.delay_millis(2000);
 
     // variables in loop
@@ -66,11 +63,11 @@ fn app() -> mischief::Result<()> {
     let mut buf_humid: String<16> = String::new();
     loop {
         lcd.clear()
-            .map_err(|_| "")
-            .into_mischief()?
+            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
             .home()
-            .map_err(|_| "")
-            .into_mischief()?;
+            .map_err(|_| {
+                mischief::Report::from_debug("Failed to set the cursor to the home position")
+            })?;
 
         if let Ok(measurement) = sht40.measure(Precision::Low, &mut delay) {
             temperature = measurement.temperature_celsius().to_num();
@@ -78,14 +75,17 @@ fn app() -> mischief::Result<()> {
 
             buf_temp.clear();
             buf_humid.clear();
-            write!(buf_temp, "Temp: {:.2}C", temperature).into_mischief()?;
-            write!(buf_humid, "Hum:  {:.2}%", humidity).into_mischief()?;
-            lcd.write_str(&buf_temp).into_mischief()?;
+            write!(buf_temp, "Temp: {:.2}C", temperature)
+                .map_err(|e| mischief::Report::from_debug(e))?;
+            write!(buf_humid, "Hum:  {:.2}%", humidity)
+                .map_err(|e| mischief::Report::from_debug(e))?;
+            lcd.write_str(&buf_temp)
+                .map_err(|e| mischief::Report::from_debug(e))?;
 
             lcd.set_cursor(0, 1)
-                .map_err(|_| "Error: Failed to set cursor to line 2")
-                .into_mischief()?;
-            lcd.write_str(&buf_humid).into_mischief()?;
+                .map_err(|_| mischief::Report::from_debug("Failed to set cursor to line 2"))?;
+            lcd.write_str(&buf_humid)
+                .map_err(|e| mischief::Report::from_debug(e))?;
         }
         delay.delay_millis(5000);
     }

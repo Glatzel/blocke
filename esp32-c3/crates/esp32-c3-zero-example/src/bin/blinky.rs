@@ -7,7 +7,7 @@ use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
-use mischief::{IntoMischief, WrapErr};
+use mischief::WrapErr;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 esp_bootloader_esp_idf::esp_app_desc!();
 use {esp_alloc as _, pain as _};
@@ -27,7 +27,7 @@ fn app() -> mischief::Result<()> {
     let mut led = {
         let frequency = Rate::from_mhz(80);
         let rmt = Rmt::new(peripherals.RMT, frequency)
-            .into_mischief()
+            .map_err(|e| mischief::Report::from_debug(e))
             .wrap_err("Failed to initialize RMT0")?;
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
@@ -36,9 +36,10 @@ fn app() -> mischief::Result<()> {
     println!("blinky");
     loop {
         led.write(brightness([color].into_iter(), level))
-            .into_mischief()?;
+            .map_err(|e| mischief::Report::from_debug(e))?;
         delay.delay_millis(500);
-        led.write([colors::BLACK]).into_mischief()?;
+        led.write([colors::BLACK])
+            .map_err(|e| mischief::Report::from_debug(e))?;
         delay.delay_millis(500);
     }
 }
