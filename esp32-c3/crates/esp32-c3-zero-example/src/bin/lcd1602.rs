@@ -7,7 +7,7 @@ use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
-use mischief::{IntoMischief, WrapErr};
+use mischief::WrapErr;
 use pain as _;
 
 esp_bootloader_esp_idf::esp_app_desc!();
@@ -26,21 +26,20 @@ fn app() -> mischief::Result<()> {
     let delay = Delay::new();
     let _oe = Output::new(peripherals.GPIO2, Level::High, OutputConfig::default());
 
-    let i2c = I2c::new(peripherals.I2C0, Config::default())
-        .unwrap()
+    let i2c = I2c::new(peripherals.I2C0, Config::default())?
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
 
     // PCF8574T adapter for a single HD44780 controller
     let mut lcd = CharacterDisplayPCF8574T::new(i2c, LcdDisplayType::Lcd16x2, delay);
     lcd.init()
-        .into_mischief()
+        .map_err(|e| mischief::Report::from_debug(e))
         .wrap_err("Error initializing LCD")?;
     lcd.backlight(true)
-        .into_mischief()
+        .map_err(|e| mischief::Report::from_debug(e))
         .wrap_err("Error enable backlight.")?
         .print("Hello World!")
-        .into_mischief()
+        .map_err(|e| mischief::Report::from_debug(e))
         .wrap_err("Error show text.")?;
     loop {
         riscv::asm::wfi();
