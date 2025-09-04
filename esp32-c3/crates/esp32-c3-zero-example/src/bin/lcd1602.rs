@@ -33,13 +33,13 @@ fn app() -> mischief::Result<()> {
     // PCF8574T adapter for a single HD44780 controller
     let mut lcd = CharacterDisplayPCF8574T::new(i2c, LcdDisplayType::Lcd16x2, delay);
     lcd.init()
-        .map_err(|e| mischief::Report::from_debug(e))
+        .map_err(mischief::Report::from_debug)
         .wrap_err("Error initializing LCD")?;
     lcd.backlight(true)
-        .map_err(|e| mischief::Report::from_debug(e))
+        .map_err(mischief::Report::from_debug)
         .wrap_err("Error enable backlight.")?
         .print("Hello World!")
-        .map_err(|e| mischief::Report::from_debug(e))
+        .map_err(mischief::Report::from_debug)
         .wrap_err("Error show text.")?;
     loop {
         riscv::asm::wfi();

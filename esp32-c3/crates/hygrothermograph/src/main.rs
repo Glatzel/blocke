@@ -33,7 +33,7 @@ fn app() -> mischief::Result<()> {
 
     //init i2c
     let i2c0 = I2c::new(peripherals.I2C0, Config::default())
-        .map_err(|e| mischief::Report::from_debug(e))?
+        .map_err(mischief::Report::from_debug)?
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
     let i2c_ref_cell = RefCell::new(i2c0);
@@ -75,17 +75,15 @@ fn app() -> mischief::Result<()> {
 
             buf_temp.clear();
             buf_humid.clear();
-            write!(buf_temp, "Temp: {:.2}C", temperature)
-                .map_err(|e| mischief::Report::from_debug(e))?;
-            write!(buf_humid, "Hum:  {:.2}%", humidity)
-                .map_err(|e| mischief::Report::from_debug(e))?;
+            write!(buf_temp, "Temp: {:.2}C", temperature).map_err(mischief::Report::from_debug)?;
+            write!(buf_humid, "Hum:  {:.2}%", humidity).map_err(mischief::Report::from_debug)?;
             lcd.write_str(&buf_temp)
-                .map_err(|e| mischief::Report::from_debug(e))?;
+                .map_err(mischief::Report::from_debug)?;
 
             lcd.set_cursor(0, 1)
                 .map_err(|_| mischief::Report::from_debug("Failed to set cursor to line 2"))?;
             lcd.write_str(&buf_humid)
-                .map_err(|e| mischief::Report::from_debug(e))?;
+                .map_err(mischief::Report::from_debug)?;
         }
         delay.delay_millis(5000);
     }

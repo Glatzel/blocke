@@ -27,7 +27,7 @@ fn app() -> mischief::Result<()> {
     let mut led = {
         let frequency = Rate::from_mhz(80);
         let rmt = Rmt::new(peripherals.RMT, frequency)
-            .map_err(|e| mischief::Report::from_debug(e))
+            .map_err(mischief::Report::from_debug)
             .wrap_err("Failed to initialize RMT0")?;
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
@@ -36,10 +36,10 @@ fn app() -> mischief::Result<()> {
     println!("blinky");
     loop {
         led.write(brightness([color].into_iter(), level))
-            .map_err(|e| mischief::Report::from_debug(e))?;
+            .map_err(mischief::Report::from_debug)?;
         delay.delay_millis(500);
         led.write([colors::BLACK])
-            .map_err(|e| mischief::Report::from_debug(e))?;
+            .map_err(mischief::Report::from_debug)?;
         delay.delay_millis(500);
     }
 }
