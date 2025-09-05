@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Input, InputConfig, Pull, WakeEvent};
