@@ -43,7 +43,7 @@ fn app() -> mischief::Result<()> {
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
     let level = 10;
-    let color = RGB8::new(0, 0, 255);
+    let color = RGB8::new(50, 0, 50);
 
     // config wakeup pin
     let config = InputConfig::default().with_pull(Pull::Up);
@@ -69,6 +69,7 @@ fn app() -> mischief::Result<()> {
 
     loop {
         println!("Wakeup.");
+        delay.delay_micros(80); //for led reset
         led.write(brightness([color].into_iter(), level))
             .map_err(mischief::Report::from_debug)?;
         delay.delay_millis(5000);
