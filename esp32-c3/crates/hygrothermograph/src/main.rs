@@ -11,7 +11,6 @@ use esp_hal::gpio::{Input, InputConfig, Level, Output, OutputConfig, Pull, WakeE
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::rtc_cntl::sleep::WakeSource;
 use esp_hal::{main, rtc_cntl};
-use esp_println::println;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use sht4x::{Precision, Sht4x};
@@ -81,6 +80,12 @@ fn app() -> mischief::Result<()> {
     lcd.print("Hello !")
         .map_err(|_| mischief::Report::from_debug("Failed to print initial message"))?;
     delay.delay_millis(2000);
+    lcd.clear()
+            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+            .home()
+            .map_err(|_| {
+                mischief::Report::from_debug("Failed to set the cursor to the home position")
+            })?;
 
     // variables in loop
     let mut temperature: f32;
@@ -92,12 +97,6 @@ fn app() -> mischief::Result<()> {
         delay.delay_millis(500);
         lcd.backlight(true)
             .map_err(|_| mischief::Report::from_debug("Failed to initialize LCD"))?;
-        lcd.clear()
-            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
-            .home()
-            .map_err(|_| {
-                mischief::Report::from_debug("Failed to set the cursor to the home position")
-            })?;
 
         if let Ok(measurement) = sht40.measure(Precision::Low, &mut delay) {
             temperature = measurement.temperature_celsius().to_num();
@@ -109,18 +108,31 @@ fn app() -> mischief::Result<()> {
             write!(buf_humid, "Hum:  {:.2}%", humidity).map_err(mischief::Report::from_debug)?;
             lcd.write_str(&buf_temp)
                 .map_err(mischief::Report::from_debug)?;
-
             lcd.set_cursor(0, 1)
                 .map_err(|_| mischief::Report::from_debug("Failed to set cursor to line 2"))?;
             lcd.write_str(&buf_humid)
                 .map_err(mischief::Report::from_debug)?;
         }
 
-        // wait 10s and sleep
-        delay.delay_millis(10000);
+        // wait 5s and sleep
+        delay.delay_millis(5000);
+        lcd.clear()
+            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+            .home()
+            .map_err(|_| {
+                mischief::Report::from_debug("Failed to set the cursor to the home position")
+            })?
+            .print("Fall Sleep......")
+            .map_err(|_| mischief::Report::from_debug("Failed to show text"))?;
+        delay.delay_millis(500);
         lcd.backlight(false)
-            .map_err(|_| mischief::Report::from_debug("Failed to disable backlight"))?;
-        println!("sleep");
+            .map_err(|_| mischief::Report::from_debug("Failed to disable backlight"))?
+            .clear()
+            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+            .home()
+            .map_err(|_| {
+                mischief::Report::from_debug("Failed to set the cursor to the home position")
+            })?;
         rtc.sleep_light(&[&wakeup_source]);
     }
 }
