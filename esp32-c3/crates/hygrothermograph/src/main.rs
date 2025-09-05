@@ -7,15 +7,23 @@ use core::fmt::Write;
 use embedded_hal_bus::i2c as i2c_bus;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
-use esp_hal::gpio::{Level, Output, OutputConfig};
+use esp_hal::gpio::{Input, InputConfig, Level, Output, OutputConfig, Pull, WakeEvent};
 use esp_hal::i2c::master::{Config, I2c};
-use esp_hal::main;
+use esp_hal::rtc_cntl::sleep::WakeSource;
+use esp_hal::{main, rtc_cntl};
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use sht4x::{Precision, Sht4x};
 use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 
+macro_rules! config_dangling_pin {
+    ($pin:expr) => {
+        let config = InputConfig::default().with_pull(Pull::Down);
+        let mut wakeup_pin = Input::new($pin, config);
+        wakeup_pin.wakeup_enable(false, WakeEvent::LowLevel)?;
+    };
+}
 #[main]
 fn main() -> ! {
     heap_allocator!(size:64 * 1024);
@@ -37,6 +45,25 @@ fn app() -> mischief::Result<()> {
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
     let i2c_ref_cell = RefCell::new(i2c0);
+
+    // config wakeup pin
+    let config = InputConfig::default().with_pull(Pull::Up);
+    let mut wakeup_pin = Input::new(peripherals.GPIO9, config);
+    wakeup_pin.wakeup_enable(true, WakeEvent::LowLevel)?;
+    config_dangling_pin!(peripherals.GPIO3);
+    config_dangling_pin!(peripherals.GPIO4);
+    config_dangling_pin!(peripherals.GPIO5);
+    config_dangling_pin!(peripherals.GPIO6);
+    config_dangling_pin!(peripherals.GPIO7);
+    config_dangling_pin!(peripherals.GPIO8);
+
+    //init rtc
+    let mut rtc = rtc_cntl::Rtc::new(peripherals.LPWR);
+    let wakeup_source = esp_hal::rtc_cntl::sleep::GpioWakeupSource::new();
+    let mut sleep_config = rtc_cntl::sleep::RtcSleepConfig::default();
+    let mut trigger = rtc_cntl::sleep::WakeTriggers::default();
+    trigger.set_gpio(true);
+    wakeup_source.apply(&rtc, &mut trigger, &mut sleep_config);
 
     // init lcd1602
     let mut lcd = CharacterDisplayPCF8574T::new(
@@ -62,6 +89,7 @@ fn app() -> mischief::Result<()> {
     let mut buf_temp: String<16> = String::new();
     let mut buf_humid: String<16> = String::new();
     loop {
+        delay.delay_millis(1000);
         lcd.clear()
             .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
             .home()
@@ -85,6 +113,7 @@ fn app() -> mischief::Result<()> {
             lcd.write_str(&buf_humid)
                 .map_err(mischief::Report::from_debug)?;
         }
-        delay.delay_millis(5000);
+        delay.delay_millis(10000);
+        rtc.sleep_light(&[&wakeup_source]);
     }
 }
