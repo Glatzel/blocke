@@ -11,6 +11,7 @@ use esp_hal::gpio::{Input, InputConfig, Level, Output, OutputConfig, Pull, WakeE
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::rtc_cntl::sleep::WakeSource;
 use esp_hal::{main, rtc_cntl};
+use esp_println::println;
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use sht4x::{Precision, Sht4x};
@@ -77,8 +78,6 @@ fn app() -> mischief::Result<()> {
     let mut sht40 = Sht4x::new(i2c_bus::RefCellDevice::new(&i2c_ref_cell));
     let _serial = sht40.serial_number(&mut delay);
 
-    lcd.backlight(true)
-        .map_err(|_| mischief::Report::from_debug("Failed to initialize LCD"))?;
     lcd.print("Hello !")
         .map_err(|_| mischief::Report::from_debug("Failed to print initial message"))?;
     delay.delay_millis(2000);
@@ -89,7 +88,9 @@ fn app() -> mischief::Result<()> {
     let mut buf_temp: String<16> = String::new();
     let mut buf_humid: String<16> = String::new();
     loop {
-        delay.delay_millis(1000);
+        delay.delay_millis(500);
+        lcd.backlight(true)
+            .map_err(|_| mischief::Report::from_debug("Failed to initialize LCD"))?;
         lcd.clear()
             .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
             .home()
@@ -113,7 +114,12 @@ fn app() -> mischief::Result<()> {
             lcd.write_str(&buf_humid)
                 .map_err(mischief::Report::from_debug)?;
         }
+
+        // wait 10s and sleep
         delay.delay_millis(10000);
+        lcd.backlight(false)
+            .map_err(|_| mischief::Report::from_debug("Failed to diable backlight"))?;
+        println!("sleep");
         rtc.sleep_light(&[&wakeup_source]);
     }
 }
