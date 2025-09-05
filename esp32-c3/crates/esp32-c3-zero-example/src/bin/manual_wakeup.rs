@@ -16,7 +16,7 @@ use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 macro_rules! config_other_pin {
     ($pin:expr) => {
-        let config = InputConfig::default().with_pull(Pull::Up);
+        let config = InputConfig::default().with_pull(Pull::Down);
         let mut wakeup_pin = Input::new($pin, config);
         wakeup_pin.wakeup_enable(false, WakeEvent::LowLevel)?;
     };
