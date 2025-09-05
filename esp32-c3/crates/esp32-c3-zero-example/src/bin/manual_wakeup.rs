@@ -16,7 +16,7 @@ use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 macro_rules! config_other_pin {
     ($pin:expr) => {
-        let config = InputConfig::default().with_pull(Pull::Up);
+        let config = InputConfig::default().with_pull(Pull::Down);
         let mut wakeup_pin = Input::new($pin, config);
         wakeup_pin.wakeup_enable(false, WakeEvent::LowLevel)?;
     };
@@ -43,7 +43,7 @@ fn app() -> mischief::Result<()> {
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
     };
     let level = 10;
-    let color = RGB8::new(0, 0, 255);
+    let color = RGB8::new(50, 0, 50);
 
     // config wakeup pin
     let config = InputConfig::default().with_pull(Pull::Up);
@@ -69,6 +69,7 @@ fn app() -> mischief::Result<()> {
 
     loop {
         println!("Wakeup.");
+        delay.delay_micros(80); //for led reset
         led.write(brightness([color].into_iter(), level))
             .map_err(mischief::Report::from_debug)?;
         delay.delay_millis(5000);
