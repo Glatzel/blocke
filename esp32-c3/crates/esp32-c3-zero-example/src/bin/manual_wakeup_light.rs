@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Input, InputConfig, Pull, WakeEvent};
@@ -76,6 +77,6 @@ fn app() -> mischief::Result<()> {
         led.write([colors::BLACK])
             .map_err(mischief::Report::from_debug)?;
         println!("Sleep.");
-        rtc.sleep_deep(&[&wakeup_source]);
+        rtc.sleep_light(&[&wakeup_source]);
     }
 }

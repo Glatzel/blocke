@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-#![allow(clippy::never_loop)]
+
 use core::cell::RefCell;
 use core::fmt::Write;
 
@@ -87,6 +87,7 @@ fn app() -> mischief::Result<()> {
     let mut humidity: f32;
     let mut buf_temp: String<16> = String::new();
     let mut buf_humid: String<16> = String::new();
+
     loop {
         delay.delay_millis(500);
         lcd.backlight(true)
