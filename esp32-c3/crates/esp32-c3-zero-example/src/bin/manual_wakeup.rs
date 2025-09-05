@@ -76,6 +76,6 @@ fn app() -> mischief::Result<()> {
         led.write([colors::BLACK])
             .map_err(mischief::Report::from_debug)?;
         println!("Sleep.");
-        rtc.sleep_light(&[&wakeup_source]);
+        rtc.sleep_deep(&[&wakeup_source]);
     }
 }

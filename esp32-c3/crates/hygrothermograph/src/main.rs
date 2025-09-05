@@ -118,7 +118,7 @@ fn app() -> mischief::Result<()> {
         // wait 10s and sleep
         delay.delay_millis(10000);
         lcd.backlight(false)
-            .map_err(|_| mischief::Report::from_debug("Failed to diable backlight"))?;
+            .map_err(|_| mischief::Report::from_debug("Failed to disable backlight"))?;
         println!("sleep");
         rtc.sleep_light(&[&wakeup_source]);
     }
