@@ -81,11 +81,11 @@ fn app() -> mischief::Result<()> {
         .map_err(|_| mischief::Report::from_debug("Failed to print initial message"))?;
     delay.delay_millis(2000);
     lcd.clear()
-            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
-            .home()
-            .map_err(|_| {
-                mischief::Report::from_debug("Failed to set the cursor to the home position")
-            })?;
+        .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+        .home()
+        .map_err(|_| {
+            mischief::Report::from_debug("Failed to set the cursor to the home position")
+        })?;
 
     // variables in loop
     let mut temperature: f32;
