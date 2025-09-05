@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-
+#![allow(clippy::never_loop)]
 use core::cell::RefCell;
 use core::fmt::Write;
 
