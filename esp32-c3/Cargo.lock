@@ -1037,7 +1037,7 @@ checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 [[package]]
 name = "mischief"
 version = "0.0.28"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.28#2665be5b7d2c7e3b3a74bef729995f08239ee0f5"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.28#1a4987a8d242680810e1ff58053236d267434ec9"
 dependencies = [
  "mischief-macros",
 ]
@@ -1045,7 +1045,7 @@ dependencies = [
 [[package]]
 name = "mischief-macros"
 version = "0.0.28"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.28#2665be5b7d2c7e3b3a74bef729995f08239ee0f5"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.28#1a4987a8d242680810e1ff58053236d267434ec9"
 dependencies = [
  "quote",
  "syn",
