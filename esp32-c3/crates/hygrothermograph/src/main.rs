@@ -41,7 +41,7 @@ fn app() -> mischief::Result<()> {
 
     //init i2c
     let i2c0 = I2c::new(peripherals.I2C0, Config::default())
-        .map_err(mischief::Report::from_debug)?
+        .map_err(|e| mischief::mischief!("{e}"))?
         .with_sda(peripherals.GPIO0)
         .with_scl(peripherals.GPIO1);
     let i2c_ref_cell = RefCell::new(i2c0);
@@ -78,14 +78,12 @@ fn app() -> mischief::Result<()> {
     let _serial = sht40.serial_number(&mut delay);
 
     lcd.print("Hello !")
-        .map_err(|_| mischief::Report::from_debug("Failed to print initial message"))?;
+        .map_err(|_| mischief::mischief!("Failed to print initial message"))?;
     delay.delay_millis(2000);
     lcd.clear()
-        .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+        .map_err(|_| mischief::mischief!("Failed to clear screen"))?
         .home()
-        .map_err(|_| {
-            mischief::Report::from_debug("Failed to set the cursor to the home position")
-        })?;
+        .map_err(|_| mischief::mischief!("Failed to set the cursor to the home position"))?;
 
     // variables in loop
     let mut temperature: f32;
@@ -96,7 +94,7 @@ fn app() -> mischief::Result<()> {
     loop {
         delay.delay_millis(500);
         lcd.backlight(true)
-            .map_err(|_| mischief::Report::from_debug("Failed to initialize LCD"))?;
+            .map_err(|_| mischief::mischief!("Failed to initialize LCD"))?;
 
         if let Ok(measurement) = sht40.measure(Precision::Low, &mut delay) {
             temperature = measurement.temperature_celsius().to_num();
@@ -104,35 +102,32 @@ fn app() -> mischief::Result<()> {
 
             buf_temp.clear();
             buf_humid.clear();
-            write!(buf_temp, "Temp: {:.2}C", temperature).map_err(mischief::Report::from_debug)?;
-            write!(buf_humid, "Hum:  {:.2}%", humidity).map_err(mischief::Report::from_debug)?;
+            write!(buf_temp, "Temp: {:.2}C", temperature)
+                .map_err(|e| mischief::mischief!("{e}"))?;
+            write!(buf_humid, "Hum:  {:.2}%", humidity).map_err(|e| mischief::mischief!("{e}"))?;
             lcd.write_str(&buf_temp)
-                .map_err(mischief::Report::from_debug)?;
+                .map_err(|e| mischief::mischief!("{e}"))?;
             lcd.set_cursor(0, 1)
-                .map_err(|_| mischief::Report::from_debug("Failed to set cursor to line 2"))?;
+                .map_err(|_| mischief::mischief!("Failed to set cursor to line 2"))?;
             lcd.write_str(&buf_humid)
-                .map_err(mischief::Report::from_debug)?;
+                .map_err(|e| mischief::mischief!("{e}"))?;
         }
 
         // wait 5s and sleep
         delay.delay_millis(5000);
         lcd.clear()
-            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+            .map_err(|_| mischief::mischief!("Failed to clear screen"))?
             .home()
-            .map_err(|_| {
-                mischief::Report::from_debug("Failed to set the cursor to the home position")
-            })?
+            .map_err(|_| mischief::mischief!("Failed to set the cursor to the home position"))?
             .print("Fall Sleep......")
-            .map_err(|_| mischief::Report::from_debug("Failed to show text"))?;
+            .map_err(|_| mischief::mischief!("Failed to show text"))?;
         delay.delay_millis(500);
         lcd.backlight(false)
-            .map_err(|_| mischief::Report::from_debug("Failed to disable backlight"))?
+            .map_err(|_| mischief::mischief!("Failed to disable backlight"))?
             .clear()
-            .map_err(|_| mischief::Report::from_debug("Failed to clear screen"))?
+            .map_err(|_| mischief::mischief!("Failed to clear screen"))?
             .home()
-            .map_err(|_| {
-                mischief::Report::from_debug("Failed to set the cursor to the home position")
-            })?;
+            .map_err(|_| mischief::mischief!("Failed to set the cursor to the home position"))?;
         rtc.sleep_light(&[&wakeup_source]);
     }
 }
