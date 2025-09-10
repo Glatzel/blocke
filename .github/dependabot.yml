@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /esp32-c3
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+    groups:
+      dependencies:
+        patterns:
+          - "*"
