@@ -4,14 +4,14 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 
 [dependencies]
+esp-alloc = { workspace = true }
 esp-bootloader-esp-idf = { workspace = true }
 esp-hal = { workspace = true }
 esp-hal-smartled = { workspace = true }
 esp-println = { workspace = true }
-micromath = { workspace = true }
-smart-leds = { workspace = true }
 i2c-character-display = { workspace = true }
+micromath = { workspace = true }
+mischief = { workspace = true }
+pain = { workspace = true }
 riscv = { workspace = true }
-mischief= { workspace = true }
-esp-alloc = { workspace = true }
-pain= { workspace = true }
+smart-leds = { workspace = true }
