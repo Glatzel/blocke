@@ -6,21 +6,21 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30"}
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
 pain = { path = "./crates/pain" }
 
 embedded-hal-bus = "0.3.0"
 esp-alloc = "0.8.0"
 esp-backtrace = { version = "0.17.0", features = [
-    "esp32c3",
-    "panic-handler",
-    "exception-handler",
-    "println",
+  "esp32c3",
+  "panic-handler",
+  "exception-handler",
+  "println",
 ] }
 esp-bootloader-esp-idf = "0.1.0"
 esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
 esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
-    "esp32c3",
+  "esp32c3",
 ] }
 esp-println = { version = "0.15.0", features = ["esp32c3"] }
 heapless = "0.9.1"
@@ -33,9 +33,9 @@ smart-leds = "0.4"
 
 
 [profile.dev]
+lto = "fat"
 opt-level = 3
 overflow-checks = true
-lto = "fat"
 
 [profile.release]
 codegen-units = 1
