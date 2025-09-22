@@ -17,7 +17,7 @@ esp-backtrace = { version = "0.17.0", features = [
   "exception-handler",
   "println",
 ] }
-esp-bootloader-esp-idf = "0.2.0"
+esp-bootloader-esp-idf = {version = "0.2.0",features = ["esp32c3"]}
 esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
 esp-hal-smartled = { git = "https://github.com/esp-rs/esp-hal-community", features = [
   "esp32c3",
@@ -30,7 +30,6 @@ panic-halt = "1.0.0"
 riscv = "0.15.0"
 sht4x = "0.2.0"
 smart-leds = "0.4"
-
 
 [profile.dev]
 lto = "fat"
