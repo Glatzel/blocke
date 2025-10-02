@@ -13,10 +13,10 @@ use sensirion_i2c::i2c;
 #[cfg(feature = "async")]
 use sensirion_i2c::i2c_async;
 
+use crate::SensorData;
 use crate::error::Sht4xError;
 use crate::primitives::{Address, Command, HeatingDuration, HeatingPower, Measurement, Precision};
-use crate::responses::{RESPONSE_LEN, sensor_data_from_response, serial_number_from_response};
-
+ const RESPONSE_LEN: usize = 6;
 /// Driver for STH4x sensors.
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub struct Sht4x<I, D> {
@@ -66,7 +66,10 @@ where
 
         self.send_command(command, delay)?;
         let response = self.read_response()?;
-        let raw = sensor_data_from_response(response);
+        let raw = SensorData {
+            temperature: u16::from_be_bytes([response[0], response[1]]),
+            humidity: u16::from_be_bytes([response[3], response[4]]),
+        };
 
         Ok(Measurement::from(raw))
     }
@@ -85,7 +88,10 @@ where
 
         self.send_command(command, delay)?;
         let response = self.read_response()?;
-        let raw = sensor_data_from_response(response);
+        let raw = SensorData {
+            temperature: u16::from_be_bytes([response[0], response[1]]),
+            humidity: u16::from_be_bytes([response[3], response[4]]),
+        };
 
         Ok(Measurement::from(raw))
     }
@@ -94,7 +100,12 @@ where
     pub fn serial_number(&mut self, delay: &mut D) -> Result<u32, Sht4xError<I::Error>> {
         self.send_command(Command::SerialNumber, delay)?;
         let response = self.read_response()?;
-        Ok(serial_number_from_response(response))
+        Ok(u32::from_be_bytes([
+            response[0],
+            response[1],
+            response[3],
+            response[4],
+        ]))
     }
 
     /// Performs a soft reset of the sensor.
@@ -140,7 +151,10 @@ where
 
         self.send_command(command, delay).await?;
         let response = self.read_response().await?;
-        let raw = sensor_data_from_response(response);
+        let raw = SensorData {
+            temperature: u16::from_be_bytes([response[0], response[1]]),
+            humidity: u16::from_be_bytes([response[3], response[4]]),
+        };
 
         Ok(Measurement::from(raw))
     }
@@ -159,7 +173,10 @@ where
 
         self.send_command(command, delay).await?;
         let response = self.read_response().await?;
-        let raw = sensor_data_from_response(response);
+        let raw = SensorData {
+            temperature: u16::from_be_bytes([response[0], response[1]]),
+            humidity: u16::from_be_bytes([response[3], response[4]]),
+        };
 
         Ok(Measurement::from(raw))
     }
@@ -168,7 +185,12 @@ where
     pub async fn serial_number(&mut self, delay: &mut D) -> Result<u32, Sht4xError<I::Error>> {
         self.send_command(Command::SerialNumber, delay).await?;
         let response = self.read_response().await?;
-        Ok(serial_number_from_response(response))
+        Ok(u32::from_be_bytes([
+            response[0],
+            response[1],
+            response[3],
+            response[4],
+        ]))
     }
 
     /// Performs a soft reset of the sensor.
