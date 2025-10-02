@@ -1,43 +1,20 @@
-[workspace]
-members = ["./crates/*"]
-resolver = "2"
+[package]
+edition.workspace = true
+name = "hygrothermograph"
+version = "0.1.0"
 
-[workspace.package]
-edition = "2024"
+[dependencies]
+dux-sht4x = { workspace = true }
+embedded-hal-bus = { workspace = true }
+esp-alloc = { workspace = true }
+esp-bootloader-esp-idf = { workspace = true }
+esp-hal = { workspace = true }
+esp-println = { workspace = true }
+heapless = { workspace = true }
+i2c-character-display = { workspace = true }
+mischief = { workspace = true }
+pain = { workspace = true }
+riscv = { workspace = true }
 
-[workspace.dependencies]
-mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
-pain = { path = "./crates/pain" }
-dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
-
-embedded-hal-bus = "0.3.0"
-esp-alloc = "0.8.0"
-esp-backtrace = { version = "0.17.0", features = [
-  "esp32c3",
-  "panic-handler",
-  "exception-handler",
-  "println",
-] }
-esp-bootloader-esp-idf = { version = "0.2.0", features = ["esp32c3"] }
-esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
-esp-hal-smartled = { version = "0.16.0", features = ["esp32c3"] }
-esp-println = { version = "0.15.0", features = ["esp32c3"] }
-heapless = "0.9.1"
-i2c-character-display = { version = "0.5" }
-micromath = "2.1.0"
-panic-halt = "1.0.0"
-riscv = "0.15.0"
-smart-leds = "0.4"
-
-[profile.dev]
-lto = "fat"
-opt-level = 3
-overflow-checks = true
-
-[profile.release]
-codegen-units = 1
-debug = false
-lto = "fat"
-opt-level = 3
-overflow-checks = false
-panic = "abort"
+[package.metadata.cargo-machete]
+ignored = ["esp-println"]

@@ -1,0 +1,14 @@
+[package]
+edition.workspace = true
+name = "dux-sht4x"
+version = "0.1.0"
+
+[dependencies]
+embedded-hal = { workspace = true }
+embedded-hal-async = { workspace = true, optional = true }
+fixed = { workspace = true }
+sensirion-i2c = { workspace = true }
+thiserror = { workspace = true }
+
+[features]
+async = ["embedded-hal-async"]
