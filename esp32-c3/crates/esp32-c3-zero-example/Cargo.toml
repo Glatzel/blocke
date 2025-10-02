@@ -15,3 +15,4 @@ mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
 smart-leds = { workspace = true }
+dux-sht4x = { workspace = true }

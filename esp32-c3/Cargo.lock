@@ -623,6 +623,7 @@ dependencies = [
 name = "esp32-c3-zero-example"
 version = "0.1.0"
 dependencies = [
+ "dux-sht4x",
  "esp-alloc",
  "esp-bootloader-esp-idf",
  "esp-hal",
