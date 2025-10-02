@@ -8,3 +8,6 @@ embedded-hal = { workspace = true }
 fixed = { workspace = true }
 sensirion-i2c = { workspace = true }
 thiserror = { workspace = true }
+
+[features]
+async=[]
