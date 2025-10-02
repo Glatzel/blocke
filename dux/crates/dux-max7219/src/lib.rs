@@ -1,7 +1,0 @@
-[package]
-edition.workspace = true
-name = "dux-sht4x"
-version = "0.1.0"
-
-[dependencies]
-embedded-hal = { workspace = true }
