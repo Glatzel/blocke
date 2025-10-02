@@ -16,7 +16,7 @@ use sensirion_i2c::i2c_async;
 use crate::SensorData;
 use crate::error::Sht4xError;
 use crate::primitives::{Address, Command, HeatingDuration, HeatingPower, Measurement, Precision};
- const RESPONSE_LEN: usize = 6;
+const RESPONSE_LEN: usize = 6;
 /// Driver for STH4x sensors.
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub struct Sht4x<I, D> {
