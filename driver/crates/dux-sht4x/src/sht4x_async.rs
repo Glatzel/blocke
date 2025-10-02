@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
-use embedded_hal::delay::DelayNs;
-use embedded_hal::i2c::I2c;
+use embedded_hal_async::delay::DelayNs;
+use embedded_hal_async::i2c::I2c;
 use sensirion_i2c::i2c;
 
 use crate::error::Sht4xError;
@@ -9,8 +9,8 @@ use crate::primitives::{Address, Command, HeatingDuration, HeatingPower, Measure
 use crate::responses::{RESPONSE_LEN, sensor_data_from_response, serial_number_from_response};
 
 /// Driver for STH4x sensors.
-#[derive(Debug, Eq, Hash, PartialEq)]
-pub struct Sht4x<I, D> {
+#[derive(Debug)]
+pub struct Sht4xAsync<I, D> {
     i2c: I,
     address: Address,
     // If we want to globally define the delay type for this struct, we have to consume the type
@@ -18,7 +18,7 @@ pub struct Sht4x<I, D> {
     _delay: PhantomData<D>,
 }
 
-impl<I, D> Sht4x<I, D>
+impl<I, D> Sht4xAsync<I, D>
 where
     I: I2c,
     D: DelayNs,
@@ -42,7 +42,7 @@ where
     pub fn destroy(self) -> I { self.i2c }
 
     /// Performs a measurement returning measurands in SI units.
-    pub fn measure(
+    pub async fn measure(
         &mut self,
         precision: Precision,
         delay: &mut D,
@@ -60,7 +60,7 @@ where
     ///
     /// **Note:** The heater is designed to be used up to 10 % of the sensor's
     /// lifetime.
-    pub fn heat_and_measure(
+    pub async fn heat_and_measure(
         &mut self,
         power: HeatingPower,
         duration: HeatingDuration,
@@ -76,18 +76,18 @@ where
     }
 
     /// Reads the sensor's serial number.
-    pub fn serial_number(&mut self, delay: &mut D) -> Result<u32, Sht4xError<I::Error>> {
+    pub async fn serial_number(&mut self, delay: &mut D) -> Result<u32, Sht4xError<I::Error>> {
         self.send_command(Command::SerialNumber, delay)?;
         let response = self.read_response()?;
         Ok(serial_number_from_response(response))
     }
 
     /// Performs a soft reset of the sensor.
-    pub fn soft_reset(&mut self, delay: &mut D) -> Result<(), Sht4xError<I::Error>> {
+    pub async fn soft_reset(&mut self, delay: &mut D) -> Result<(), Sht4xError<I::Error>> {
         self.send_command(Command::SoftReset, delay)
     }
 
-    fn send_command(
+    async fn send_command(
         &mut self,
         command: Command,
         delay: &mut D,
@@ -101,7 +101,7 @@ where
         Ok(())
     }
 
-    fn read_response(&mut self) -> Result<[u8; RESPONSE_LEN], Sht4xError<I::Error>> {
+    async fn read_response(&mut self) -> Result<[u8; RESPONSE_LEN], Sht4xError<I::Error>> {
         let mut response = [0; RESPONSE_LEN];
 
         i2c::read_words_with_crc(&mut self.i2c, self.address.into(), &mut response)?;
