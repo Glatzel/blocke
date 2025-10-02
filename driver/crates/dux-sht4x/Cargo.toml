@@ -4,3 +4,7 @@ name = "dux-sht4x"
 version = "0.1.0"
 
 [dependencies]
+embedded-hal = { workspace = true }
+sensirion-i2c = { workspace = true }
+thiserror = { workspace = true }
+fixed = { workspace = true }
