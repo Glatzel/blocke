@@ -127,7 +127,7 @@ pub struct Measurement {
 pub(crate) struct SensorData {
     /// The measured temperature as raw sensor value.
     pub temperature: u16,
-    /// The measured realtive humidity as raw sensor value.
+    /// The measured relative humidity as raw sensor value.
     pub humidity: u16,
 }
 impl From<SensorData> for Measurement {
