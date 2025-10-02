@@ -38,7 +38,7 @@ jobs:
       - run: cargo build
       - run: cargo build --release
 
-  driver:
+  build-driver:
     strategy:
       fail-fast: false
       matrix:
@@ -51,5 +51,14 @@ jobs:
         working-directory: ./driver
     steps:
       - uses: actions/checkout@v5
-      - run: ./scripts/cargo-test.ps1 ${{matrix.args}}
+      - run: cargo build ${{matrix.args}}
+
+  test-driver:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./driver
+    steps:
+      - uses: actions/checkout@v5
+      - run: ./scripts/cargo-test.ps1 --workspace
         shell: pwsh
