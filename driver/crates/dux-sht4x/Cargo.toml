@@ -1,13 +1,15 @@
-[package]
-edition.workspace = true
-name = "dux-sht4x"
-version = "0.1.0"
+#![no_std]
+mod error;
+mod primitives;
+mod responses;
 
-[dependencies]
-embedded-hal = { workspace = true }
-fixed = { workspace = true }
-sensirion-i2c = { workspace = true }
-thiserror = { workspace = true }
+pub use primitives::*;
+#[cfg(not(feature = "async"))]
+mod sht4x;
+#[cfg(not(feature = "async"))]
+pub use sht4x::*;
+#[cfg(feature = "async")]
+mod sht4x_async;
 
-[features]
-async=[]
+#[cfg(feature = "async")]
+pub use sht4x_async::*;
