@@ -39,8 +39,7 @@ fn app() -> mischief::Result<()> {
         if let Ok(measurement) = sht40.measure(Precision::Low, &mut delay) {
             temperature = measurement.temperature_celsius().to_num();
             humidity = measurement.humidity_percent().to_num();
-            println!("Temp: {:.2}% ", temperature);
-            println!("Hum:{:.2} %", humidity);
+            println!("Temp: {:.3}°C  Hum:{:.3} %", temperature, humidity);
         }
         delay.delay_millis(3000);
     }
