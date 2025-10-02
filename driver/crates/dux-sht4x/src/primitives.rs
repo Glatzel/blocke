@@ -154,7 +154,6 @@ impl Measurement {
 }
 #[cfg(test)]
 mod tests {
-    use fixed::types::{I16F16, U16F16};
     extern crate std;
     use std::string::ToString;
 
