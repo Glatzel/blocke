@@ -25,17 +25,11 @@ where
 {
     /// Creates a new driver instance using the given I2C bus. It configures the
     /// default I2C address 0x44 used by most family members.
-    ///
-    /// For operating multiple devices on the same bus,
-    /// [`shared-bus`](https://github.com/Rahix/shared-bus) might come in handy.
     pub fn new(i2c: I) -> Self { Self::new_with_address(i2c, Address::Address0x44) }
 
     /// Crates a new driver instance using the given I2C bus and address. This
     /// constructor allows to instantiate the driver for the SHT40-BD1B
     /// which uses the non-default I2C address 0x45.
-    ///
-    /// For operating multiple devices on the same bus,
-    /// [`shared-bus`](https://github.com/Rahix/shared-bus) might come in handy.
     pub fn new_with_address(i2c: I, address: Address) -> Self {
         Sht4x {
             i2c,
