@@ -152,3 +152,40 @@ impl Measurement {
     /// Returns the measured relative humidity in percent (%).
     pub fn humidity_percent(&self) -> I16F16 { self.humidity }
 }
+#[cfg(test)]
+mod tests {
+    use fixed::types::{I16F16, U16F16};
+    extern crate std;
+    use std::string::ToString;
+
+    use super::*;
+
+    #[test]
+    fn test_sensor_data_conversion() {
+        // Edge cases
+        let raw_min = SensorData {
+            temperature: 0,
+            humidity: 0,
+        };
+        let raw_max = SensorData {
+            temperature: u16::MAX,
+            humidity: u16::MAX,
+        };
+        let raw_mid = SensorData {
+            temperature: u16::MAX / 2,
+            humidity: u16::MAX / 2,
+        };
+
+        let meas_min = Measurement::from(raw_min);
+        let meas_max = Measurement::from(raw_max);
+        let meas_mid = Measurement::from(raw_mid);
+
+        assert_eq!(meas_min.temperature_celsius().to_string(), "-45");
+        assert_eq!(meas_max.temperature_celsius().to_string(), "130");
+        assert_eq!(meas_mid.temperature_celsius().to_string(), "42.49733");
+
+        assert_eq!(meas_min.humidity_percent().to_string(), "-6");
+        assert_eq!(meas_max.humidity_percent().to_string(), "119");
+        assert_eq!(meas_mid.humidity_percent().to_string(), "56.4981");
+    }
+}

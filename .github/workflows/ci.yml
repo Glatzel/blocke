@@ -51,4 +51,5 @@ jobs:
         working-directory: ./driver
     steps:
       - uses: actions/checkout@v5
-      - run: cargo build
+      - run: ./scripts/cargo-test.ps1 {{args}}
+        shell: pwsh
