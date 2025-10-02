@@ -4,6 +4,7 @@
 use core::cell::RefCell;
 use core::fmt::Write;
 
+use dux_sht4x::{Precision, Sht4x};
 use embedded_hal_bus::i2c as i2c_bus;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
@@ -13,7 +14,6 @@ use esp_hal::rtc_cntl::sleep::WakeSource;
 use esp_hal::{main, rtc_cntl};
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
-use sht4x::{Precision, Sht4x};
 use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 

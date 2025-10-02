@@ -6,6 +6,7 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
+dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
 mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
 pain = { path = "./crates/pain" }
 
@@ -26,7 +27,6 @@ i2c-character-display = { version = "0.5" }
 micromath = "2.1.0"
 panic-halt = "1.0.0"
 riscv = "0.15.0"
-sht4x = "0.2.0"
 smart-leds = "0.4"
 
 [profile.dev]

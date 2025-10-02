@@ -4,6 +4,7 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 
 [dependencies]
+dux-sht4x = { workspace = true }
 esp-alloc = { workspace = true }
 esp-bootloader-esp-idf = { workspace = true }
 esp-hal = { workspace = true }
