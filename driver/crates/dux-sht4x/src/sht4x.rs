@@ -65,9 +65,7 @@ where
     /// SI units.
     ///
     /// **Note:** The heater is designed to be used up to 10 % of the sensor's
-    /// lifetime. Please check the
-    /// [datasheet](https://sensirion.com/media/documents/33FD6951/624C4357/Datasheet_SHT4x.pdf),
-    /// section 4.9 _Heater Operation_ for details.
+    /// lifetime.
     pub fn heat_and_measure(
         &mut self,
         power: HeatingPower,
