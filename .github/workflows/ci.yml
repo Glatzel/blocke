@@ -60,6 +60,10 @@ jobs:
         working-directory: ./driver
     steps:
       - uses: actions/checkout@v5
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
       - run: ./scripts/cargo-test.ps1 --workspace
         shell: pwsh
       - name: Upload results to Codecov
