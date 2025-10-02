@@ -11,4 +11,4 @@ thiserror = { workspace = true }
 embedded-hal-async = { workspace = true, optional = true }
 
 [features]
-async = ["embedded-hal-async"]
+async = ["embedded-hal-async","sensirion-i2c/embedded-hal-async"]

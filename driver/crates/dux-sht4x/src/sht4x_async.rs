@@ -2,7 +2,7 @@ use core::marker::PhantomData;
 
 use embedded_hal_async::delay::DelayNs;
 use embedded_hal_async::i2c::I2c;
-use sensirion_i2c::i2c;
+use sensirion_i2c::i2c_async;
 
 use crate::error::Sht4xError;
 use crate::primitives::{Address, Command, HeatingDuration, HeatingPower, Measurement, Precision};
@@ -31,7 +31,7 @@ where
     /// constructor allows to instantiate the driver for the SHT40-BD1B
     /// which uses the non-default I2C address 0x45.
     pub fn new_with_address(i2c: I, address: Address) -> Self {
-        Sht4x {
+        Self {
             i2c,
             address,
             _delay: PhantomData,
@@ -49,8 +49,8 @@ where
     ) -> Result<Measurement, Sht4xError<I::Error>> {
         let command = Command::from(precision);
 
-        self.send_command(command, delay)?;
-        let response = self.read_response()?;
+        self.send_command(command, delay).await?;
+        let response = self.read_response().await?;
         let raw = sensor_data_from_response(response);
 
         Ok(Measurement::from(raw))
@@ -68,8 +68,8 @@ where
     ) -> Result<Measurement, Sht4xError<I::Error>> {
         let command = Command::from((power, duration));
 
-        self.send_command(command, delay)?;
-        let response = self.read_response()?;
+        self.send_command(command, delay).await?;
+        let response = self.read_response().await?;
         let raw = sensor_data_from_response(response);
 
         Ok(Measurement::from(raw))
@@ -77,14 +77,14 @@ where
 
     /// Reads the sensor's serial number.
     pub async fn serial_number(&mut self, delay: &mut D) -> Result<u32, Sht4xError<I::Error>> {
-        self.send_command(Command::SerialNumber, delay)?;
-        let response = self.read_response()?;
+        self.send_command(Command::SerialNumber, delay).await?;
+        let response = self.read_response().await?;
         Ok(serial_number_from_response(response))
     }
 
     /// Performs a soft reset of the sensor.
     pub async fn soft_reset(&mut self, delay: &mut D) -> Result<(), Sht4xError<I::Error>> {
-        self.send_command(Command::SoftReset, delay)
+        self.send_command(Command::SoftReset, delay).await
     }
 
     async fn send_command(
@@ -94,9 +94,10 @@ where
     ) -> Result<(), Sht4xError<I::Error>> {
         let code = command.code();
 
-        i2c::write_command_u8(&mut self.i2c, self.address.into(), code)
+        i2c_async::write_command_u8(&mut self.i2c, self.address.into(), code)
+            .await
             .map_err(Sht4xError::I2cWrite)?;
-        delay.delay_ms(command.duration_ms());
+        delay.delay_ms(command.duration_ms()).await;
 
         Ok(())
     }
@@ -104,7 +105,7 @@ where
     async fn read_response(&mut self) -> Result<[u8; RESPONSE_LEN], Sht4xError<I::Error>> {
         let mut response = [0; RESPONSE_LEN];
 
-        i2c::read_words_with_crc(&mut self.i2c, self.address.into(), &mut response)?;
+        i2c_async::read_words_with_crc(&mut self.i2c, self.address.into(), &mut response).await?;
 
         Ok(response)
     }

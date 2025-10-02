@@ -107,6 +107,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "640a03c95c176226cf159ae2727f7fe3245546022639d61459af46d2878aec06"
 dependencies = [
  "embedded-hal",
+ "embedded-hal-async",
 ]
 
 [[package]]

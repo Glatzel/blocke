@@ -37,3 +37,18 @@ jobs:
       - uses: actions/checkout@v5
       - run: cargo build
       - run: cargo build --release
+
+  driver:
+    strategy:
+      fail-fast: false
+      matrix:
+        args:
+          - --workspace
+          - --workspace --features async
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./driver
+    steps:
+      - uses: actions/checkout@v5
+      - run: cargo build
