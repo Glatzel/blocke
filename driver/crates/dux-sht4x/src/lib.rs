@@ -1,15 +1,43 @@
-#![no_std]
-mod error;
-mod primitives;
-mod responses;
+[workspace]
+members = ["./crates/*"]
+resolver = "2"
 
-pub use primitives::*;
-#[cfg(not(feature="async"))]
-mod sht4x;
-#[cfg(not(feature="async"))]
-pub use sht4x::*;
-#[cfg(feature="async")]
-mod sht4x_async;
+[workspace.package]
+edition = "2024"
 
-#[cfg(feature="async")]
-pub use sht4x_async::*;
+[workspace.dependencies]
+dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
+pain = { path = "./crates/pain" }
+
+embedded-hal-bus = "0.3.0"
+esp-alloc = "0.8.0"
+esp-backtrace = { version = "0.17.0", features = [
+  "esp32c3",
+  "panic-handler",
+  "exception-handler",
+  "println",
+] }
+esp-bootloader-esp-idf = { version = "0.2.0", features = ["esp32c3"] }
+esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
+esp-hal-smartled = { version = "0.16.0", features = ["esp32c3"] }
+esp-println = { version = "0.15.0", features = ["esp32c3"] }
+heapless = "0.9.1"
+i2c-character-display = { version = "0.5" }
+micromath = "2.1.0"
+panic-halt = "1.0.0"
+riscv = "0.15.0"
+smart-leds = "0.4"
+
+[profile.dev]
+lto = "fat"
+opt-level = 3
+overflow-checks = true
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = "fat"
+opt-level = 3
+overflow-checks = false
+panic = "abort"
