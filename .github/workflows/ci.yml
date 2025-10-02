@@ -51,5 +51,5 @@ jobs:
         working-directory: ./driver
     steps:
       - uses: actions/checkout@v5
-      - run: ./scripts/cargo-test.ps1 {{args}}
+      - run: ./scripts/cargo-test.ps1 ${{matrix.args}}
         shell: pwsh
