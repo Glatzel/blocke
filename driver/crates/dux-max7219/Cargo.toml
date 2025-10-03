@@ -4,3 +4,10 @@ name = "dux-max7219"
 version = "0.1.0"
 
 [dependencies]
+embedded-hal = { workspace = true }
+thiserror = { workspace = true }
+
+[features]
+async=[]
+segment=[]
+matrix=[]
