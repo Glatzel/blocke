@@ -1,8 +1,9 @@
 use embedded_hal::delay::DelayNs;
 use embedded_hal::spi::SpiDevice;
 
-use crate::Max7219;
 use crate::error::Max7219Error;
+use crate::register::Register;
+use crate::{Max7219, register};
 
 pub enum SegmentChar {
     Zero,
@@ -78,10 +79,14 @@ where
 {
     pub fn show_segment_char(
         &mut self,
-        index: u8,
+        index: usize,
         character: SegmentChar,
         with_dot: bool,
     ) -> Result<(), Max7219Error> {
-        self.write(index.try_into()?, character.data(with_dot))
+        self.write(
+            index / 8,
+            ((index % 8) as u8).try_into()?,
+            character.data(with_dot),
+        )
     }
 }

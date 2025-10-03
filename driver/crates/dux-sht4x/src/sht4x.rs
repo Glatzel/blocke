@@ -2,6 +2,7 @@ use core::marker::PhantomData;
 
 #[cfg(not(feature = "async"))]
 use embedded_hal::delay::DelayNs;
+use embedded_hal::i2c::Error;
 #[cfg(not(feature = "async"))]
 use embedded_hal::i2c::I2c;
 #[cfg(feature = "async")]
