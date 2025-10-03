@@ -5,6 +5,8 @@ mod register;
 pub mod segment;
 pub use max7219::*;
 #[cfg(feature = "segment")]
-use segment::*;
+pub use segment::*;
 mod intensity;
 pub use intensity::*;
+#[cfg(feature = "matrix")]
+mod matrix;

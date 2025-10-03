@@ -43,19 +43,11 @@ impl Intensity {
         }
     }
 }
-impl<SPI, const N: usize> Max7219<SPI, N>
+impl<SPI> Max7219<SPI>
 where
     SPI: SpiDevice,
 {
-    pub fn set_intensity(
-        &mut self,
-        index: usize,
-        intensity: Intensity,
-    ) -> Result<(), Max7219Error> {
-        self.write_manual(
-            index,
-            crate::register::Register::Intensity,
-            intensity.data(),
-        )
+    pub fn set_intensity(&mut self, intensity: Intensity) -> Result<(), Max7219Error> {
+        self.write(crate::register::Register::Intensity, intensity.data())
     }
 }

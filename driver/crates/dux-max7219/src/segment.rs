@@ -1,3 +1,6 @@
+use embedded_hal::spi::SpiDevice;
+
+use crate::Max7219;
 use crate::error::Max7219Error;
 
 pub enum SegmentChar {
@@ -65,5 +68,18 @@ impl SegmentChar {
             SegmentChar::Blank => 0b1111,
         };
         base | ((with_dot as u8) << 7)
+    }
+}
+impl<SPI> Max7219<SPI>
+where
+    SPI: SpiDevice,
+{
+    pub fn show_segment_char(
+        &mut self,
+        index: u8,
+        character: SegmentChar,
+        with_dot: bool,
+    ) -> Result<(), Max7219Error> {
+        self.write(index.try_into()?, character.data(with_dot))
     }
 }
