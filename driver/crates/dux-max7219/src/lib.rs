@@ -8,3 +8,5 @@ pub use max7219::*;
 mod matrix;
 #[cfg(feature = "segment")]
 use segment::*;
+mod intensity;
+pub use intensity::*;

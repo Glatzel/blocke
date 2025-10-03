@@ -16,6 +16,5 @@ where
         spot: u8,
     ) -> Result<(), Max7219Error> {
         self.write(index, line_index.try_into()?, spot)
-
     }
 }
