@@ -9,7 +9,7 @@ where
 {
     pub fn show_matrix_line(
         &mut self,
-        index: usize,
+    
         line_index: u8,
         pattern: u8,
     ) -> Result<(), Max7219Error> {
