@@ -8,6 +8,6 @@ embedded-hal = { workspace = true }
 thiserror = { workspace = true }
 
 [features]
-async=[]
-segment=[]
-matrix=[]
+async = []
+matrix = []
+segment = []
