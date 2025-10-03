@@ -44,7 +44,7 @@ jobs:
       matrix:
         args:
           - --workspace
-          - --workspace --features async
+          - --workspace --all-features
     runs-on: ubuntu-latest
     defaults:
       run:
