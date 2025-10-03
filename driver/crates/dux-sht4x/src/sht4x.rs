@@ -115,7 +115,7 @@ where
     }
 
     fn send_command(&mut self, command: Command, delay: &mut D) -> Result<(), Sht4xError> {
-        use embedded_hal::i2c::Error;
+
 
         let code = command.code();
 
