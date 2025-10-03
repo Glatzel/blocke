@@ -10,7 +10,7 @@ impl<SPI, const N: usize> Max7219<SPI, N>
 where
     SPI: SpiDevice,
 {
-    pub fn new(spi: SPI) -> Self { Self { spi: spi } }
+    pub fn new(spi: SPI) -> Self { Self { spi } }
     pub fn write(&mut self, buffer: &[u8]) -> Result<(), Max7219Error> {
         self.spi
             .write(buffer)
