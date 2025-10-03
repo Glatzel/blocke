@@ -115,8 +115,6 @@ where
     }
 
     fn send_command(&mut self, command: Command, delay: &mut D) -> Result<(), Sht4xError> {
-
-
         let code = command.code();
 
         i2c::write_command_u8(&mut self.i2c, self.address.into(), code)
