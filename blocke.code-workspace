@@ -13,7 +13,7 @@
 	"settings": {
 		"rust-analyzer.check.allTargets": false,
 		"rust-analyzer.cargo.allTargets": false,
-		// "rust-analyzer.cargo.features": "all",
-		// "rust-analyzer.check.features": "all"
+		"rust-analyzer.cargo.features": "all",
+		"rust-analyzer.check.features": "all"
 	}
 }

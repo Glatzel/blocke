@@ -1,4 +1,3 @@
-use embedded_hal::delay::DelayNs;
 use embedded_hal::spi::SpiDevice;
 
 use crate::Max7219;
@@ -44,17 +43,16 @@ impl Intensity {
         }
     }
 }
-impl<SPI, D> Max7219<SPI, D>
+impl<SPI, const N: usize> Max7219<SPI, N>
 where
     SPI: SpiDevice,
-    D: DelayNs,
 {
     pub fn set_intensity(
         &mut self,
         index: usize,
         intensity: Intensity,
     ) -> Result<(), Max7219Error> {
-        self.write(
+        self.write_manual(
             index,
             crate::register::Register::Intensity,
             intensity.data(),
