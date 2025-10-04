@@ -8,6 +8,6 @@ where
     SPI: SpiDevice,
 {
     pub fn write_matrix_line(&mut self, line_index: u8, pattern: u8) -> Result<(), Max7219Error> {
-        self.write(line_index.try_into()?, pattern)
+        self.write_raw(line_index.try_into()?, pattern)
     }
 }

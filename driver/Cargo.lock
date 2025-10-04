@@ -39,10 +39,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dux-max7219-cascade"
-version = "0.1.0"
-
-[[package]]
 name = "dux-sht4x"
 version = "0.1.0"
 dependencies = [

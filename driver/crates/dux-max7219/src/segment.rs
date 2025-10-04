@@ -80,6 +80,6 @@ where
         character: SegmentChar,
         with_dot: bool,
     ) -> Result<(), Max7219Error> {
-        self.write(index.try_into()?, character.data(with_dot))
+        self.write_raw(index.try_into()?, character.data(with_dot))
     }
 }

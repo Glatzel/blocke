@@ -7,6 +7,5 @@ pub mod segment;
 pub use max7219::*;
 #[cfg(feature = "segment")]
 pub use segment::*;
-
 #[cfg(feature = "matrix")]
 mod matrix;

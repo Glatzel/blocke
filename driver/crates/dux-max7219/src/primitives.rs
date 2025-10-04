@@ -54,15 +54,20 @@ impl Command {
         }
     }
 }
-pub enum PowerMode {
-    Off,
-    On,
+
+pub enum DecodeMode {
+    NoDecode,
+    CodeBDigit0,
+    CodeBDigits3_0,
+    CodeBDigits7_0,
 }
-impl PowerMode {
+impl DecodeMode {
     pub fn data(&self) -> u8 {
         match self {
-            PowerMode::Off => 0,
-            PowerMode::On => 1,
+            DecodeMode::NoDecode => 0x00,
+            DecodeMode::CodeBDigit0 => 0x01,
+            DecodeMode::CodeBDigits3_0 => 0x0F,
+            DecodeMode::CodeBDigits7_0 => 0xFF,
         }
     }
 }
@@ -87,22 +92,46 @@ pub enum Intensity {
 impl Intensity {
     pub fn data(&self) -> u8 {
         match self {
-            Intensity::L1 => 0,
-            Intensity::L2 => 1,
-            Intensity::L3 => 2,
-            Intensity::L4 => 3,
-            Intensity::L5 => 4,
-            Intensity::L6 => 5,
-            Intensity::L7 => 6,
-            Intensity::L8 => 7,
-            Intensity::L9 => 8,
-            Intensity::L10 => 9,
-            Intensity::L11 => 10,
-            Intensity::L12 => 11,
-            Intensity::L13 => 12,
-            Intensity::L14 => 13,
-            Intensity::L15 => 14,
-            Intensity::L16 => 15,
+            Intensity::L1 => 0x00,
+            Intensity::L2 => 0x01,
+            Intensity::L3 => 0x02,
+            Intensity::L4 => 0x03,
+            Intensity::L5 => 0x04,
+            Intensity::L6 => 0x05,
+            Intensity::L7 => 0x06,
+            Intensity::L8 => 0x07,
+            Intensity::L9 => 0x08,
+            Intensity::L10 => 0x09,
+            Intensity::L11 => 0x0A,
+            Intensity::L12 => 0x0B,
+            Intensity::L13 => 0x0C,
+            Intensity::L14 => 0x0D,
+            Intensity::L15 => 0x0E,
+            Intensity::L16 => 0x0F,
+        }
+    }
+}
+pub enum ScanLimit {
+    DisplayDigit0,
+    DisplayDigit0_1,
+    DisplayDigit0_2,
+    DisplayDigit0_3,
+    DisplayDigit0_4,
+    DisplayDigit0_5,
+    DisplayDigit0_6,
+    DisplayDigit0_7,
+}
+impl ScanLimit {
+    pub fn data(&self) -> u8 {
+        match self {
+            ScanLimit::DisplayDigit0 => 0x00,
+            ScanLimit::DisplayDigit0_1 => 0x01,
+            ScanLimit::DisplayDigit0_2 => 0x02,
+            ScanLimit::DisplayDigit0_3 => 0x03,
+            ScanLimit::DisplayDigit0_4 => 0x04,
+            ScanLimit::DisplayDigit0_5 => 0x05,
+            ScanLimit::DisplayDigit0_6 => 0x06,
+            ScanLimit::DisplayDigit0_7 => 0x07,
         }
     }
 }
