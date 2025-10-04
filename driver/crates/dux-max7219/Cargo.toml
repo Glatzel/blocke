@@ -9,5 +9,3 @@ thiserror = { workspace = true }
 
 [features]
 async = []
-matrix = []
-segment = []

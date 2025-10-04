@@ -1,5 +1,6 @@
 use embedded_hal::spi::{Error, SpiDevice};
 
+use crate::SegmentChar;
 use crate::error::Max7219Error;
 use crate::primitives::{Command, DecodeMode, Intensity, ScanLimit};
 
@@ -28,6 +29,7 @@ macro_rules! impl_setter {
         }
     };
 }
+
 impl<SPI, const N: usize, const BUF: usize> Max7219<SPI, N, BUF>
 where
     SPI: SpiDevice,
@@ -64,7 +66,7 @@ where
     impl_setter!(set_intensity, Intensity, Intensity);
     impl_setter!(set_scan_limit, ScanLimit, ScanLimit);
     impl_setter!(set_display_test, DisplayTest, bool);
-    pub fn set_digits(
+    pub fn set_digit(
         &mut self,
         device_index: usize,
         digit_index: u8,
@@ -72,18 +74,23 @@ where
     ) -> Result<&mut Self, Max7219Error> {
         self.command(device_index, digit_index.try_into()?, data)
     }
-
-    pub fn set_power_iter<I>(&mut self, iter: I) -> Result<(), Max7219Error>
-    where
-        I: IntoIterator<Item = (usize, bool)>,
-    {
-        for (index, enable) in iter {
-            if index >= N {
-                return Err(Max7219Error::IndexOutOfBounds { index, bound: N });
-            }
-            self.buffer[2 * index] = enable as u8;
-            self.buffer[2 * index + 1] = Command::Power as u8;
-        }
-        self.write_raw()
+    pub fn set_segment_char(
+        &mut self,
+        device_index: usize,
+        segment_index: u8,
+        character: SegmentChar,
+        with_dot: bool,
+    ) -> Result<&mut Self, Max7219Error> {
+        self.set_digit(
+            device_index,
+            segment_index,
+            character as u8 | ((with_dot as u8) << 7),
+        )
     }
+}
+impl<SPI, const N: usize, const BUF: usize> Drop for Max7219<SPI, N, BUF>
+where
+    SPI: SpiDevice,
+{
+    fn drop(&mut self) { self.write().unwrap(); }
 }
