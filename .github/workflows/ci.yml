@@ -44,7 +44,7 @@ jobs:
       matrix:
         args:
           - --workspace
-          - --workspace --features async
+          - --workspace --all-features
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -64,7 +64,7 @@ jobs:
         uses: taiki-e/install-action@nextest
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
-      - run: ./scripts/cargo-test.ps1 --no-default-features  --workspace
+      - run: ./scripts/cargo-test.ps1
         shell: pwsh
       - name: Upload results to Codecov
         if: ${{ !cancelled() }}

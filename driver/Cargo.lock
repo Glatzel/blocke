@@ -33,6 +33,10 @@ version = "0.1.0"
 [[package]]
 name = "dux-max7219"
 version = "0.1.0"
+dependencies = [
+ "embedded-hal",
+ "thiserror",
+]
 
 [[package]]
 name = "dux-sht4x"
