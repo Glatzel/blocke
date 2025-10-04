@@ -7,6 +7,7 @@ version = "0.1.0"
 embedded-hal = { workspace = true }
 thiserror = { workspace = true }
 paste = { workspace = true }
+embedded-hal-async = { workspace = true, optional = true }
 
 [features]
-async = []
+async = ["embedded-hal-async"]

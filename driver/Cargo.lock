@@ -35,6 +35,7 @@ name = "dux-max7219"
 version = "0.1.0"
 dependencies = [
  "embedded-hal",
+ "embedded-hal-async",
  "paste",
  "thiserror",
 ]
