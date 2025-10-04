@@ -5,9 +5,9 @@ version = "0.1.0"
 
 [dependencies]
 embedded-hal = { workspace = true }
+embedded-hal-async = { workspace = true, optional = true }
+paste = { workspace = true }
 thiserror = { workspace = true }
 
 [features]
-async = []
-matrix = []
-segment = []
+async = ["embedded-hal-async"]

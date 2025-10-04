@@ -4,8 +4,8 @@ use thiserror::Error;
 pub enum Max7219Error {
     #[error("Failed I2C write: {0:?}")]
     SpiWriteError(ErrorKind),
-    #[error(" Invalid segment char(: {0}")]
+    #[error("Invalid segment char(: {0}")]
     InvalidSegmentChar(char),
-    #[error(" Invalid index(: {0}")]
-    InvalidIndex(u8),
+    #[error("IndexOutOfBounds: {} / {}",.index,.bound)]
+    IndexOutOfBounds { index: usize, bound: usize },
 }

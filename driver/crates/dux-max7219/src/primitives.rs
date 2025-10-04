@@ -31,7 +31,10 @@ impl TryFrom<u8> for Command {
             5 => Ok(Self::Digit5),
             6 => Ok(Self::Digit6),
             7 => Ok(Self::Digit7),
-            i => Err(Max7219Error::InvalidIndex(i)),
+            i => Err(Max7219Error::IndexOutOfBounds {
+                index: i as usize,
+                bound: 7,
+            }),
         }
     }
 }
