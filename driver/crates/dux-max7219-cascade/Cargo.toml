@@ -1,0 +1,13 @@
+[package]
+edition.workspace = true
+name = "dux-max7219-cascade"
+version = "0.1.0"
+
+# [dependencies]
+# embedded-hal = { workspace = true }
+# thiserror = { workspace = true }
+
+[features]
+async = []
+matrix = []
+segment = []

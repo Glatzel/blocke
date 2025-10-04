@@ -48,6 +48,6 @@ where
     SPI: SpiDevice,
 {
     pub fn set_intensity(&mut self, intensity: Intensity) -> Result<(), Max7219Error> {
-        self.write(crate::register::Register::Intensity, intensity.data())
+        self.write(crate::command::Command::Intensity, intensity.data())
     }
 }

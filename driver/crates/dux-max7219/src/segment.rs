@@ -74,7 +74,7 @@ impl<SPI> Max7219<SPI>
 where
     SPI: SpiDevice,
 {
-    pub fn show_segment_char(
+    pub fn write_segment_char(
         &mut self,
         index: u8,
         character: SegmentChar,

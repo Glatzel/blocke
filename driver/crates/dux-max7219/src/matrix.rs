@@ -7,7 +7,7 @@ impl<SPI> Max7219<SPI>
 where
     SPI: SpiDevice,
 {
-    pub fn show_matrix_line(&mut self, line_index: u8, pattern: u8) -> Result<(), Max7219Error> {
+    pub fn write_matrix_line(&mut self, line_index: u8, pattern: u8) -> Result<(), Max7219Error> {
         self.write(line_index.try_into()?, pattern)
     }
 }
