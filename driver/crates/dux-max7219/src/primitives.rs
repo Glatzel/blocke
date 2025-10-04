@@ -13,7 +13,7 @@ pub enum Command {
     DecodeMode,
     Intensity,
     ScanLimit,
-    Shutdown,
+    Power,
     DisplayTest,
 }
 impl TryFrom<u8> for Command {
@@ -49,8 +49,60 @@ impl Command {
             Command::DecodeMode => 0x09,
             Command::Intensity => 0x0A,
             Command::ScanLimit => 0x0B,
-            Command::Shutdown => 0x0C,
+            Command::Power => 0x0C,
             Command::DisplayTest => 0x0F,
+        }
+    }
+}
+pub enum PowerMode {
+    Off,
+    On,
+}
+impl PowerMode {
+    pub fn code(&self) -> u8 {
+        match self {
+            PowerMode::Off => 0,
+            PowerMode::On => 1,
+        }
+    }
+}
+pub enum Intensity {
+    L1,
+    L2,
+    L3,
+    L4,
+    L5,
+    L6,
+    L7,
+    L8,
+    L9,
+    L10,
+    L11,
+    L12,
+    L13,
+    L14,
+    L15,
+    L16,
+}
+impl Intensity {
+    pub fn data(&self) -> u8 {
+        match self {
+            Intensity::L1 => 0,
+            Intensity::L2 => 1,
+            Intensity::L3 => 2,
+            Intensity::L4 => 3,
+            Intensity::L5 => 4,
+            Intensity::L6 => 5,
+            Intensity::L7 => 6,
+            Intensity::L8 => 7,
+            Intensity::L9 => 8,
+            Intensity::L10 => 9,
+            Intensity::L11 => 10,
+            Intensity::L12 => 11,
+            Intensity::L13 => 12,
+            Intensity::L14 => 13,
+            Intensity::L15 => 14,
+            Intensity::L16 => 15,
         }
     }
 }
