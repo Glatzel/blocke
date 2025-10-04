@@ -19,7 +19,7 @@ use crate::error::Sht4xError;
 use crate::primitives::{Address, Command, HeatingDuration, HeatingPower, Measurement, Precision};
 const RESPONSE_LEN: usize = 6;
 /// Driver for STH4x sensors.
-#[derive(Debug, Eq, Hash, PartialEq)]
+#[derive(Debug)]
 pub struct Sht4x<I, D> {
     i2c: I,
     address: Address,
@@ -115,9 +115,7 @@ where
     }
 
     fn send_command(&mut self, command: Command, delay: &mut D) -> Result<(), Sht4xError> {
-        let code = command.code();
-
-        i2c::write_command_u8(&mut self.i2c, self.address.into(), code)
+        i2c::write_command_u8(&mut self.i2c, self.address as u8, command as u8)
             .map_err(|e| Sht4xError::I2cWrite(e.kind()))?;
         delay.delay_ms(command.duration_ms());
 
@@ -127,7 +125,7 @@ where
     fn read_response(&mut self) -> Result<[u8; RESPONSE_LEN], Sht4xError> {
         let mut response = [0; RESPONSE_LEN];
 
-        i2c::read_words_with_crc(&mut self.i2c, self.address.into(), &mut response)?;
+        i2c::read_words_with_crc(&mut self.i2c, self.address as u8, &mut response)?;
 
         Ok(response)
     }
@@ -196,9 +194,7 @@ where
     }
 
     async fn send_command(&mut self, command: Command, delay: &mut D) -> Result<(), Sht4xError> {
-        let code = command.code();
-
-        i2c_async::write_command_u8(&mut self.i2c, self.address.into(), code)
+        i2c_async::write_command_u8(&mut self.i2c, self.address as u8, command as u8)
             .await
             .map_err(|e| Sht4xError::I2cWrite(e.kind()))?;
         delay.delay_ms(command.duration_ms()).await;
@@ -209,7 +205,7 @@ where
     async fn read_response(&mut self) -> Result<[u8; RESPONSE_LEN], Sht4xError> {
         let mut response = [0; RESPONSE_LEN];
 
-        i2c_async::read_words_with_crc(&mut self.i2c, self.address.into(), &mut response).await?;
+        i2c_async::read_words_with_crc(&mut self.i2c, self.address as u8, &mut response).await?;
 
         Ok(response)
     }
