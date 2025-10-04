@@ -59,7 +59,7 @@ pub enum PowerMode {
     On,
 }
 impl PowerMode {
-    pub fn code(&self) -> u8 {
+    pub fn data(&self) -> u8 {
         match self {
             PowerMode::Off => 0,
             PowerMode::On => 1,
