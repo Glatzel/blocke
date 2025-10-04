@@ -1,37 +1,21 @@
 use fixed::types::{I16F16, U16F16};
-
+#[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub(crate) enum Command {
-    MeasureHighPrecision,
-    MeasureMediumPrecision,
-    MeasureLowPrecision,
-    SoftReset,
-    SerialNumber,
-    MeasureHeated200mw1s,
-    MeasureHeated200mw0p1s,
-    MeasureHeated110mw1s,
-    MeasureHeated110mw0p1s,
-    MeasureHeated20mw1s,
-    MeasureHeated20mw0p1s,
+    MeasureHighPrecision = 0xfd,
+    MeasureMediumPrecision = 0xf6,
+    MeasureLowPrecision = 0xe0,
+    SoftReset = 0x89,
+    SerialNumber = 0x94,
+    MeasureHeated200mw1s = 0x39,
+    MeasureHeated200mw0p1s = 0x32,
+    MeasureHeated110mw1s = 0x2f,
+    MeasureHeated110mw0p1s = 0x24,
+    MeasureHeated20mw1s = 0x1e,
+    MeasureHeated20mw0p1s = 0x15,
 }
 
 impl Command {
-    pub(crate) fn code(&self) -> u8 {
-        match self {
-            Self::MeasureHighPrecision => 0xfd,
-            Self::MeasureMediumPrecision => 0xf6,
-            Self::MeasureLowPrecision => 0xe0,
-            Self::SerialNumber => 0x89,
-            Self::SoftReset => 0x94,
-            Self::MeasureHeated200mw1s => 0x39,
-            Self::MeasureHeated200mw0p1s => 0x32,
-            Self::MeasureHeated110mw1s => 0x2f,
-            Self::MeasureHeated110mw0p1s => 0x24,
-            Self::MeasureHeated20mw1s => 0x1e,
-            Self::MeasureHeated20mw0p1s => 0x15,
-        }
-    }
-
     pub(crate) fn duration_ms(&self) -> u32 {
         // Values rounded up from the maximum durations given in the datasheet
         // table 4, 'System timing specifications'.
@@ -74,23 +58,14 @@ impl From<Precision> for Command {
         }
     }
 }
-
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum Address {
-    Address0x44,
-    Address0x45,
-    Address0x46,
+    Address0x44 = 0x44,
+    Address0x45 = 0x45,
+    Address0x46 = 0x46,
 }
 
-impl From<Address> for u8 {
-    fn from(address: Address) -> Self {
-        match address {
-            Address::Address0x44 => 0x44,
-            Address::Address0x45 => 0x45,
-            Address::Address0x46 => 0x46,
-        }
-    }
-}
 /// Heating power to apply when activating the internal heater.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum HeatingPower {

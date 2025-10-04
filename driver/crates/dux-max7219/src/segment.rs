@@ -3,23 +3,24 @@ use embedded_hal::spi::SpiDevice;
 use crate::Max7219;
 use crate::error::Max7219Error;
 
+#[repr(u8)]
 pub enum SegmentChar {
-    Zero,
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Sieven,
-    Eight,
-    Nine,
-    Dash,
-    E,
-    H,
-    L,
-    P,
-    Blank,
+    Zero = 0b0000,
+    One = 0b0001,
+    Two = 0b0010,
+    Three = 0b0011,
+    Four = 0b0100,
+    Five = 0b0101,
+    Six = 0b0110,
+    Sieven = 0b0111,
+    Eight = 0b1000,
+    Nine = 0b1001,
+    Dash = 0b1010,
+    E = 0b1011,
+    H = 0b1100,
+    L = 0b1101,
+    P = 0b1110,
+    Blank = 0b1111,
 }
 impl TryFrom<char> for SegmentChar {
     type Error = Max7219Error;
@@ -47,29 +48,7 @@ impl TryFrom<char> for SegmentChar {
         Ok(result)
     }
 }
-impl SegmentChar {
-    fn data(&self, with_dot: bool) -> u8 {
-        let base = match self {
-            SegmentChar::Zero => 0b0000,
-            SegmentChar::One => 0b0001,
-            SegmentChar::Two => 0b0010,
-            SegmentChar::Three => 0b0011,
-            SegmentChar::Four => 0b0100,
-            SegmentChar::Five => 0b0101,
-            SegmentChar::Six => 0b0110,
-            SegmentChar::Sieven => 0b0111,
-            SegmentChar::Eight => 0b1000,
-            SegmentChar::Nine => 0b1001,
-            SegmentChar::Dash => 0b1010,
-            SegmentChar::E => 0b0000,
-            SegmentChar::H => 0b0000,
-            SegmentChar::L => 0b0000,
-            SegmentChar::P => 0b1110,
-            SegmentChar::Blank => 0b1111,
-        };
-        base | ((with_dot as u8) << 7)
-    }
-}
+
 impl<SPI> Max7219<SPI>
 where
     SPI: SpiDevice,
@@ -80,6 +59,6 @@ where
         character: SegmentChar,
         with_dot: bool,
     ) -> Result<(), Max7219Error> {
-        self.write_raw(index.try_into()?, character.data(with_dot))
+        self.write_raw(index.try_into()?, character as u8 | ((with_dot as u8) << 7))
     }
 }
