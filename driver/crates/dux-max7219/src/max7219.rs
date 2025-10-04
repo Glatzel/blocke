@@ -5,7 +5,7 @@ use crate::error::Max7219Error;
 use crate::primitives::{Command, DecodeMode, Intensity, ScanLimit};
 
 #[derive(Debug)]
-pub struct Max7219<SPI, const N: usize, const BUF: usize> {
+pub struct Max7219<SPI: SpiDevice, const N: usize, const BUF: usize> {
     device: SPI,
     buffer: [u8; BUF],
     updated: [bool; N],
