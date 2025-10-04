@@ -5,4 +5,3 @@ mod primitives;
 pub mod segment;
 pub use max7219::*;
 pub use segment::*;
-mod matrix;

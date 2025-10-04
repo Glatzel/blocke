@@ -1,4 +1,5 @@
 use embedded_hal::spi::{Error, SpiDevice};
+use paste::paste;
 
 use crate::SegmentChar;
 use crate::error::Max7219Error;
@@ -24,8 +25,17 @@ macro_rules! max7219_new {
 }
 macro_rules! impl_setter {
     ($name:ident, $cmd:ident, $ty:ty) => {
-        pub fn $name(&mut self, index: usize, value: $ty) -> Result<&mut Self, Max7219Error> {
-            self.command(index, Command::$cmd, value as u8)
+        paste! {
+            pub fn $name(&mut self, index: usize, value: $ty) -> Result<&mut Self, Max7219Error> {
+               self.command(index, Command::$cmd, value as u8)
+            }
+            pub fn [<$name _checked>](
+                &mut self,
+                index: usize,
+                value: $ty,
+            ) -> Result<&mut Self, Max7219Error> {
+                self.command_checked(index, Command::$cmd, value as u8)
+            }
         }
     };
 }
@@ -48,18 +58,25 @@ where
         command: Command,
         data: u8,
     ) -> Result<&mut Self, Max7219Error> {
+        self.buffer[2 * index] = data;
+        self.buffer[2 * index + 1] = command as u8;
+
+        self.updated[index] = true;
+        Ok(self)
+    }
+    pub fn command_checked(
+        &mut self,
+        index: usize,
+        command: Command,
+        data: u8,
+    ) -> Result<&mut Self, Max7219Error> {
         if index >= N {
             return Err(Max7219Error::IndexOutOfBounds { index, bound: N });
         }
         if self.updated[index] == true {
             self.write()?;
         }
-
-        self.buffer[2 * index] = data;
-        self.buffer[2 * index + 1] = command as u8;
-
-        self.updated[index] = true;
-        Ok(self)
+        self.command(index, command, data)
     }
     impl_setter!(set_power, Power, bool);
     impl_setter!(set_decode_mode, DecodeMode, DecodeMode);
@@ -74,6 +91,14 @@ where
     ) -> Result<&mut Self, Max7219Error> {
         self.command(device_index, digit_index.try_into()?, data)
     }
+    pub fn set_digit_checked(
+        &mut self,
+        device_index: usize,
+        digit_index: u8,
+        data: u8,
+    ) -> Result<&mut Self, Max7219Error> {
+        self.command_checked(device_index, digit_index.try_into()?, data)
+    }
     pub fn set_segment_char(
         &mut self,
         device_index: usize,
@@ -82,6 +107,19 @@ where
         with_dot: bool,
     ) -> Result<&mut Self, Max7219Error> {
         self.set_digit(
+            device_index,
+            segment_index,
+            character as u8 | ((with_dot as u8) << 7),
+        )
+    }
+    pub fn set_segment_char_checked(
+        &mut self,
+        device_index: usize,
+        segment_index: u8,
+        character: SegmentChar,
+        with_dot: bool,
+    ) -> Result<&mut Self, Max7219Error> {
+        self.set_digit_checked(
             device_index,
             segment_index,
             character as u8 | ((with_dot as u8) << 7),

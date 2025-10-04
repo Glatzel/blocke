@@ -1,6 +1,3 @@
-use embedded_hal::spi::SpiDevice;
-
-use crate::Max7219;
 use crate::error::Max7219Error;
 
 #[repr(u8)]
@@ -48,17 +45,3 @@ impl TryFrom<char> for SegmentChar {
         Ok(result)
     }
 }
-
-// impl<SPI> Max7219<SPI>
-// where
-//     SPI: SpiDevice,
-// {
-//     pub fn write_segment_char(
-//         &mut self,
-//         index: u8,
-//         character: SegmentChar,
-//         with_dot: bool,
-//     ) -> Result<(), Max7219Error> {
-//         self.write_raw(index.try_into()?, character as u8 | ((with_dot as u8) << 7))
-//     }
-// }
