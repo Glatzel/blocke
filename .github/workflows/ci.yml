@@ -64,7 +64,7 @@ jobs:
         uses: taiki-e/install-action@nextest
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
-      - run: ./scripts/cargo-test.ps1
+      - run: ./scripts/cargo-test.ps1 --features async
         shell: pwsh
       - name: Upload results to Codecov
         if: ${{ !cancelled() }}
