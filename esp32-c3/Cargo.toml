@@ -6,9 +6,9 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-clerk = { git = "https://github.com/Glatzel/toolbox", branch = "main" }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.31" }
 dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
-mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.31" }
 pain = { path = "./crates/pain" }
 
 defmt = "1.0.1"
