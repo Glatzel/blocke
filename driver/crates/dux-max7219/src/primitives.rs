@@ -1,5 +1,5 @@
 use crate::error::Max7219Error;
-
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 pub enum Command {
     NoOp = 0x00,
@@ -38,7 +38,7 @@ impl TryFrom<u8> for Command {
         }
     }
 }
-
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 pub enum DecodeMode {
     NoDecode = 0x00,
@@ -46,7 +46,7 @@ pub enum DecodeMode {
     CodeBDigits3_0 = 0x0F,
     CodeBDigits7_0 = 0xFF,
 }
-
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 pub enum Intensity {
     L1 = 0x00,
@@ -66,7 +66,7 @@ pub enum Intensity {
     L15 = 0x0E,
     L16 = 0x0F,
 }
-
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 pub enum ScanLimit {
     DisplayDigit0 = 0x00,

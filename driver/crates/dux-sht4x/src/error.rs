@@ -3,7 +3,6 @@ use sensirion_i2c::i2c;
 use thiserror::Error;
 
 /// Error conditions from accessing SHT4x sensors.
-
 #[derive(Debug, Error)]
 pub enum Sht4xError {
     #[error("Failed I2C read: {0:?}")]

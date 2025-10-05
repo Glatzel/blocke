@@ -1,5 +1,5 @@
 use crate::error::Max7219Error;
-
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 pub enum SegmentChar {
     Zero = 0b0000,

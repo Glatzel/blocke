@@ -5,6 +5,7 @@ use sensirion_i2c::i2c;
 use crate::error::Sht4xError;
 use crate::sht4x::RESPONSE_LEN;
 use crate::{Command, HeatingDuration, HeatingPower, Measurement, Precision, SensorData, Sht4x};
+
 impl<I, D> Sht4x<I, D>
 where
     I: I2c,
