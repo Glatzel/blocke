@@ -4,6 +4,7 @@ name = "hygrothermograph"
 version = "0.1.0"
 
 [dependencies]
+defmt = { workspace = true }
 dux-sht4x = { workspace = true }
 embedded-hal-bus = { workspace = true }
 esp-alloc = { workspace = true }
@@ -17,4 +18,4 @@ pain = { workspace = true }
 riscv = { workspace = true }
 
 [package.metadata.cargo-machete]
-ignored = ["esp-println"]
+ignored = ["defmt"]

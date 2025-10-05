@@ -6,22 +6,28 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.31" }
 dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
-mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.31" }
 pain = { path = "./crates/pain" }
 
+defmt = "1.0.1"
 embedded-hal-bus = "0.3.0"
-esp-alloc = "0.8.0"
+esp-alloc = { version = "0.8.0", features = ["defmt"] }
 esp-backtrace = { version = "0.17.0", features = [
   "esp32c3",
   "panic-handler",
   "exception-handler",
-  "println",
+  "defmt",
 ] }
 esp-bootloader-esp-idf = { version = "0.2.0", features = ["esp32c3"] }
-esp-hal = { version = "1.0.0-rc.0", features = ["esp32c3", "unstable"] }
+esp-hal = { version = "1.0.0-rc.0", features = [
+  "esp32c3",
+  "unstable",
+  "defmt",
+] }
 esp-hal-smartled = { version = "0.16.0", features = ["esp32c3"] }
-esp-println = { version = "0.15.0", features = ["esp32c3"] }
+esp-println = { version = "0.15.0", features = ["esp32c3", "defmt-espflash"] }
 heapless = "0.9.1"
 i2c-character-display = { version = "0.5" }
 micromath = "2.1.0"
