@@ -16,7 +16,7 @@ rustflags = [
 ]
 
 [target.riscv32imc-unknown-none-elf]
-runner = "espflash flash --monitor --chip esp32c3 --log-format defmt"
+runner = "pixi run espflash flash --monitor --chip esp32c3 --log-format defmt"
 
 [env]
 DEFMT_LOG = "debug"

@@ -1,0 +1,26 @@
+version: 6
+environments:
+  default:
+    channels:
+    - url: https://conda.anaconda.org/conda-forge/
+    - url: https://repo.prefix.dev/glatzel/
+    packages:
+      linux-64:
+      - conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.1.0-hb0f4dca_1.conda
+      osx-arm64:
+      - conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.1.0-h60d57d3_1.conda
+      win-64:
+      - conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.1.0-h9490d1a_1.conda
+packages:
+- conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.1.0-hb0f4dca_1.conda
+  sha256: e2d800d322c48579b9159cf8d0e9172efa7491ead505f104c8b2273aabea4fdf
+  size: 3693642
+  timestamp: 1759666178948
+- conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.1.0-h60d57d3_1.conda
+  sha256: 6c99b42b64a328c80a503531e9ec8f21c92bef078926807d20b49d0b06c8287e
+  size: 3362218
+  timestamp: 1759666162155
+- conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.1.0-h9490d1a_1.conda
+  sha256: 9cddf1b13607814f6f84ce9d2e36ae776a41e70408b7ec603ab372154270d57d
+  size: 3098289
+  timestamp: 1759666282581
