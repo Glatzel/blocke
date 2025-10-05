@@ -16,3 +16,6 @@ i2c-character-display = { workspace = true }
 mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
+
+[package.metadata.cargo-machete]
+ignored = ["defmt"]
