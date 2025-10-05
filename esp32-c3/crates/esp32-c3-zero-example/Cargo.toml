@@ -16,3 +16,5 @@ mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
 smart-leds = { workspace = true }
+clerk = { workspace = true, features = ["log-embedded"] }
+defmt = { workspace = true }
