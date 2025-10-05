@@ -94,6 +94,7 @@ checksum = "2fd1289c04a9ea8cb22300a459a72a385d7c73d3259e2ed7dcb2af674838cfa9"
 [[package]]
 name = "clerk"
 version = "0.0.31"
+source = "git+https://github.com/Glatzel/toolbox?branch=main#d32b1c8b000262a2d507daff16a62cca6ef41dae"
 dependencies = [
  "defmt 1.0.1",
 ]
