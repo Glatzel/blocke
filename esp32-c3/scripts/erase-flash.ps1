@@ -1,1 +1,0 @@
-cargo espflash erase-flash
