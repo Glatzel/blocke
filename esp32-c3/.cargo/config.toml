@@ -7,12 +7,12 @@ build-std = ["core", "alloc"]
 
 [target.'cfg(debug_assertions)']
 rustflags = [
-    "-C",
-    "link-arg=-Tlinkall.x",
-    "-C",
-    "link-arg=-Tdefmt.x",
-    "-C",
-    "force-frame-pointers",
+  "-C",
+  "link-arg=-Tlinkall.x",
+  "-C",
+  "link-arg=-Tdefmt.x",
+  "-C",
+  "force-frame-pointers",
 ]
 
 [target.riscv32imc-unknown-none-elf]

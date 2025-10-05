@@ -4,6 +4,7 @@ name = "hygrothermograph"
 version = "0.1.0"
 
 [dependencies]
+defmt = { workspace = true }
 dux-sht4x = { workspace = true }
 embedded-hal-bus = { workspace = true }
 esp-alloc = { workspace = true }
@@ -15,4 +16,3 @@ i2c-character-display = { workspace = true }
 mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
-defmt = { workspace = true }

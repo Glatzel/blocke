@@ -4,6 +4,8 @@ name = "esp32-c3-zero-example"
 version = "0.1.0"
 
 [dependencies]
+clerk = { workspace = true, features = ["defmt"] }
+defmt = { workspace = true }
 dux-sht4x = { workspace = true }
 esp-alloc = { workspace = true }
 esp-bootloader-esp-idf = { workspace = true }
@@ -16,5 +18,3 @@ mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
 smart-leds = { workspace = true }
-clerk = { workspace = true, features = ["defmt"] }
-defmt = { workspace = true }

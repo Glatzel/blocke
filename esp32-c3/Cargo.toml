@@ -6,13 +6,14 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
+clerk = { git = "https://github.com/Glatzel/toolbox", branch = "main" }
 dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
 mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.30" }
 pain = { path = "./crates/pain" }
-clerk = { git = "https://github.com/Glatzel/toolbox", branch = "main" }
 
-esp-alloc = { version = "0.8.0", features = ["defmt"] }
+defmt = "1.0.1"
 embedded-hal-bus = "0.3.0"
+esp-alloc = { version = "0.8.0", features = ["defmt"] }
 esp-backtrace = { version = "0.17.0", features = [
   "esp32c3",
   "panic-handler",
@@ -33,7 +34,6 @@ micromath = "2.1.0"
 panic-halt = "1.0.0"
 riscv = "0.15.0"
 smart-leds = "0.4"
-defmt = "1.0.1"
 
 [profile.dev]
 lto = "fat"
