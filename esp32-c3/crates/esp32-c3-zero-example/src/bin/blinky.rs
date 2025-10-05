@@ -6,7 +6,7 @@ use esp_hal::main;
 use esp_hal::rmt::Rmt;
 use esp_hal::time::Rate;
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
-use esp_println::println;
+use esp_println as _;
 use mischief::WrapErr;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 esp_bootloader_esp_idf::esp_app_desc!();
@@ -33,7 +33,6 @@ fn app() -> mischief::Result<()> {
     };
     let level = 10;
     let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.
-    println!("blinky");
     loop {
         led.write(brightness([color].into_iter(), level))
             .map_err(|e| mischief::mischief!("{e:?}"))?;

@@ -16,7 +16,7 @@ use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use {esp_alloc as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
-
+use esp_println as _;
 macro_rules! config_dangling_pin {
     ($pin:expr) => {
         let config = InputConfig::default().with_pull(Pull::Down);
