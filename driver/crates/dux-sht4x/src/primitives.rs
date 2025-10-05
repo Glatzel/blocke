@@ -1,4 +1,5 @@
 use fixed::types::{I16F16, U16F16};
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub(crate) enum Command {
@@ -58,6 +59,7 @@ impl From<Precision> for Command {
         }
     }
 }
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum Address {
@@ -67,6 +69,7 @@ pub enum Address {
 }
 
 /// Heating power to apply when activating the internal heater.
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum HeatingPower {
     /// Operate the heater at 200 mW.
@@ -84,6 +87,7 @@ pub enum HeatingDuration {
     /// Operate the heater for 1 s.
     Long,
 }
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum Precision {
     Low,
@@ -98,6 +102,18 @@ pub struct Measurement {
     /// The measured relative humidity in percent (%).
     humidity: I16F16,
 }
+#[cfg(feature = "defmt")]
+impl defmt::Format for Measurement {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "Measurement {{ {} °C, {} m%}}",
+            self.temperature.to_num::<f32>(),
+            self.humidity.to_num::<f32>(),
+        );
+    }
+}
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub(crate) struct SensorData {
     /// The measured temperature as raw sensor value.
@@ -105,6 +121,7 @@ pub(crate) struct SensorData {
     /// The measured relative humidity as raw sensor value.
     pub humidity: u16,
 }
+
 impl From<SensorData> for Measurement {
     /// Converts raw sensor data into SI units.
     fn from(raw: SensorData) -> Self {

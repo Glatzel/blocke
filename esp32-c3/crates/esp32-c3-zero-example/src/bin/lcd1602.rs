@@ -11,7 +11,7 @@ use mischief::WrapErr;
 use {esp_println as _, pain as _};
 esp_bootloader_esp_idf::esp_app_desc!();
 
-#[main] // esp-hal handles entry
+#[main]
 fn main() -> ! {
     heap_allocator!(size:64 * 1024);
     app().unwrap();

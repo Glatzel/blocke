@@ -8,6 +8,8 @@ embedded-hal = { workspace = true }
 embedded-hal-async = { workspace = true, optional = true }
 paste = { workspace = true }
 thiserror = { workspace = true }
+defmt =  { workspace = true, optional = true }
 
 [features]
 async = ["embedded-hal-async"]
+defmt=["dep:defmt"]
