@@ -60,10 +60,10 @@ jobs:
         working-directory: ./driver
     steps:
       - uses: actions/checkout@v5
-      - name: Install nextest
-        uses: taiki-e/install-action@nextest
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.9.1
+        with:
+          run-install: false
       - run: ./scripts/cargo-test.ps1 --features async
         shell: pwsh
       - name: Upload results to Codecov
@@ -75,3 +75,4 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           fail_ci_if_error: true
+
