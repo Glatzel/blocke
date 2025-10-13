@@ -4,4 +4,4 @@ channels = ["conda-forge", "https://repo.prefix.dev/glatzel"]
 platforms = ["win-64", "linux-64", "osx-arm64"]
 
 [dependencies]
-espflash = "==4.1.0"
+espflash = "==4.2.0"

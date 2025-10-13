@@ -6,21 +6,21 @@ environments:
     - url: https://repo.prefix.dev/glatzel/
     packages:
       linux-64:
-      - conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.1.0-hb0f4dca_1.conda
+      - conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.2.0-hb0f4dca_0.conda
       osx-arm64:
-      - conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.1.0-h60d57d3_1.conda
+      - conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.2.0-h60d57d3_0.conda
       win-64:
-      - conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.1.0-h9490d1a_1.conda
+      - conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.2.0-h9490d1a_0.conda
 packages:
-- conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.1.0-hb0f4dca_1.conda
-  sha256: e2d800d322c48579b9159cf8d0e9172efa7491ead505f104c8b2273aabea4fdf
-  size: 3693642
-  timestamp: 1759666178948
-- conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.1.0-h60d57d3_1.conda
-  sha256: 6c99b42b64a328c80a503531e9ec8f21c92bef078926807d20b49d0b06c8287e
-  size: 3362218
-  timestamp: 1759666162155
-- conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.1.0-h9490d1a_1.conda
-  sha256: 9cddf1b13607814f6f84ce9d2e36ae776a41e70408b7ec603ab372154270d57d
-  size: 3098289
-  timestamp: 1759666282581
+- conda: https://repo.prefix.dev/glatzel/linux-64/espflash-4.2.0-hb0f4dca_0.conda
+  sha256: 88c7c32b8b409a17ace4c98f6b40b6707aeff8ca61c282033216bd116fe61609
+  size: 3720207
+  timestamp: 1760374826929
+- conda: https://repo.prefix.dev/glatzel/osx-arm64/espflash-4.2.0-h60d57d3_0.conda
+  sha256: 01eb874d0bf9607fc144bdc2c86a79ec543f1205b58d1ba0c5c32bdae65c9da4
+  size: 3386365
+  timestamp: 1760374885014
+- conda: https://repo.prefix.dev/glatzel/win-64/espflash-4.2.0-h9490d1a_0.conda
+  sha256: 3f7b838be5469c8c70c5baa1a54519d99bb86cebd8272704d3ec32193f1d1b60
+  size: 3110780
+  timestamp: 1760374996753
