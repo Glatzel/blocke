@@ -8,7 +8,7 @@ use crate::SegmentChar;
 use crate::error::Max7219Error;
 use crate::primitives::{Command, DecodeMode, Intensity, ScanLimit};
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Max7219<SPI: SpiDevice, const N: usize, const BUF: usize> {
     device: SPI,
     buffer: [u8; BUF],
