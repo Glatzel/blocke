@@ -15,7 +15,7 @@ use embedded_hal_async::i2c::I2c;
 use crate::primitives::Address;
 const RESPONSE_LEN: usize = 6;
 /// Driver for STH4x sensors.
-#[derive(Debug, Eq, Hash, PartialEq)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Sht4x<I, D> {
     i2c: I,
     address: Address,
