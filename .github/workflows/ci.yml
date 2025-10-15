@@ -39,8 +39,11 @@ jobs:
           files_yaml: |
             driver:
               - ./driver/**
+              - ./.github/**
             esp32-c3:
               - ./esp32-c3/**
+              - ./.github/**
+
   build-esp32-c3:
     needs: changed
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
