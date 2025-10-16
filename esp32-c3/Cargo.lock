@@ -99,8 +99,8 @@ checksum = "2fd1289c04a9ea8cb22300a459a72a385d7c73d3259e2ed7dcb2af674838cfa9"
 
 [[package]]
 name = "clerk"
-version = "0.0.31"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.31#d32b1c8b000262a2d507daff16a62cca6ef41dae"
+version = "0.0.32"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.32#774f3527f1d04dc61e0533fdacbf262ef7ae00b8"
 dependencies = [
  "defmt 1.0.1",
 ]
@@ -1096,16 +1096,16 @@ checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 
 [[package]]
 name = "mischief"
-version = "0.0.31"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.31#d32b1c8b000262a2d507daff16a62cca6ef41dae"
+version = "0.0.32"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.32#774f3527f1d04dc61e0533fdacbf262ef7ae00b8"
 dependencies = [
  "mischief-macros",
 ]
 
 [[package]]
 name = "mischief-macros"
-version = "0.0.31"
-source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.31#d32b1c8b000262a2d507daff16a62cca6ef41dae"
+version = "0.0.32"
+source = "git+https://github.com/Glatzel/toolbox?tag=v0.0.32#774f3527f1d04dc61e0533fdacbf262ef7ae00b8"
 dependencies = [
  "quote",
  "syn 2.0.106",
