@@ -23,7 +23,7 @@ fn main() -> ! {
 fn app() -> mischief::Result<()> {
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
-    
+
     let mut buffer = smart_led_buffer!(1);
     let mut led = {
         let frequency = Rate::from_mhz(80);
