@@ -4,7 +4,6 @@ use core::f32;
 
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
-use esp_hal::ledc::channel::config::PinConfig;
 use esp_hal::ledc::channel::{ChannelHW, ChannelIFace};
 use esp_hal::ledc::timer::TimerIFace;
 use esp_hal::ledc::{Ledc, channel, timer};
@@ -57,7 +56,7 @@ fn main() -> ! {
         .configure(channel::config::Config {
             timer: &lstimer0,
             duty_pct: 0,
-            pin_config: PinConfig::OpenDrain,
+            drive_mode: esp_hal::gpio::DriveMode::OpenDrain,
         })
         .unwrap();
     let mut channel1 = ledc.channel(channel::Number::Channel1, green);
@@ -65,7 +64,7 @@ fn main() -> ! {
         .configure(channel::config::Config {
             timer: &lstimer0,
             duty_pct: 0,
-            pin_config: PinConfig::OpenDrain,
+            drive_mode: esp_hal::gpio::DriveMode::OpenDrain,
         })
         .unwrap();
     let mut channel2 = ledc.channel(channel::Number::Channel2, blue);
@@ -73,7 +72,7 @@ fn main() -> ! {
         .configure(channel::config::Config {
             timer: &lstimer0,
             duty_pct: 0,
-            pin_config: PinConfig::OpenDrain,
+            drive_mode: esp_hal::gpio::DriveMode::OpenDrain,
         })
         .unwrap();
 
