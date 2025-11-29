@@ -24,12 +24,14 @@ fn app() -> mischief::Result<()> {
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
 
+    let mut buffer = smart_led_buffer!(1);
     let mut led = {
         let frequency = Rate::from_mhz(80);
         let rmt = Rmt::new(peripherals.RMT, frequency)
             .map_err(|e| mischief::mischief!("{e:?}"))
             .wrap_err("Failed to initialize RMT0")?;
-        SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, smart_led_buffer!(1))
+
+        SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, &mut buffer)
     };
     let level = 10;
     let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.

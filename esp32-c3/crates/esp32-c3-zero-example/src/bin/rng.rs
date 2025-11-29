@@ -10,8 +10,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
 fn main() -> ! {
-    let peripherals = esp_hal::init(Default::default());
-    let mut rng = Rng::new(peripherals.RNG);
+    let rng = Rng::new();
     let delay = Delay::new();
     loop {
         let num: u32 = rng.random();
