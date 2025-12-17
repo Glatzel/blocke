@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::main;
@@ -11,16 +12,11 @@ use mischief::WrapErr;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 esp_bootloader_esp_idf::esp_app_desc!();
 use {esp_alloc as _, pain as _};
-#[main]
-fn main() -> ! {
-    heap_allocator!(size:64 * 1024);
-    app().unwrap();
-    loop {
-        riscv::asm::wfi();
-    }
-}
 
-fn app() -> mischief::Result<()> {
+#[main]
+fn main() -> mischief::Result<!> {
+    heap_allocator!(size: 64 * 1024);
+
     let peripherals = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
 
@@ -33,8 +29,10 @@ fn app() -> mischief::Result<()> {
 
         SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, &mut buffer)
     };
+
     let level = 10;
-    let color = RGB8::new(0, 0, 255); // Follow the order of GRB to sent data and the high bit sent at first.
+    let color = RGB8::new(0, 0, 255); // Set LED color to blue (GRB format)
+    
     loop {
         led.write(brightness([color].into_iter(), level))
             .map_err(|e| mischief::mischief!("{e:?}"))?;
