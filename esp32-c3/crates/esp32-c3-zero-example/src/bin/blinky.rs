@@ -32,7 +32,7 @@ fn main() -> mischief::Result<!> {
 
     let level = 10;
     let color = RGB8::new(0, 0, 255); // Set LED color to blue (GRB format)
-    
+
     loop {
         led.write(brightness([color].into_iter(), level))
             .map_err(|e| mischief::mischief!("{e:?}"))?;
