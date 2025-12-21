@@ -1,0 +1,11 @@
+{
+  "languages": { "Markdown": { "soft_wrap": "none" } },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "check": { "allTargets": false, "features": "all" },
+        "cargo": { "allTargets": false, "features": "all" },
+      },
+    },
+  },
+}
