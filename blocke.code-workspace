@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "driver"
+        },
+        {
+            "path": "esp32-c3"
+        }
+    ],
+    "settings": {
+        "rust-analyzer.check.allTargets": false,
+        "rust-analyzer.cargo.allTargets": false,
+        "rust-analyzer.cargo.features": "all",
+        "rust-analyzer.check.features": "all"
+    }
+}
