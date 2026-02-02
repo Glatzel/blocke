@@ -6,9 +6,9 @@ resolver = "2"
 edition = "2024"
 
 [workspace.dependencies]
-clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.32" }
+clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.37" }
 dux-sht4x = { path = "../driver/crates/dux-sht4x/" }
-mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.32" }
+mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.37" }
 pain = { path = "./crates/pain" }
 
 defmt = "1.0.1"
@@ -31,7 +31,7 @@ heapless = "0.9.1"
 i2c-character-display = { version = "0.5" }
 micromath = "2.1.0"
 panic-halt = "1.0.0"
-riscv = "0.15.0"
+riscv = "0.16.0"
 smart-leds = "0.4"
 
 [profile.dev]
