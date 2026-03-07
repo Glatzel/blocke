@@ -2,12 +2,13 @@
 #![no_main]
 
 use dux_sht4x::{Precision, Sht4x};
+use esp_alloc as _;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
 use esp_println::println;
-use {esp_alloc as _, pain as _};
+use pain as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
