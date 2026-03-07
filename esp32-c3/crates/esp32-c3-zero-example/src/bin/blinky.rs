@@ -10,7 +10,8 @@ use esp_println as _;
 use mischief::WrapErr;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
 esp_bootloader_esp_idf::esp_app_desc!();
-use {esp_alloc as _, pain as _};
+use esp_alloc as _;
+use pain as _;
 #[main]
 fn main() -> ! {
     heap_allocator!(size:64 * 1024);

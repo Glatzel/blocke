@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+use esp_alloc as _;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Input, InputConfig, Pull, WakeEvent};
@@ -11,8 +12,8 @@ use esp_hal::{main, rtc_cntl};
 use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
 use esp_println::println;
 use mischief::WrapErr;
+use pain as _;
 use smart_leds::{RGB8, SmartLedsWrite, brightness, colors};
-use {esp_alloc as _, pain as _};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 macro_rules! config_other_pin {

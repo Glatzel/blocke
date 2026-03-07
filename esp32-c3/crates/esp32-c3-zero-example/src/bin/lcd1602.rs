@@ -6,9 +6,10 @@ use esp_hal::delay::Delay;
 use esp_hal::gpio::{Level, Output, OutputConfig};
 use esp_hal::i2c::master::{Config, I2c};
 use esp_hal::main;
+use esp_println as _;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use mischief::WrapErr;
-use {esp_println as _, pain as _};
+use pain as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 
 #[main]
