@@ -147,7 +147,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           $PSNativeCommandUseErrorActionPreference = $true
           if (Test-Path ./scripts/setup.ps1) { . ./scripts/setup.ps1}
-          cargo +stable clippy ${{inputs.build-args}}
+          cargo +stable build ${{inputs.build-args}}
         shell: pwsh
 
   cargo-clippy:
