@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
-      - uses: ./.github/actions/cargo-build
+      - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./esp32-c3
           args: ${{matrix.args}}
@@ -71,7 +71,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
-      - uses: ./.github/actions/cargo-clippy
+      - uses: ./.github/actions/rust/cargo-clippy
         with:
           working-directory: ./esp32-c3
 
@@ -88,7 +88,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
-      - uses: ./.github/actions/cargo-build
+      - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./driver
           args: ${{matrix.args}}
@@ -104,7 +104,7 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.9.4
         with:
           run-install: false
-      - uses: ./.github/actions/cargo-test
+      - uses: ./.github/actions/rust/cargo-test
         with:
           working-directory: ./driver
           args: --features async
@@ -118,7 +118,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
-      - uses: ./.github/actions/cargo-clippy
+      - uses: ./.github/actions/rust/cargo-clippy
         with:
           working-directory: ./driver
 
