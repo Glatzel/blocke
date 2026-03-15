@@ -24,8 +24,6 @@ concurrency:
 jobs:
   lefthook:
     uses: ./.github/workflows/ci-lefthook.yml
-    with:
-      cache-rust: true
   changed:
     outputs:
       changed-driver: ${{ steps.main.outputs.driver_any_changed }}
@@ -48,59 +46,73 @@ jobs:
 
   build-esp32-c3:
     needs: changed
-    if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./esp32-c3
-    steps:
-      - uses: actions/checkout@v6
-      - run: cargo build
-      - run: cargo build --release
-
-  build-driver:
-    needs: changed
-    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
     strategy:
       fail-fast: false
       matrix:
         args:
-          - --workspace
-          - --workspace --features async
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./driver
-    steps:
-      - uses: actions/checkout@v6
-      - run: cargo build ${{matrix.args}}
+          - ""
+          - "--release"
+    if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./esp32-c3"
+      build: true
+      build-args: ${{matrix.args}}
+      build-machine: '["ubuntu-slim"]'
+
+  clippy-esp32-c3:
+    needs: changed
+    if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./esp32-c3"
+      clippy: true
+
+  build-driver:
+    needs: changed
+    strategy:
+      fail-fast: false
+      matrix:
+        args:
+          - "--workspace"
+          - "--workspace --features async"
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./driver"
+      build: true
+      build-args: ${{matrix.args}}
+      build-machine: '["ubuntu-slim"]'
 
   test-driver:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./driver
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up pixi
-        uses: prefix-dev/setup-pixi@v0.9.4
-        with:
-          run-install: false
-      - run: ./scripts/cargo-test.ps1 --features async
-        shell: pwsh
-      - name: Upload results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+    needs: changed
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./driver"
+      test: true
+      test-args: --features async
+      test-machine: '["ubuntu-slim"]'
 
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
-        with:
-          report_type: test_results
-          fail_ci_if_error: true
+  clippy-driver:
+    needs: changed
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./driver"
+      clippy: true
+
   check-point:
     if: ( cancelled() || failure() ) && github.event_name == 'pull_request'
-    needs: [lefthook,build-driver,build-esp32-c3,changed,test-driver]
+    needs:
+      [
+        lefthook,
+        build-driver,
+        build-esp32-c3,
+        clippy-esp32-c3,
+        changed,
+        test-driver,
+      ]
     runs-on: ubuntu-slim
     steps:
       - run: exit 1
