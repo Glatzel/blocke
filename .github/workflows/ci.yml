@@ -53,20 +53,25 @@ jobs:
           - ""
           - "--release"
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
-    uses: ./.github/workflows/rust.yml
-    with:
-      working-directory: "./esp32-c3"
-      build: true
-      build-args: ${{matrix.args}}
-      build-machine: '["ubuntu-slim"]'
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cargo-test
+        with:
+          working-directory: ./esp32-c3
+          args: ${{matrix.args}}
 
   clippy-esp32-c3:
     needs: changed
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
-    uses: ./.github/workflows/rust.yml
-    with:
-      working-directory: "./esp32-c3"
-      clippy: true
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cargo-clippy
+        with:
+          working-directory: ./esp32-c3
 
   build-driver:
     needs: changed
@@ -77,30 +82,37 @@ jobs:
           - "--workspace"
           - "--workspace --features async"
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    uses: ./.github/workflows/rust.yml
-    with:
-      working-directory: "./driver"
-      build: true
-      build-args: ${{matrix.args}}
-      build-machine: '["ubuntu-slim"]'
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cargo-build
+        with:
+          working-directory: ./driver
+          args: ${{matrix.args}}
 
   test-driver:
     needs: changed
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    uses: ./.github/workflows/rust.yml
-    with:
-      working-directory: "./driver"
-      test: true
-      test-args: --features async
-      test-machine: '["ubuntu-slim"]'
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cargo-build
+        with:
+          working-directory: ./driver
+          args: --features async
 
   clippy-driver:
     needs: changed
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    uses: ./.github/workflows/rust.yml
-    with:
-      working-directory: "./driver"
-      clippy: true
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cargo-clippy
+        with:
+          working-directory: ./driver
 
   check-point:
     if: ( cancelled() || failure() ) && github.event_name == 'pull_request'
