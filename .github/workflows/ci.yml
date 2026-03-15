@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
-      - uses: ./.github/actions/cargo-test
+      - uses: ./.github/actions/cargo-build
         with:
           working-directory: ./esp32-c3
           args: ${{matrix.args}}
@@ -100,7 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
-      - uses: ./.github/actions/cargo-build
+      - uses: ./.github/actions/cargo-test
         with:
           working-directory: ./driver
           args: --features async
