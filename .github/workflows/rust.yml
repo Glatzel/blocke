@@ -129,7 +129,11 @@ jobs:
     defaults:
       run:
         working-directory: ${{inputs.working-directory}}
-    runs-on: ubuntu-slim
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: ${{ fromJSON(inputs.build-machine) }}
+    runs-on: ${{matrix.machine}}
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
