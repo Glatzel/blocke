@@ -59,6 +59,15 @@ jobs:
       build: true
       build-args: ${{matrix.args}}
       build-machine: '["ubuntu-slim"]'
+
+  clippy-esp32-c3:
+    needs: changed
+    if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./esp32-c3"
+      clippy: true
+
   build-driver:
     needs: changed
     strategy:
@@ -67,24 +76,43 @@ jobs:
         args:
           - "--workspace"
           - "--workspace --features async"
-    if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
     uses: ./.github/workflows/rust.yml
     with:
       working-directory: "./driver"
       build: true
       build-args: ${{matrix.args}}
       build-machine: '["ubuntu-slim"]'
+
   test-driver:
     needs: changed
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
     uses: ./.github/workflows/rust.yml
     with:
       working-directory: "./driver"
       test: true
       test-args: --features async
       build-machine: '["ubuntu-slim"]'
+
+  clippy-driver:
+    needs: changed
+    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
+    uses: ./.github/workflows/rust.yml
+    with:
+      working-directory: "./driver"
+      clippy: true
+
   check-point:
     if: ( cancelled() || failure() ) && github.event_name == 'pull_request'
-    needs: [lefthook, build-driver, build-esp32-c3, changed, test-driver]
+    needs:
+      [
+        lefthook,
+        build-driver,
+        build-esp32-c3,
+        clippy-esp32-c3,
+        changed,
+        test-driver,
+      ]
     runs-on: ubuntu-slim
     steps:
       - run: exit 1
