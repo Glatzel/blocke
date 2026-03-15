@@ -56,7 +56,6 @@ jobs:
     uses: ./.github/workflows/rust.yml
     with:
       working-directory: "./esp32-c3"
-      clippy: false
       build: true
       build-args: ${{matrix.args}}
       build-machine: '["ubuntu-slim"]'
@@ -81,7 +80,6 @@ jobs:
     uses: ./.github/workflows/rust.yml
     with:
       working-directory: "./driver"
-      clippy: false
       build: true
       build-args: ${{matrix.args}}
       build-machine: '["ubuntu-slim"]'
@@ -94,7 +92,7 @@ jobs:
       working-directory: "./driver"
       test: true
       test-args: --features async
-      build-machine: '["ubuntu-slim"]'
+      test-machine: '["ubuntu-slim"]'
 
   clippy-driver:
     needs: changed

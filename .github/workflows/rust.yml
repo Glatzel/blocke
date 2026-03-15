@@ -25,7 +25,7 @@ on:
 
       clippy:
         type: boolean
-        default: true
+        default: false
         required: false
       clippy-args:
         type: string
@@ -86,7 +86,7 @@ on:
 
       clippy:
         type: boolean
-        default: true
+        default: false
         required: false
       clippy-args:
         type: string
