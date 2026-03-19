@@ -25,7 +25,7 @@ runs:
       with:
         run-install: false
     - name: Install rustup-init
-      run: pixi global install -c https://prefix.dev/glatzel rustup-init
+      run: pixi global install -c https://prefix.dev/glatzel -c conda-forge rustup-init
       shell: pwsh
     - name: Install Rust toolchain
       run: rustup-init -y --default-toolchain ${{ inputs.toolchain }} --profile minimal
