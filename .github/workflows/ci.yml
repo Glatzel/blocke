@@ -28,7 +28,7 @@ jobs:
     outputs:
       changed-driver: ${{ steps.main.outputs.driver_any_changed }}
       changed-esp32-c3: ${{ steps.main.outputs.esp32-c3_any_changed }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         if: ${{github.event_name == 'pull_request'}}
@@ -53,7 +53,7 @@ jobs:
           - ""
           - "--release"
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
@@ -65,7 +65,7 @@ jobs:
   clippy-esp32-c3:
     needs: changed
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
@@ -84,7 +84,7 @@ jobs:
           - "--workspace"
           - "--workspace --features async"
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
@@ -96,7 +96,7 @@ jobs:
   test-driver:
     needs: changed
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
@@ -114,7 +114,7 @@ jobs:
   clippy-driver:
     needs: changed
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
