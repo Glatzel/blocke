@@ -57,6 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
+        with:
+          targets: riscv32imc-unknown-none-elf
       - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./esp32-c3
@@ -71,6 +73,7 @@ jobs:
       - uses: ./.github/actions/rust/setup-rust
         with:
           components: clippy
+          targets: riscv32imc-unknown-none-elf
       - uses: ./.github/actions/rust/cargo-clippy
         with:
           working-directory: ./esp32-c3
