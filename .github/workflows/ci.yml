@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/rust/setup-rust
       - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./esp32-c3
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/rust/setup-rust
         with:
           components: clippy
       - uses: ./.github/actions/rust/cargo-clippy
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/rust/setup-rust
       - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./driver
@@ -99,7 +99,9 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: ./.github/actions/rust/setup-rust
+        with:
+          toolchain: nightly
       - name: Set up pixi
         uses: prefix-dev/setup-pixi@a0af7a228712d6121d37aba47adf55c1332c9c2e # v0.9.4
         with:
@@ -115,7 +117,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/rust/setup-rust
         with:
           components: clippy
       - uses: ./.github/actions/rust/cargo-clippy
