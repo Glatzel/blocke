@@ -15,7 +15,6 @@ on:
     paths-ignore:
       - "*.md"
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name != 'push'}}
@@ -79,7 +78,7 @@ jobs:
         with:
           working-directory: ./esp32-c3
 
-  build-driver:
+  test-driver:
     needs: changed
     strategy:
       fail-fast: false
@@ -92,53 +91,23 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/rust/setup-rust
-      - uses: ./.github/actions/rust/cargo-build
-        with:
-          working-directory: ./driver
-          args: ${{matrix.args}}
-
-  test-driver:
-    needs: changed
-    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/rust/setup-rust
         with:
           toolchain: nightly
-      - name: Set up pixi
-        uses: prefix-dev/setup-pixi@a0af7a228712d6121d37aba47adf55c1332c9c2e # v0.9.4
-        with:
-          run-install: false
-      - uses: ./.github/actions/rust/cargo-test
-        with:
-          working-directory: ./driver
-          args: --features async
-
-  clippy-driver:
-    needs: changed
-    if: ${{ needs.changed.outputs.changed-driver != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/rust/setup-rust
-        with:
-          components: clippy
       - uses: ./.github/actions/rust/cargo-clippy
         with:
           working-directory: ./driver
+          args: ${{matrix.args}}
+      - uses: ./.github/actions/rust/cargo-test
+        with:
+          working-directory: ./driver
+          nextest-args: ${{matrix.args}}
+          examples: false
+          doc: false
+      - uses: ./.github/actions/common/codecov
 
   check-point:
     if: ( cancelled() || failure() ) && github.event_name == 'pull_request'
-    needs:
-      [
-        lefthook,
-        build-driver,
-        build-esp32-c3,
-        clippy-esp32-c3,
-        changed,
-        test-driver,
-      ]
+    needs: [lefthook, test-driver, build-esp32-c3, clippy-esp32-c3, changed]
     runs-on: ubuntu-slim
     steps:
       - run: exit 1
