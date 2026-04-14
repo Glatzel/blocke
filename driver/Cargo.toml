@@ -1,6 +1,6 @@
 [workspace]
-members = ["./crates/*"]
 resolver = "2"
+members = ["./crates/*"]
 
 [workspace.package]
 edition = "2024"
@@ -15,8 +15,8 @@ sensirion-i2c = "0.4.0"
 thiserror = { version = "2.0.17", default-features = false }
 
 [profile.release]
-codegen-units = 1
-debug = false
-lto = "fat"
 opt-level = 3
+debug = false
 strip = true
+lto = "fat"
+codegen-units = 1

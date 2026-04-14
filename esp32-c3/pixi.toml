@@ -1,5 +1,4 @@
 [workspace]
-
 channels = ["conda-forge", "https://prefix.dev/glatzel"]
 platforms = ["win-64", "linux-64", "osx-arm64"]
 

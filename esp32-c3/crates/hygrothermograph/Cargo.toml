@@ -1,7 +1,10 @@
 [package]
-edition.workspace = true
 name = "hygrothermograph"
 version = "0.1.0"
+edition.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["defmt"]
 
 [dependencies]
 defmt = { workspace = true }
@@ -16,6 +19,3 @@ i2c-character-display = { workspace = true }
 mischief = { workspace = true }
 pain = { workspace = true }
 riscv = { workspace = true }
-
-[package.metadata.cargo-machete]
-ignored = ["defmt"]
