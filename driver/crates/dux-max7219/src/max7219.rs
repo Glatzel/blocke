@@ -125,7 +125,7 @@ where
         if index >= N {
             return Err(Max7219Error::IndexOutOfBounds { index, bound: N });
         }
-        if self.updated[index] == true {
+        if self.updated[index] {
             self.write()?;
         }
         self.command(index, command, data)
