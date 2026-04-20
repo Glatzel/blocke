@@ -22,6 +22,9 @@ concurrency:
 jobs:
   lefthook:
     uses: ./.github/workflows/ci-lefthook.yml
+    permissions:
+      contents: write
+      pull-requests: write
   changed:
     outputs:
       changed-driver: ${{ steps.main.outputs.driver_any_changed }}
