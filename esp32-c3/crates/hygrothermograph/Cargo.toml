@@ -7,7 +7,6 @@ edition.workspace = true
 ignored = ["defmt"]
 
 [dependencies]
-defmt = { workspace = true }
 dux-sht4x = { workspace = true }
 embedded-hal-bus = { workspace = true }
 esp-alloc = { workspace = true }
