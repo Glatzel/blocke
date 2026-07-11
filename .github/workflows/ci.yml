@@ -51,8 +51,8 @@ jobs:
       fail-fast: false
       matrix:
         options:
-          - ""
-          - "--release"
+          - 
+          - --release
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
     runs-on: ubuntu-latest
     steps:
