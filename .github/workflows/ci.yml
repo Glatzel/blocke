@@ -50,9 +50,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        args:
-          - ""
-          - "--release"
+        options:
+          -
+          - --release
     if: ${{ needs.changed.outputs.changed-esp32-c3 != 'false' }}
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +63,7 @@ jobs:
       - uses: ./.github/actions/rust/cargo-build
         with:
           working-directory: ./esp32-c3
-          args: ${{matrix.args}}
+          options: ${{matrix.options}}
 
   clippy-esp32-c3:
     needs: changed
@@ -84,7 +84,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        args:
+        options:
           - "--workspace"
           - "--workspace --features async"
     if: ${{ needs.changed.outputs.changed-driver != 'false' }}
@@ -98,11 +98,11 @@ jobs:
       - uses: ./.github/actions/rust/cargo-clippy
         with:
           working-directory: ./driver
-          args: ${{matrix.args}}
+          options: ${{matrix.options}}
       - uses: ./.github/actions/rust/cargo-test
         with:
           working-directory: ./driver
-          nextest-args: ${{matrix.args}}
+          nextest-options: ${{matrix.options}}
           examples: false
           doc: false
       - uses: ./.github/actions/common/codecov
