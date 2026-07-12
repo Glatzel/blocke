@@ -1,8 +1,20 @@
 version: 7
 platforms:
 - name: linux-64
+  virtual-packages:
+  - __unix=0=0
+  - __linux=4.18
+  - __glibc=2.28
+  - __archspec=0=x86_64
 - name: osx-arm64
+  virtual-packages:
+  - __unix=0=0
+  - __osx=13.0
+  - __archspec=0=m1
 - name: win-64
+  virtual-packages:
+  - __win=10.0
+  - __archspec=0=x86_64
 environments:
   default:
     channels:
@@ -13,15 +25,15 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-20_gnu.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-15.2.0-he0feb66_19.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-15.2.0-he0feb66_19.conda
-      - conda: https://prefix.dev/glatzel/linux-64/espflash-4.4.0-hf804674_0.conda
+      - conda: https://prefix.dev/glatzel/linux-64/espflash-4.5.0-hf804674_0.conda
       osx-arm64:
-      - conda: https://prefix.dev/glatzel/osx-arm64/espflash-4.4.0-h8f394ba_0.conda
+      - conda: https://prefix.dev/glatzel/osx-arm64/espflash-4.5.0-h8f394ba_0.conda
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/win-64/ucrt-10.0.26100.0-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc-14.5-h1b7c187_38.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.51.36231-h1b9f54f_38.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vcomp14-14.51.36231-h1b9f54f_38.conda
-      - conda: https://prefix.dev/glatzel/win-64/espflash-4.4.0-hfd78e1b_0.conda
+      - conda: https://prefix.dev/glatzel/win-64/espflash-4.5.0-hf6e5eb2_0.conda
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-20_gnu.conda
   build_number: 20
@@ -101,37 +113,37 @@ packages:
   license_family: Proprietary
   size: 123561
   timestamp: 1780005858779
-- conda: https://prefix.dev/glatzel/linux-64/espflash-4.4.0-hf804674_0.conda
-  sha256: 17e6ce6c43a5b8b601c09144ceef8f1f218b825ad31642232ea2adc031e6e520
-  md5: 6f2a9a1a57b94e7fe467b44cf79ba264
+- conda: https://prefix.dev/glatzel/linux-64/espflash-4.5.0-hf804674_0.conda
+  sha256: ed6e80d63f476ca725fb6074e13beb34d5343af3fbacef2b8d99f087d4e4d28c
+  md5: 56d8e7bd361acbbf2437281e931fad0d
   depends:
-  - __glibc >=2.28,<3.0.a0
   - libgcc >=14
+  - __glibc >=2.28,<3.0.a0
   constrains:
   - __glibc >=2.17
   license: MIT
   run_exports: {}
-  size: 4836475
-  timestamp: 1776360399948
-- conda: https://prefix.dev/glatzel/osx-arm64/espflash-4.4.0-h8f394ba_0.conda
-  sha256: 82715a703e0251c4a768733ebd7ebddae510266cbada17ad50a034105d713441
-  md5: 71b57f5531b263d60460dee4875e0e21
+  size: 5021019
+  timestamp: 1783736456670
+- conda: https://prefix.dev/glatzel/osx-arm64/espflash-4.5.0-h8f394ba_0.conda
+  sha256: 594135705cd6bb0164a62f6418bc3d85d2c098ea22e12b0c2f3acc7f8ec59bc9
+  md5: 89149fea2a1fd7d351882b04cce55209
   depends:
   - __osx >=11.0
   constrains:
   - __osx >=11.0
   license: MIT
   run_exports: {}
-  size: 4593667
-  timestamp: 1776360395813
-- conda: https://prefix.dev/glatzel/win-64/espflash-4.4.0-hfd78e1b_0.conda
-  sha256: fb73ec3eeb5d90a55613f2e3069f28c824da9655c4844dacc9d2270a05c1aaea
-  md5: b9dc4c0daad053eea0ff4ab452d69d3c
+  size: 4722828
+  timestamp: 1783736452881
+- conda: https://prefix.dev/glatzel/win-64/espflash-4.5.0-hf6e5eb2_0.conda
+  sha256: 9d6d079c76b3db061d7aad5687b577c7ad5957d7b485d2cea3fb654c1833f510
+  md5: 115969066d876d2f7b10ff93ddb17b8a
   depends:
-  - vc >=14.3,<15
-  - vc14_runtime >=14.44.35208
+  - vc >=14.5,<15
+  - vc14_runtime >=14.51.36231
   - ucrt >=10.0.20348.0
   license: MIT
   run_exports: {}
-  size: 4791953
-  timestamp: 1776360401190
+  size: 4971860
+  timestamp: 1783736458338
