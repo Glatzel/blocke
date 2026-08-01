@@ -36,8 +36,8 @@ where
     /// Crates a new driver instance using the given I2C bus and address. This
     /// constructor allows to instantiate the driver for the SHT40-BD1B
     /// which uses the non-default I2C address 0x45.
-    pub fn new_with_address(i2c: I, address: Address) -> Self {
-        Sht4x {
+    pub const fn new_with_address(i2c: I, address: Address) -> Self {
+        Self {
             i2c,
             address,
             _delay: PhantomData,

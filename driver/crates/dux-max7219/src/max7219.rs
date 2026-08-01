@@ -67,7 +67,7 @@ where
 {
     pub const fn count(&self) -> usize { N }
 
-    pub fn command(
+    pub const fn command(
         &mut self,
         index: usize,
         command: Command,
