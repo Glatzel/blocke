@@ -103,8 +103,7 @@ fn app() -> mischief::Result<()> {
 
             buf_temp.clear();
             buf_humid.clear();
-            write!(buf_temp, "Temp: {temperature:.2}C")
-                .map_err(|e| mischief::mischief!("{e}"))?;
+            write!(buf_temp, "Temp: {temperature:.2}C").map_err(|e| mischief::mischief!("{e}"))?;
             write!(buf_humid, "Hum:  {humidity:.2}%").map_err(|e| mischief::mischief!("{e}"))?;
             lcd.write_str(&buf_temp)
                 .map_err(|e| mischief::mischief!("{e}"))?;
