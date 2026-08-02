@@ -47,7 +47,7 @@ macro_rules! impl_setter {
 macro_rules! impl_setter {
     ($name:ident, $cmd:ident, $ty:ty) => {
         paste! {
-            pub fn $name(&mut self, index: usize, value: $ty) -> Result<&mut Self, Max7219Error> {
+            pub const fn $name(&mut self, index: usize, value: $ty) -> Result<&mut Self, Max7219Error> {
                self.command(index, Command::$cmd, value as u8)
             }
             pub async fn [<$name _checked>](
