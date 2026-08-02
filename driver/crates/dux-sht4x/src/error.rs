@@ -19,9 +19,9 @@ where
 {
     fn from(err: i2c::Error<E>) -> Self {
         match err {
-            i2c::Error::Crc => Sht4xError::Crc,
-            i2c::Error::I2cRead(e) => Sht4xError::I2cRead(e.kind()),
-            i2c::Error::I2cWrite(e) => Sht4xError::I2cWrite(e.kind()),
+            i2c::Error::Crc => Self::Crc,
+            i2c::Error::I2cRead(e) => Self::I2cRead(e.kind()),
+            i2c::Error::I2cWrite(e) => Self::I2cWrite(e.kind()),
         }
     }
 }
