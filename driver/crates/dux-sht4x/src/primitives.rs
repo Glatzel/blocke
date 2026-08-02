@@ -2,7 +2,7 @@ use fixed::types::{I16F16, U16F16};
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-pub(crate) enum Command {
+pub enum Command {
     MeasureHighPrecision = 0xfd,
     MeasureMediumPrecision = 0xf6,
     MeasureLowPrecision = 0xe0,
@@ -17,7 +17,7 @@ pub(crate) enum Command {
 }
 
 impl Command {
-    pub(crate) fn duration_ms(&self) -> u32 {
+    pub(crate) const fn duration_ms(&self) -> u32 {
         // Values rounded up from the maximum durations given in the datasheet
         // table 4, 'System timing specifications'.
         match self {
@@ -40,12 +40,12 @@ impl Command {
 impl From<(HeatingPower, HeatingDuration)> for Command {
     fn from((power, duration): (HeatingPower, HeatingDuration)) -> Self {
         match (power, duration) {
-            (HeatingPower::Low, HeatingDuration::Short) => Command::MeasureHeated20mw0p1s,
-            (HeatingPower::Low, HeatingDuration::Long) => Command::MeasureHeated20mw1s,
-            (HeatingPower::Medium, HeatingDuration::Short) => Command::MeasureHeated110mw0p1s,
-            (HeatingPower::Medium, HeatingDuration::Long) => Command::MeasureHeated110mw1s,
-            (HeatingPower::High, HeatingDuration::Short) => Command::MeasureHeated200mw0p1s,
-            (HeatingPower::High, HeatingDuration::Long) => Command::MeasureHeated200mw1s,
+            (HeatingPower::Low, HeatingDuration::Short) => Self::MeasureHeated20mw0p1s,
+            (HeatingPower::Low, HeatingDuration::Long) => Self::MeasureHeated20mw1s,
+            (HeatingPower::Medium, HeatingDuration::Short) => Self::MeasureHeated110mw0p1s,
+            (HeatingPower::Medium, HeatingDuration::Long) => Self::MeasureHeated110mw1s,
+            (HeatingPower::High, HeatingDuration::Short) => Self::MeasureHeated200mw0p1s,
+            (HeatingPower::High, HeatingDuration::Long) => Self::MeasureHeated200mw1s,
         }
     }
 }
@@ -53,9 +53,9 @@ impl From<(HeatingPower, HeatingDuration)> for Command {
 impl From<Precision> for Command {
     fn from(precision: Precision) -> Self {
         match precision {
-            Precision::Low => Command::MeasureLowPrecision,
-            Precision::Medium => Command::MeasureMediumPrecision,
-            Precision::High => Command::MeasureHighPrecision,
+            Precision::Low => Self::MeasureLowPrecision,
+            Precision::Medium => Self::MeasureMediumPrecision,
+            Precision::High => Self::MeasureHighPrecision,
         }
     }
 }
@@ -115,7 +115,7 @@ impl defmt::Format for Measurement {
 }
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-pub(crate) struct SensorData {
+pub struct SensorData {
     /// The measured temperature as raw sensor value.
     pub temperature: u16,
     /// The measured relative humidity as raw sensor value.
@@ -139,10 +139,10 @@ impl From<SensorData> for Measurement {
 }
 impl Measurement {
     /// Returns the measured temperature in degree Celsius (°C).
-    pub fn temperature_celsius(&self) -> I16F16 { self.temperature }
+    pub const fn temperature_celsius(&self) -> I16F16 { self.temperature }
 
     /// Returns the measured relative humidity in percent (%).
-    pub fn humidity_percent(&self) -> I16F16 { self.humidity }
+    pub const fn humidity_percent(&self) -> I16F16 { self.humidity }
 }
 #[cfg(test)]
 mod tests {

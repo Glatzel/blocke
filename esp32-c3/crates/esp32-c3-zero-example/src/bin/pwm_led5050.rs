@@ -26,7 +26,7 @@ fn generate_levels() -> [u16; POS_COUNT as usize] {
     for (i, level) in levels.iter_mut().enumerate() {
         let phase = (i as f32) / (POS_COUNT as f32) * 2.0 * core::f32::consts::PI
             - core::f32::consts::FRAC_PI_2;
-        *level = ((phase.sin() + 1.0) / 2.0 * (PWM_MAX as f32)) as u16;
+        *level = (f32::midpoint(phase.sin(), 1.0) * (PWM_MAX as f32)) as u16;
     }
     levels
 }
