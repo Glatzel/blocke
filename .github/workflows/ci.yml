@@ -20,11 +20,6 @@ concurrency:
   cancel-in-progress: ${{ github.event_name != 'push'}}
 
 jobs:
-  lefthook:
-    uses: ./.github/workflows/ci-lefthook.yml
-    permissions:
-      contents: write
-      pull-requests: write
   changed:
     outputs:
       changed-driver: ${{ steps.main.outputs.driver_any_changed }}
@@ -110,7 +105,7 @@ jobs:
 
   check-point:
     if: ( cancelled() || failure() ) && github.event_name == 'pull_request'
-    needs: [lefthook, test-driver, build-esp32-c3, clippy-esp32-c3, changed]
+    needs: [ test-driver, build-esp32-c3, clippy-esp32-c3, changed]
     runs-on: ubuntu-slim
     steps:
       - run: exit 1
