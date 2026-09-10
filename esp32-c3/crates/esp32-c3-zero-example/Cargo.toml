@@ -5,16 +5,16 @@ edition.workspace = true
 
 [dependencies]
 clerk = { workspace = true, features = ["defmt"] }
-defmt = { workspace = true }
-dux-sht4x = { workspace = true }
-esp-alloc = { workspace = true }
-esp-bootloader-esp-idf = { workspace = true }
-esp-hal = { workspace = true }
-esp-hal-smartled = { workspace = true }
-esp-println = { workspace = true }
-i2c-character-display = { workspace = true }
-micromath = { workspace = true }
-mischief = { workspace = true }
-pain = { workspace = true }
-riscv = { workspace = true }
-smart-leds = { workspace = true }
+defmt.workspace = true
+driver-sht4x.workspace = true
+esp-alloc.workspace = true
+esp-bootloader-esp-idf.workspace = true
+esp-hal.workspace = true
+esp-hal-smartled.workspace = true
+esp-println.workspace = true
+i2c-character-display.workspace = true
+micromath.workspace = true
+mischief.workspace = true
+pain.workspace = true
+riscv.workspace = true
+smart-leds.workspace = true
