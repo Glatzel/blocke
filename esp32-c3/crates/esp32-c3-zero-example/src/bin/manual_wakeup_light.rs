@@ -16,12 +16,7 @@ use pain as _;
 use smart_leds::{RGB8, SmartLedsWrite, colors};
 
 esp_bootloader_esp_idf::esp_app_desc!();
-macro_rules! config_other_pin {
-    ($pin:expr) => {
-        let config = InputConfig::default().with_pull(Pull::Down);
-        let _other_pin = Input::new($pin, config);
-    };
-}
+
 #[main]
 fn main() -> ! {
     heap_allocator!(size:64 * 1024);
@@ -61,16 +56,6 @@ fn app() -> mischief::Result<()> {
         InputConfig::default().with_pull(Pull::Up),
     );
     wakeup_pin.listen(Event::LowLevel);
-
-    config_other_pin!(peripherals.GPIO0);
-    config_other_pin!(peripherals.GPIO1);
-    config_other_pin!(peripherals.GPIO2);
-    config_other_pin!(peripherals.GPIO3);
-    config_other_pin!(peripherals.GPIO4);
-    config_other_pin!(peripherals.GPIO5);
-    config_other_pin!(peripherals.GPIO6);
-    config_other_pin!(peripherals.GPIO7);
-    config_other_pin!(peripherals.GPIO8);
 
     //init rtc
     let mut rtc = rtc_cntl::sleep::LowPower::new(peripherals.LPWR);
