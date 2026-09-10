@@ -742,6 +742,7 @@ version = "0.1.0"
 dependencies = [
  "clerk",
  "defmt 1.1.1",
+ "driver-sht4x",
  "esp-alloc",
  "esp-bootloader-esp-idf",
  "esp-hal",

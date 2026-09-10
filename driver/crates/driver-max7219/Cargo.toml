@@ -5,10 +5,10 @@ edition.workspace = true
 
 [dependencies]
 defmt = { workspace = true, optional = true }
-embedded-hal = { workspace = true }
+embedded-hal.workspace = true
 embedded-hal-async = { workspace = true, optional = true }
-paste = { workspace = true }
-thiserror = { workspace = true }
+paste.workspace = true
+thiserror.workspace = true
 
 [features]
 async = ["embedded-hal-async"]
