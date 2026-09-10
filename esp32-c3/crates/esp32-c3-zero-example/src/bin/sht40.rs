@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use dux_sht4x::{Precision, Sht4x};
+use driver_sht4x::{Precision, Sht4x};
 use esp_alloc as _;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;

@@ -6,10 +6,10 @@ use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Input, InputConfig, Pull, WakeEvent};
 use esp_hal::rmt::Rmt;
-use esp_hal::rtc_cntl::sleep::WakeSource;
+use esp_hal::rtc_cntl::WakeupSource;
 use esp_hal::time::Rate;
 use esp_hal::{main, rtc_cntl};
-use esp_hal_smartled::{SmartLedsAdapter, smart_led_buffer};
+use esp_hal_smartled::RmtSmartLeds;
 use esp_println::println;
 use mischief::WrapErr;
 use pain as _;
@@ -37,13 +37,17 @@ fn app() -> mischief::Result<()> {
     let delay = Delay::new();
 
     //init led
-    let mut buffer = smart_led_buffer!(1);
     let mut led = {
         let frequency = Rate::from_mhz(80);
         let rmt = Rmt::new(peripherals.RMT, frequency)
             .map_err(|e| mischief::mischief!("{e:?}"))
             .wrap_err("Failed to initialize RMT0")?;
-        SmartLedsAdapter::new(rmt.channel0, peripherals.GPIO10, &mut buffer)
+        RmtSmartLeds::new(
+            esp_hal_smartled::WS2812_TIMING,
+            rmt.channel0,
+            peripherals.GPIO10,
+            frequency,
+        )?
     };
     let level = 10;
     let color = RGB8::new(50, 0, 50);

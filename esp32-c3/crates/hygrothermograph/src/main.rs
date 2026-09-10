@@ -4,14 +4,14 @@
 use core::cell::RefCell;
 use core::fmt::Write;
 
-use dux_sht4x::{Precision, Sht4x};
+use driver_sht4x::{Precision, Sht4x};
 use embedded_hal_bus::i2c as i2c_bus;
 use esp_alloc as _;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
 use esp_hal::gpio::{Input, InputConfig, Level, Output, OutputConfig, Pull, WakeEvent};
 use esp_hal::i2c::master::{Config, I2c};
-use esp_hal::rtc_cntl::sleep::WakeSource;
+use esp_hal::rtc_cntl::WakeupSource;
 use esp_hal::{main, rtc_cntl};
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
