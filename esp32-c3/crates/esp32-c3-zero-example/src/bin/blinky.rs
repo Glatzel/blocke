@@ -30,9 +30,9 @@ fn app() -> mischief::Result<()> {
         { buffer_size::<RGB8>(1) },
         esp_hal::Blocking,
         RGB8,
-        color_order::Grb,
+        color_order::Rgb,
     > = {
-        let frequency = Rate::from_mhz(80);
+        let frequency = Rate::from_mhz(50);
         let rmt = Rmt::new(peripherals.RMT, frequency)
             .map_err(|e| mischief::mischief!("{e:?}"))
             .wrap_err("Failed to initialize RMT0")?;
@@ -44,7 +44,7 @@ fn app() -> mischief::Result<()> {
         )?
     };
     let level = 10;
-    let color = RGB8::new(255, 0, 0);
+    let color = RGB8::new(255, 0, 255);
     loop {
         led.write(brightness([color].into_iter(), level))
             .map_err(|e| mischief::mischief!("{e:?}"))?;

@@ -9,9 +9,9 @@ use embedded_hal_bus::i2c as i2c_bus;
 use esp_alloc as _;
 use esp_alloc::heap_allocator;
 use esp_hal::delay::Delay;
-use esp_hal::gpio::{Input, InputConfig, Level, Output, OutputConfig, Pull, WakeEvent};
+use esp_hal::gpio::{Event, Input, InputConfig, Level, Output, OutputConfig, Pull};
 use esp_hal::i2c::master::{Config, I2c};
-use esp_hal::rtc_cntl::WakeupSource;
+use esp_hal::rtc_cntl::sleep::RtcSleepConfig;
 use esp_hal::{main, rtc_cntl};
 use heapless::String;
 use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
@@ -21,8 +21,7 @@ use esp_println as _;
 macro_rules! config_dangling_pin {
     ($pin:expr) => {
         let config = InputConfig::default().with_pull(Pull::Down);
-        let mut wakeup_pin = Input::new($pin, config);
-        wakeup_pin.wakeup_enable(false, WakeEvent::LowLevel)?;
+        let _wakeup_pin = Input::new($pin, config);
     };
 }
 #[main]
@@ -50,7 +49,7 @@ fn app() -> mischief::Result<()> {
     // config wakeup pin
     let config = InputConfig::default().with_pull(Pull::Up);
     let mut wakeup_pin = Input::new(peripherals.GPIO9, config);
-    wakeup_pin.wakeup_enable(true, WakeEvent::LowLevel)?;
+    wakeup_pin.listen(Event::LowLevel);
     config_dangling_pin!(peripherals.GPIO3);
     config_dangling_pin!(peripherals.GPIO4);
     config_dangling_pin!(peripherals.GPIO5);
@@ -59,12 +58,8 @@ fn app() -> mischief::Result<()> {
     config_dangling_pin!(peripherals.GPIO8);
 
     //init rtc
-    let mut rtc = rtc_cntl::Rtc::new(peripherals.LPWR);
-    let wakeup_source = esp_hal::rtc_cntl::sleep::GpioWakeupSource::new();
-    let mut sleep_config = rtc_cntl::sleep::RtcSleepConfig::default();
-    let mut trigger = rtc_cntl::sleep::WakeTriggers::default();
-    trigger.set_gpio(true);
-    wakeup_source.apply(&rtc, &mut trigger, &mut sleep_config);
+    let mut rtc = rtc_cntl::sleep::LowPower::new(peripherals.LPWR);
+    let sleep_config = RtcSleepConfig::default();
 
     // init lcd1602
     let mut lcd = CharacterDisplayPCF8574T::new(
@@ -128,6 +123,6 @@ fn app() -> mischief::Result<()> {
             .map_err(|_| mischief::mischief!("Failed to clear screen"))?
             .home()
             .map_err(|_| mischief::mischief!("Failed to set the cursor to the home position"))?;
-        rtc.sleep_light(&[&wakeup_source]);
+        rtc.sleep_light(sleep_config);
     }
 }
