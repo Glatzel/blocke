@@ -13,7 +13,7 @@ pain = { path = "./crates/pain" }
 
 defmt = "1.1.1"
 embedded-hal-bus = "0.3.0"
-esp-alloc = { version = "0.11.0", features = ["defmt","esp32c3"] }
+esp-alloc = { version = "0.11.0", features = ["defmt", "esp32c3"] }
 esp-backtrace = {
   version = "0.20.0",
   features = [
