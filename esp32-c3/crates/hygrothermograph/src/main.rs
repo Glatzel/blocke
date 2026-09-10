@@ -18,12 +18,7 @@ use i2c_character_display::{CharacterDisplayPCF8574T, LcdDisplayType};
 use pain as _;
 esp_bootloader_esp_idf::esp_app_desc!();
 use esp_println as _;
-macro_rules! config_dangling_pin {
-    ($pin:expr) => {
-        let config = InputConfig::default().with_pull(Pull::Down);
-        let _wakeup_pin = Input::new($pin, config);
-    };
-}
+
 #[main]
 fn main() -> ! {
     heap_allocator!(size:64 * 1024);
@@ -50,12 +45,6 @@ fn app() -> mischief::Result<()> {
     let config = InputConfig::default().with_pull(Pull::Up);
     let mut wakeup_pin = Input::new(peripherals.GPIO9, config);
     wakeup_pin.listen(Event::LowLevel);
-    config_dangling_pin!(peripherals.GPIO3);
-    config_dangling_pin!(peripherals.GPIO4);
-    config_dangling_pin!(peripherals.GPIO5);
-    config_dangling_pin!(peripherals.GPIO6);
-    config_dangling_pin!(peripherals.GPIO7);
-    config_dangling_pin!(peripherals.GPIO8);
 
     //init rtc
     let mut rtc = rtc_cntl::sleep::LowPower::new(peripherals.LPWR);
