@@ -291,7 +291,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dux-sht4x"
+name = "driver-sht4x"
 version = "0.1.0"
 dependencies = [
  "embedded-hal 1.0.0",
@@ -742,7 +742,7 @@ version = "0.1.0"
 dependencies = [
  "clerk",
  "defmt 1.1.1",
- "dux-sht4x",
+ "driver-sht4x",
  "esp-alloc",
  "esp-bootloader-esp-idf",
  "esp-hal",
@@ -994,7 +994,7 @@ dependencies = [
 name = "hygrothermograph"
 version = "0.1.0"
 dependencies = [
- "dux-sht4x",
+ "driver-sht4x",
  "embedded-hal-bus",
  "esp-alloc",
  "esp-bootloader-esp-idf",
