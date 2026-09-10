@@ -1,5 +1,5 @@
 [package]
-name = "dux-max7219"
+name = "driver-max7219"
 version = "0.1.0"
 edition.workspace = true
 
