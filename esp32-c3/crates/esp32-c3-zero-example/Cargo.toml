@@ -6,7 +6,7 @@ edition.workspace = true
 [dependencies]
 clerk = { workspace = true, features = ["defmt"] }
 defmt = { workspace = true }
-dux-sht4x = { workspace = true }
+driver-sht4x = { workspace = true }
 esp-alloc = { workspace = true }
 esp-bootloader-esp-idf = { workspace = true }
 esp-hal = { workspace = true }
