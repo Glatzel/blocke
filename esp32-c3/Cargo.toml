@@ -7,10 +7,9 @@ edition = "2024"
 
 [workspace.dependencies]
 clerk = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.38" }
+driver-sht4x = { path = "../driver/crates/driver-sht4x" }
 mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.38" }
 pain = { path = "./crates/pain" }
-driver-sht4x = { path = "../driver/crates/driver-sht4x" }
-
 
 defmt = "1.1.1"
 embedded-hal-bus = "0.3.0"
