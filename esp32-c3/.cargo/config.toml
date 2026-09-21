@@ -1,9 +1,9 @@
 [build]
-rustflags = ["-C", "link-arg=-Tlinkall.x", "-C", "link-arg=-Tdefmt.x"]
 target = "riscv32imc-unknown-none-elf"
+rustflags = ["-C", "link-arg=-Tlinkall.x", "-C", "link-arg=-Tdefmt.x"]
 
-[unstable]
-build-std = ["core", "alloc"]
+[env]
+DEFMT_LOG = "debug"
 
 [target."cfg(debug_assertions)"]
 rustflags = [
@@ -18,5 +18,5 @@ rustflags = [
 [target.riscv32imc-unknown-none-elf]
 runner = "pixi run espflash flash --monitor --chip esp32c3 --log-format defmt"
 
-[env]
-DEFMT_LOG = "debug"
+[unstable]
+build-std = ["core", "alloc"]
