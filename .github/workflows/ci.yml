@@ -58,10 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: Glatzel/template/.github/actions/rust/setup-rust@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/setup-rust@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           targets: riscv32imc-unknown-none-elf
-      - uses: Glatzel/template/.github/actions/rust/cargo-build@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/cargo-build@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           working-directory: ./esp32-c3
           options: ${{matrix.options}}
@@ -72,11 +72,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: Glatzel/template/.github/actions/rust/setup-rust@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/setup-rust@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           components: clippy
           targets: riscv32imc-unknown-none-elf
-      - uses: Glatzel/template/.github/actions/rust/cargo-clippy@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/cargo-clippy@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           working-directory: ./esp32-c3
 
@@ -92,21 +92,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: Glatzel/template/.github/actions/rust/setup-rust@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/setup-rust@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           toolchain: nightly
           components: clippy
-      - uses: Glatzel/template/.github/actions/rust/cargo-clippy@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/cargo-clippy@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           working-directory: ./driver
           options: ${{matrix.options}}
-      - uses: Glatzel/template/.github/actions/rust/cargo-test@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/rust/cargo-test@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         with:
           working-directory: ./driver
           nextest-options: ${{matrix.options}}
           examples: false
           doc: false
-      - uses: Glatzel/template/.github/actions/common/codecov@f8988acee66029caca381ab62241b0e3e41bd56b # v2026.9.19
+      - uses: Glatzel/template/.github/actions/common/codecov@e0998b97844397cce9bbb31f349f2cb94c3273b6 # v2026.10.2
         if: ${{ !cancelled() }}
 
   check-point:
