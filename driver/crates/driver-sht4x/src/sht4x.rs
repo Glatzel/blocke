@@ -19,8 +19,8 @@ const RESPONSE_LEN: usize = 6;
 pub struct Sht4x<I, D> {
     i2c: I,
     address: Address,
-    // If we want to globally define the delay type for this struct, we have to consume the type
-    // parameter.
+    // If we want to globally define the delay type for this struct, we have to
+    // consume the type parameter.
     _delay: PhantomData<D>,
 }
 
