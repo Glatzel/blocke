@@ -24,8 +24,9 @@ impl Command {
             Self::MeasureHighPrecision => 9,
             Self::MeasureMediumPrecision => 5,
             Self::MeasureLowPrecision => 2,
-            // There is no explicit time given for the serial number, but reading it immediately
-            // results in a NACK. So be a bit more patient here.
+            // There is no explicit time given for the serial number, but
+            // reading it immediately results in a NACK. So be a bit more
+            // patient here.
             Self::SerialNumber | Self::SoftReset => 1,
             Self::MeasureHeated200mw1s | Self::MeasureHeated20mw1s | Self::MeasureHeated110mw1s => {
                 1100
