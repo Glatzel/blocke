@@ -11,7 +11,7 @@ driver-sht4x = { path = "../driver/crates/driver-sht4x" }
 mischief = { git = "https://github.com/Glatzel/toolbox", tag = "v0.0.38" }
 pain = { path = "./crates/pain" }
 
-defmt = "1.1.1"
+defmt = "1.2.0"
 embedded-hal-bus = "0.3.0"
 esp-alloc = { version = "0.11.0", features = ["defmt", "esp32c3"] }
 esp-backtrace = {
@@ -34,7 +34,7 @@ esp-hal = {
 esp-hal-smartled = { version = "0.18.0", features = ["esp32c3"] }
 esp-println = { version = "0.18.0", features = ["defmt-espflash", "esp32c3"] }
 heapless = "0.9.3"
-i2c-character-display = { version = "0.5.2" }
+i2c-character-display = { version = "0.6.0" }
 micromath = "2.1.0"
 panic-halt = "1.0.0"
 riscv = "0.16.1"
